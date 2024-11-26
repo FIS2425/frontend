@@ -15,8 +15,8 @@ on:
       - labeled
 
 env:
-  REGISTRY_IMAGE: ${{ secrets.DOCKER_USERNAME }}/authorization
-  GHCR_IMAGE: fis2425/authorization
+  REGISTRY_IMAGE: ${{ secrets.DOCKER_USERNAME }}/frontend
+  GHCR_IMAGE: fis2425/frontend
   PR_ID: ${{ github.event.pull_request.number }}
   TAG: ${{ github.ref_name }}
 
