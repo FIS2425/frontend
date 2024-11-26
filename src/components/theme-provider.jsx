@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const initialState = {
   theme: 'system',
@@ -6,6 +6,7 @@ const initialState = {
 };
 
 const ThemeProviderContext = createContext(initialState);
+
 
 export function ThemeProvider({
   children,
