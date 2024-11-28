@@ -42,7 +42,7 @@ export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full background shadow-sm">
+    <header className="fixed top-0 left-0 w-full bg-background/35 border-b border-background/20 backdrop-filter backdrop-blur-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -89,7 +89,7 @@ export function Header() {
               </Button>
             </div>
           </div>
-          <div className="flex items-center sm:hidden">
+          <div className="flex items-center sm:hidden ">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
