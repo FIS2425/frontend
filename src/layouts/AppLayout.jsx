@@ -10,7 +10,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider className="min-h-screen">
       <AppSidebar />
-      <div className="flex flex-col w-full">
+      <div className="flex py-2 flex-col w-full">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
