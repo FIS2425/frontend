@@ -1,9 +1,11 @@
 import '@/styles/App.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import { Home } from '@/pages/Home';
+import { Landing } from '@/pages/Landing';
 import { About } from '@/pages/About';
+import { Home } from '@/pages/app/Home';
 import MainLayout from '@/layouts/MainLayout';
+import AppLayout from '@/layouts/AppLayout';
 
 function App() {
   return (
@@ -12,8 +14,11 @@ function App() {
         <Routes>
           {/* Doing nested routes allows to avoid re-rendering re-used components */}
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
+            <Route index element={<Landing />} />
             <Route path="about" element={<About />} />
+          </Route>
+          <Route path="/app" element={<AppLayout />}>
+            <Route index element={<Home />} />
           </Route>
         </Routes>
       </Router>
