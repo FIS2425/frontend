@@ -1,9 +1,6 @@
 import { LoaderCircle } from 'lucide-react';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import { z } from 'zod';
 import {
   Form,
   FormControl,
@@ -13,34 +10,30 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/forms/password-input';
 
-const loginSchema = z.object({
+export const loginSchema = z.object({
   email: z
     .string({ required_error: 'Email is required' })
-    .email('Invalid email address'),
-  password: z.string({ required_error: 'Password is required' }),
+    .email('Invalid email address')
+    .transform((val) => val.trim()),
+  password: z
+    .string({ required_error: 'Password is required' })
+    .transform((val) => val.trim()),
 });
 
-export function LoginForm() {
-  const [isLoading, _setIsLoading] = useState(false);
-
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-  });
-
-  function onSubmit(values) {
-    console.log(values);
-  }
-
+export function LoginForm({ form, onSubmit, isLoading, error }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {error && <FormMessage className="flex flex-col items-start text-base">{error}</FormMessage>}
         <FormField
           control={form.control}
           name="email"
+          rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-base font-large">Email</FormLabel>
               <FormControl>
                 <Input placeholder="email@example.com" {...field} />
               </FormControl>
@@ -51,11 +44,12 @@ export function LoginForm() {
         <FormField
           control={form.control}
           name="password"
+          rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-base font-large">Password</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <PasswordInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -65,7 +59,7 @@ export function LoginForm() {
           {isLoading && (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           )}
-          Log In
+          <span className="text-base font-large">Log In</span>
         </Button>
       </form>
     </Form>
