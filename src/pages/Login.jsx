@@ -1,5 +1,6 @@
 import { Bandage, Activity, Cross, HeartPulse, HandHeart, CalendarHeart, Syringe, Tablets, Stethoscope, Dna, Brain } from 'lucide-react';
-import { LoginForm, loginSchema } from '@/forms/auth';
+import { LoginForm } from '@/forms/auth/forms';
+import { loginSchema } from '@/forms/auth/schemas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PulsingIcons from '@/components/pulsing-icons';
 import { login } from '@/services/auth';
