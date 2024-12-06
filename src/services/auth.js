@@ -6,3 +6,7 @@ export function login({ email, password }) {
     { email, password }
   );
 }
+
+export function logout() {
+  return client.post('/logout');
+}

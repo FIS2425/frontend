@@ -78,7 +78,7 @@ export function createAxiosClient({
 
       // Refresh token missing or expired => logout user...
       if (
-        error.response?.status === 401
+        error.response?.status === 401 && error.response?.data?.message !== 'Not logged in'
       ) {
         return handleError(error);
       }
