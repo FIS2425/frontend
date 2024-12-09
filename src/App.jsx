@@ -6,6 +6,7 @@ import { About } from '@/pages/About';
 import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
+import { Verify2FA } from '@/pages/Verify2FA';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 
@@ -25,6 +26,7 @@ function App() {
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/verify-2fa" element={<Verify2FA />} />
         </Routes>
       </Router>
     </ThemeProvider>
