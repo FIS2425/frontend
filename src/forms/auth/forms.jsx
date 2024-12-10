@@ -9,7 +9,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '@/components/ui/input-otp';
+import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { PasswordInput } from '@/components/forms/password-input';
 
 export function LoginForm({ form, onSubmit, isLoading, error }) {
@@ -67,13 +68,18 @@ export function Verify2FAForm({ form, onSubmit, isLoading, error }) {
           rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-center">
-              <FormLabel className="text-base font-large">2FA Token</FormLabel>
               <FormControl>
-                <InputOTP maxLength={6} {...field}>
+                <InputOTP
+                  maxLength={6} {...field}
+                  pattern={REGEXP_ONLY_DIGITS}
+                >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
                     <InputOTPSlot index={1} />
                     <InputOTPSlot index={2} />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
                     <InputOTPSlot index={3} />
                     <InputOTPSlot index={4} />
                     <InputOTPSlot index={5} />
