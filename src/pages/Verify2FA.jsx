@@ -1,15 +1,15 @@
 import { Bandage, Activity, Cross, HeartPulse, HandHeart, CalendarHeart, Syringe, Tablets, Stethoscope, Dna, Brain } from 'lucide-react';
-import { LoginForm } from '@/forms/auth/forms';
-import { loginSchema } from '@/forms/auth/schemas';
+import { Verify2FAForm } from '@/forms/auth/forms';
+import { verify2FASchema } from '@/forms/auth/schemas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import PulsingIcons from '@/components/pulsing-icons';
-import { login } from '@/services/auth';
+import { verify2FA } from '@/services/auth';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
-export function Login() {
+export function Verify2FA() {
   const icons = {
     Bandage,
     Activity,
@@ -31,46 +31,50 @@ export function Login() {
         <PulsingIcons icons={icons} className="overflow-hidden fixed w-0 lg:w-1/3 inset-x-0 min-h-screen bg-sidebar border-r ring-r" />
       </div>
 
-      {/* Right side - Login Form */}
+      {/* Right side - Verify2FA Form */}
       <div className="w-full lg:w-2/3 flex items-center justify-center p-8">
-        <LoginCard />
+        <Verify2FACard />
       </div>
     </div>
   );
 }
 
-function LoginCard() {
+function Verify2FACard() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { userId } = location.state || { userId: null };
 
   const form = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(verify2FASchema),
     defaultValues: {
-      email: '',
-      password: '',
+      totpToken: '',
     },
   });
 
   function onSubmit(values) {
     setIsLoading(true);
-    login(values)
+    verify2FA(userId, values)
       .then((response) => {
         if (response.status === 200 && response.data.message === 'Login successful')
           navigate('/app');
-
-        else if (response.status === 200 && response.data.message === 'Credentials validated, please verify 2FA token')
-          navigate('/verify-2fa', { state: { userId: response.data.userId } });
       })
       .catch((err) => {
-        if (err.response && err.response.status === 400) {
-          // Usually we would use form.setError, but in this case the 400 error only happens for "invalid credetials" which has no target field
-          setError('Invalid email or password');
+        if (err.response) {
+          const { status, data } = err.response;
+  
+          if (status === 403) {
+            setError(data.message || '2FA session expired or invalid');
+          } else if (status === 400) {
+            setError(data.message || 'Invalid 2FA token');
+          } else {
+            setError('An error occurred. Please try again later.');
+          }
         } else {
-          setError('An error occurred. Please try again later.');
-          console.error(err);
+          setError('Network error. Please try again later.');
         }
-        setIconsRed();
+        console.error(err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -80,19 +84,12 @@ function LoginCard() {
   return (
     <Card className="w-full max-w-md rounded-lg shadow-sm">
       <CardHeader className="items-start">
-        <CardTitle>Log In</CardTitle>
-        <CardDescription>Log In to CloudMedix</CardDescription>
+        <CardTitle>Almost there!</CardTitle>
+        <CardDescription>Open your 2FA app and enter the 6-digit code</CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
+        <Verify2FAForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
       </CardContent>
     </Card>
   );
-}
-
-function setIconsRed() {
-  document.querySelectorAll('.pulse').forEach((div) => {
-    div.classList.add('error-pulse');
-    div.classList.remove('pulse');
-  });
 }
