@@ -32,7 +32,6 @@ function RegisterStaffCard() {
       name: '',
       surname: '',
       specialty: '',
-      clinicId: '38e37cc7-992a-4530-a381-fd907fb921b3',
       dni: '',
     },
   });
@@ -49,6 +48,8 @@ function RegisterStaffCard() {
         
         if (err.response && err.response.status === 400) {
           setError('A doctor with the same DNI or Email already exists');
+        } else if (err.response && err.response.status === 401) {
+          setError('You must be a clinic admin to register staff');
         } else {
           setError('An error occurred. Please try again later.');
           console.error(err);

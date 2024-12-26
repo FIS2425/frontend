@@ -31,9 +31,6 @@ export const registerStaffSchema = z.object({
     .refine((value) => specialties.includes(value), {
       message: 'Invalid specialty',
     }),
-  clinicId: z
-    .string({ required_error: 'Clinic is required' })
-    .transform((val) => val.trim()),
   dni: z
     .string({ required_error: 'DNI is required' })
     .regex(dniRegex, 'Invalid DNI format')
