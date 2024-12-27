@@ -62,7 +62,7 @@ function RegisterStaffCard() {
   }
 
   return (
-    <Card className="w-full max-w-md rounded-lg shadow-sm">
+    <Card className="w-full max-w-md min-w-[300px] rounded-lg shadow-sm">
       <CardHeader className="items-start">
         <CardTitle>Register Staff</CardTitle>
         <CardDescription>Register new staff member</CardDescription>
