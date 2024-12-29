@@ -45,8 +45,8 @@ function RegisterStaffCard() {
         
         if (err.response && err.response.status === 400) {
           setError('A doctor with the same DNI or Email already exists');
-        } else if (err.response && err.response.status === 401) {
-          setError('You must be a clinic admin to register staff');
+        } else if ((err.response && err.response.status === 401) || (err.response && err.response.status === 403)) {
+          setError('You must be logged in as a clinic admin to register staff');
         } else {
           setError('An error occurred. Please try again later.');
           console.error(err);
