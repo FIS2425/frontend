@@ -22,9 +22,11 @@ export const registerStaffSchema = z.object({
     .transform((val) => val.trim()),
   name: z
     .string({ required_error: 'Name is required' })
+    .min(1, 'Name is required')
     .transform((val) => val.trim()),
   surname: z
     .string({ required_error: 'Surname is required' })
+    .min(1, 'Surname is required')
     .transform((val) => val.trim()),
   specialty: z
     .string({ required_error: 'Specialty is required' })
