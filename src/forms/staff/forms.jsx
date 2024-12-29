@@ -18,7 +18,7 @@ export function RegisterStaffForm({ form, onSubmit, isLoading, error }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
         <FormField
           control={form.control}
           name="name"
