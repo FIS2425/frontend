@@ -10,11 +10,8 @@ import { useNavigate } from 'react-router';
 export function RegisterStaff() {
     
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      {/* Right side - Register Staff Form */}
-      <div className="w-full lg:w-2/3 flex items-center justify-center p-8">
-        <RegisterStaffCard />
-      </div>
+    <div className="w-full flex items-center justify-center p-8">
+      <RegisterStaffCard />
     </div>
   );
 }
