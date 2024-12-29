@@ -51,7 +51,6 @@ function RegisterStaffCard() {
           setError('An error occurred. Please try again later.');
           console.error(err);
         }
-        setIconsRed();
       })
       .finally(() => {
         setIsLoading(false);
@@ -69,11 +68,4 @@ function RegisterStaffCard() {
       </CardContent>
     </Card>
   );
-}
-
-function setIconsRed() {
-  document.querySelectorAll('.pulse').forEach((div) => {
-    div.classList.add('error-pulse');
-    div.classList.remove('pulse');
-  });
 }
