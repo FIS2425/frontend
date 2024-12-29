@@ -113,13 +113,13 @@ export function RegisterStaffForm({ form, onSubmit, isLoading, error }) {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit" disabled={isLoading}>
+        <Button className="w-full lg:col-span-2" type="submit" disabled={isLoading}>
           {isLoading && (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           )}
           <span className="text-base font-large">Register</span>
         </Button>
-        {error && <FormMessage className="flex flex-col items-start text-base">{error}</FormMessage>}
+        {error && <FormMessage className="flex flex-col items-start text-base lg:col-span-2">{error}</FormMessage>}
       </form>
     </Form>
   );
