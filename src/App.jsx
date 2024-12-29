@@ -23,9 +23,7 @@ function App() {
           </Route>
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Home />} />
-          </Route>
-          <Route path="/register-staff" element={<AppLayout />}>
-            <Route index element={<RegisterStaff />} />
+            <Route path="register-staff" element={<RegisterStaff />} />
           </Route>
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
