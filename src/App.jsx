@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { Payments } from '@/pages/Payments';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 
@@ -27,6 +28,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/verify-2fa" element={<Verify2FA />} />
+          <Route path="/payments" element={<Payments />} />
         </Routes>
       </Router>
     </ThemeProvider>
