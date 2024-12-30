@@ -9,7 +9,7 @@ import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
-import { RegisterStaff } from '@/pages/RegisterStaff';
+import { RegisterStaff } from '@/pages/app/RegisterStaff';
 
 function App() {
   return (
