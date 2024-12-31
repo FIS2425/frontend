@@ -43,8 +43,8 @@ export function createAxiosClient({
 
       // Refresh token conditions
       if (
-        (error.response?.status === 401 &&
-                    error.response?.data?.message === 'Token expired' || error.response?.data?.message === 'No token provided') &&
+        error.response?.status === 401 &&
+                error.response?.data?.message === 'Token expired' &&
                 originalRequest?.url !== refreshTokenUrl &&
                 originalRequest?._retry !== true
       ) {
@@ -75,10 +75,9 @@ export function createAxiosClient({
             isRefreshing = false;
           });
       }
-
       // Refresh token missing or expired => logout user...
-      if (
-        error.response?.status === 401 && error.response?.data?.message !== 'Not logged in'
+      else if (
+        error.response?.status === 401 && error.response?.data?.message !== 'Not logged in' && error.response?.data?.message !== 'No token provided'
       ) {
         return handleError(error);
       }

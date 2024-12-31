@@ -8,6 +8,8 @@ export function login({ email, password }) {
 }
 
 export function logout() {
+  localStorage.removeItem('userId');
+  localStorage.removeItem('roles');
   return client.post('/logout');
 }
 
