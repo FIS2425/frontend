@@ -21,7 +21,7 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
           rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Name</FormLabel>
+              <FormLabel className="text-base font-large">Name *</FormLabel>
               <FormControl>
                 <Input placeholder="Name" {...field} />
               </FormControl>
@@ -35,7 +35,7 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
           rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Details</FormLabel>
+              <FormLabel className="text-base font-large">Details *</FormLabel>
               <FormControl>
                 <Input placeholder="Details" {...field} />
               </FormControl>
@@ -49,7 +49,7 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
           rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Since</FormLabel>
+              <FormLabel className="text-base font-large">Since *</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>

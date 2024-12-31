@@ -2,10 +2,10 @@ import { z } from 'zod';
 
 const pastDateString = z
   .string()
-  .refine((val) => val === 'dd/mm/aaaa' || !isNaN(Date.parse(val)), {
+  .refine((val) => val === 'dd/mm/aaaa' || val === '' || !isNaN(Date.parse(val)), {
     message: 'Invalid date format',
   })
-  .transform((val) => (val === 'dd/mm/aaaa' ? null : new Date(val)))
+  .transform((val) => (val === 'dd/mm/aaaa' || val === '' ? null : new Date(val)))
   .refine((date) => date === null || date <= new Date(), {
     message: 'Date must be today or in the past',
   });
