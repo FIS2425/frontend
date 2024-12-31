@@ -1,20 +1,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { LockIcon } from 'lucide-react';
 import { PasswordChangeForm } from '@/forms/auth/forms';
 import { changePasswordSchema } from '@/forms/auth/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changePassword } from '@/services/auth';
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function PasswordChange() {
-  const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -24,17 +19,21 @@ export default function PasswordChange() {
     defaultValues: {
       currentPassword: '',
       newPassword: '',
+      confirmPassword: '',
     },
   });
 
   const onSubmit = async (values) => {
     setIsLoading(true);
     setError('');
-    changePassword(values)
+
+    const payload = { ...values };
+    delete payload.confirmPassword;
+
+    changePassword(payload)
       .then((response) => {
         if (response.status === 200 && response.data.message === 'Password changed successfully') {
           setIsLoading(false);
-          setIsOpen(false);
           form.reset();
           navigate('/app');
         }}).catch((err) => {
@@ -65,22 +64,22 @@ export default function PasswordChange() {
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button variant="outline">
           <LockIcon className="mr-2 h-4 w-4" />
           Change Password
         </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 p-4">
+      </DialogTrigger>
+      <DialogContent>
         <PasswordChangeForm
           form={form}
           onSubmit={onSubmit}
           isLoading={isLoading}
           error={error}
         />
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </DialogContent>
+    </Dialog>
   );
 }
 

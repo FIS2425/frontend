@@ -24,4 +24,10 @@ export const changePasswordSchema = z.object({
   newPassword: z
     .string({ required_error: 'New password is required' })
     .transform((val) => val.trim()),
+  confirmPassword: z
+    .string({ required_error: 'You must confirm your new password' })
+    .transform((val) => val.trim()),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
 });

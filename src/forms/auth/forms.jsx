@@ -138,6 +138,22 @@ export function PasswordChangeForm({ form, onSubmit, isLoading, error }) {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          rules={{ required: true }}
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-medium">Confirm Password</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} />
+              </FormControl>
+              {form.formState.errors.confirmPassword && (
+                <FormMessage>{form.formState.errors.confirmPassword.message}</FormMessage>
+              )}
+            </FormItem>
+          )}
+        />
         <Button className="w-full" type="submit" disabled={isLoading}>
           {isLoading && (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
