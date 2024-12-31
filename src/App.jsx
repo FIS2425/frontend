@@ -10,6 +10,7 @@ import { Verify2FA } from '@/pages/Verify2FA';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
+import { AddCondition } from '@/pages/app/AddCondition';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="register-staff" element={<RegisterStaff />} />
+            <Route path="history/condition" element={<AddCondition />} />
           </Route>
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
