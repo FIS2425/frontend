@@ -16,3 +16,12 @@ export const verify2FASchema = z.object({
     .length(6, '2FA token must be 6 digits')
     .transform((val) => val.trim()),
 });
+
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string({ required_error: 'Current password is required' })
+    .transform((val) => val.trim()),
+  newPassword: z
+    .string({ required_error: 'New password is required' })
+    .transform((val) => val.trim()),
+});

@@ -17,3 +17,10 @@ export function verify2FA(userId, { totpToken }) {
     { userId, totpToken }
   );
 }
+
+export function changePassword({ currentPassword, newPassword }) {
+  return client.post(
+    '/users/change-password',
+    { currentPassword, newPassword }
+  );
+}
