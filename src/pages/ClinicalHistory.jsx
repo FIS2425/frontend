@@ -1,3 +1,4 @@
+import '@/styles/history.css';
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -137,7 +138,7 @@ export function ClinicalHistory() {
               {analytics.map((analysis, index) => (
                 <li key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <FileIcon className="h-5 w-5 text-blue-500" />
+                    <FileIcon className="h-5 w-5" style={{ color: 'var(--doc-icon-color)' }}/>
                     <span>{analysis.originalName}</span>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -162,7 +163,7 @@ export function ClinicalHistory() {
               {images.map((image, index) => (
                 <li key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <ImageIcon className="h-5 w-5 text-green-500" />
+                    <ImageIcon className="h-5 w-5" style={{ color: 'var(--img-icon-color)'}}/>
                     <span>{image.originalName}</span>
                   </div>
                   <div className="flex items-center space-x-2">
