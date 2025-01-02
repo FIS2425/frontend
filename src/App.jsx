@@ -21,11 +21,9 @@ function App() {
             <Route index element={<Landing />} />
             <Route path="about" element={<About />} />
           </Route>
-          <Route path="/app" element={<AppLayout />}>
-            <Route index element={<Home />} />
-          </Route>
-          <Route path="/history" element={<AppLayout />}>  
-            <Route index element={<ClinicalHistory />} />
+          <Route path="/app" element={<AppLayout />}>  
+            <Route index element={<Home />} />  
+            <Route path="history" element={<ClinicalHistory />} />  
           </Route>
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
