@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import PatientEditPage from '@/pages/PatientEdit';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
@@ -29,6 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/verify-2fa" element={<Verify2FA />} />
+          <Route path="/patients/:id/edit" element={<PatientEditPage />} />
         </Routes>
       </Router>
     </ThemeProvider>
