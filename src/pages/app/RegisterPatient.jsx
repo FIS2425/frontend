@@ -31,6 +31,7 @@ function RegisterPatientCard() {
       city: '',
       dni: '',
       birthdate: '',
+      username:'',
     },
   });
 
@@ -45,7 +46,7 @@ function RegisterPatientCard() {
       .catch((err) => {
         
         if (err.response && err.response.status === 400) {
-          setError('A doctor with the same DNI or Email already exists');
+          setError('A patient with the same DNI or Email already exists');
         } else if ((err.response && err.response.status === 401) || (err.response && err.response.status === 403)) {
           setError('You must be logged in as a admin or doctor to register Patient');
         } else {

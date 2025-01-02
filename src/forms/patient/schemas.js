@@ -38,5 +38,16 @@ export const registerPatientSchema = z.object({
       return letters[number % 23] === letter;
     }, {
       message: 'Invalid DNI number',
-    })
+    }),
+  birthdate: z
+    .string({ required_error: 'Birthdate is required' })
+    .transform((val) => val.trim()),
+  city: z
+    .string({ required_error: 'City is required' })
+    .min(1, 'City is required')
+    .transform((val) => val.trim()),
+  username: z
+    .string({ required_error: 'Username is required' })
+    .min(1, 'Username is required')
+
 });

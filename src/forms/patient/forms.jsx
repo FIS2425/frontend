@@ -85,8 +85,6 @@ export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
             </FormItem>
           )}
         />
-
-
         <FormField
           control={form.control}
           name="email"
@@ -95,6 +93,19 @@ export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
               <FormLabel className="text-base font-large">Email</FormLabel>
               <FormControl>
                 <Input placeholder="email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Username</FormLabel>
+              <FormControl>
+                <Input placeholder="username" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
