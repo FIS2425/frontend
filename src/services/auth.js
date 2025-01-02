@@ -13,6 +13,12 @@ export function logout() {
   return client.post('/logout');
 }
 
+export function enable2FA() {
+  return client.post(
+    'users/enable-2fa',
+  );
+}
+
 export function verify2FA(userId, { totpToken }) {
   return client.post(
     'users/verify-2fa',
