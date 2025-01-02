@@ -9,25 +9,27 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('userData') !== null);
   const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
 
-  const authenticate = (user) => {
+  const authenticate = async (user) => {
     setIsAuthenticated(true);
     user.userId = user._id;
 
     // Retrieve role-specific data
     if (user.roles && (user.roles.includes('doctor') || user.roles.includes('clinicadmin'))) {
-      getMyself().then((response) => {
+      await getMyself().then((response) => {
         user = { ...user, ...response.data };
+        console.log(user);
       }).catch((error) => {
         console.error(error);
       });
     }
     if (user.roles && user.roles.includes('patient')) {
-      getPatientById(user.userId).then((response) => {
+      await getPatientById(user.userId).then((response) => {
         user = { ...user, ...response.data };
       }).catch((error) => {
         console.error(error);
       });
     }
+    console.log(user);
 
     setUserData(user);
 

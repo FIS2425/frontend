@@ -57,10 +57,10 @@ function LoginCard() {
   function onSubmit(values) {
     setIsLoading(true);
     login(values)
-      .then((response) => {
+      .then(async (response) => {
         if (response.status === 200 && response.data.message === 'Login successful') {
           const { message: _, ...userData } = response.data;
-          authenticate(userData);
+          await authenticate(userData);
           navigate('/app');
         }
 
