@@ -57,8 +57,11 @@ function Verify2FACard() {
     setIsLoading(true);
     verify2FA(userId, values)
       .then((response) => {
-        if (response.status === 200 && response.data.message === 'Login successful')
+        if (response.status === 200 && response.data.message === 'Login successful') {
+          localStorage.setItem('userId', response.data.userId);
+          localStorage.setItem('roles', response.data.roles);
           navigate('/app');
+        }
       })
       .catch((err) => {
         if (err.response) {

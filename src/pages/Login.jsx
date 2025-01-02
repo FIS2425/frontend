@@ -56,8 +56,11 @@ function LoginCard() {
     setIsLoading(true);
     login(values)
       .then((response) => {
-        if (response.status === 200 && response.data.message === 'Login successful')
+        if (response.status === 200 && response.data.message === 'Login successful') {
+          localStorage.setItem('userId', response.data.userId);
+          localStorage.setItem('roles', response.data.roles);
           navigate('/app');
+        }
 
         else if (response.status === 200 && response.data.message === 'Credentials validated, please verify 2FA token')
           navigate('/verify-2fa', { state: { userId: response.data.userId } });
