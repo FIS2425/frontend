@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { getDoctorData, getCurrentDoctorData, updateSpecialty, deleteDoctor } from '@/services/doctor';
+import { getDoctorData, getCurrentDoctorData, updateSpecialty, deleteDoctor } from '@/services/staff';
 
 export function Staff({ isCurrentUser }) {
   const { doctorId } = useParams();
