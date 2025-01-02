@@ -7,8 +7,9 @@ export function registerStaff({ name, surname, email, password, specialty, dni }
   );
 }
 
-export function getDoctorData(doctorId) {
-  return client.get(`/staff/${doctorId}`).then(response => response.data);
+export async function getDoctorData(doctorId) {
+  const response = await client.get(`/staff/${doctorId}`);
+  return response.data;
 }
 
 export function getCurrentDoctorData() {

@@ -7,7 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
-import { Staff } from '@/pages/Staff';
+import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
@@ -25,13 +25,13 @@ function App() {
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="register-staff" element={<RegisterStaff />} />
+            <Route path="staff/:doctorId" element={<Staff />} />
           </Route>
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/verify-2fa" element={<Verify2FA />} />
           <Route path="/me" element={<Staff isCurrentUser/>} />
-          <Route path="/staff/:doctorId?" element={<Staff />} />
         </Routes>
       </Router>
     </ThemeProvider>

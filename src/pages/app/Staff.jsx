@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { getDoctorData, getCurrentDoctorData, updateSpecialty, deleteDoctor } from '@/services/staff';
+import { getDoctorData, updateSpecialty, deleteDoctor } from '@/services/staff';
 
-export function Staff({ isCurrentUser }) {
+export function Staff() {
   const { doctorId } = useParams();
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export function Staff({ isCurrentUser }) {
   useEffect(() => {
     async function fetchDoctorData() {
       try {
-        const data = isCurrentUser ? await getCurrentDoctorData() : await getDoctorData(doctorId);
+        const data = await getDoctorData(doctorId);
         setDoctor(data);
       } catch (error) {
         console.error('Error fetching doctor data:', error);
@@ -21,19 +21,23 @@ export function Staff({ isCurrentUser }) {
     }
 
     fetchDoctorData();
-  }, [doctorId, isCurrentUser]);
+  }, [doctorId]);
 
   const handleUpdateSpecialty = async () => {
-    try {
-      await updateSpecialty(doctorId || doctor.id);
-    } catch (error) {
-      console.error('Error updating specialty:', error);
+    const newSpecialty = prompt('Enter new specialty:', doctor.specialty);
+    if (newSpecialty) {
+      try {
+        await updateSpecialty(doctorId, newSpecialty);
+        setDoctor({ ...doctor, specialty: newSpecialty });
+      } catch (error) {
+        console.error('Error updating specialty:', error);
+      }
     }
   };
 
   const handleDeleteDoctor = async () => {
     try {
-      await deleteDoctor(doctorId || doctor.id);
+      await deleteDoctor(doctorId);
     } catch (error) {
       console.error('Error deleting doctor:', error);
     }
@@ -52,9 +56,7 @@ export function Staff({ isCurrentUser }) {
           <p className="text-lg"><strong>Surname:</strong> {doctor.surname}</p>
           <p className="text-lg"><strong>Specialty:</strong> {doctor.specialty}</p>
           <p className="text-lg"><strong>DNI:</strong> {doctor.dni}</p>
-          <p className="text-lg"><strong>Clinic ID:</strong> {doctor.clinicId}</p>
           <p className="text-lg"><strong>Active:</strong> {doctor.active ? 'Yes' : 'No'}</p>
-          <p className="text-lg"><strong>User ID:</strong> {doctor.userId}</p>
         </div>
       )}
       {doctor && doctor.role === 'clinicadmin' && (
