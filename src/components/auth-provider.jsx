@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { AuthContext } from '@/hooks/use-auth';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/use-auth';
+import { getMyself } from '@/services/staff';
+import { getPatientById } from '@/services/patient';
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('userData') !== null);
@@ -9,7 +11,26 @@ export const AuthProvider = ({ children }) => {
 
   const authenticate = (user) => {
     setIsAuthenticated(true);
+    user.userId = user._id;
+
+    // Retrieve role-specific data
+    if (user.roles && (user.roles.includes('doctor') || user.roles.includes('clinicadmin'))) {
+      getMyself().then((response) => {
+        user = { ...user, ...response.data };
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    if (user.roles && user.roles.includes('patient')) {
+      getPatientById(user.userId).then((response) => {
+        user = { ...user, ...response.data };
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
     setUserData(user);
+
     localStorage.setItem('userData', JSON.stringify(user)); // Save user data
   };
 
