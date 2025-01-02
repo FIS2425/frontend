@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { DoctorSchedulePage } from '@/pages/app/DoctorSchedulePage';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/app" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="register-staff" element={<RegisterStaff />} />
+            <Route path="calendar" element={<DoctorSchedulePage />} />
           </Route>
           { /* Routes here have no layout ON PURPOSE */}
           <Route path="/login" element={<Login />} />
