@@ -7,7 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
-import { ClinicalHistory } from '@/pages/ClinicalHistory';
+import { ClinicalHistory } from '@/pages/app/ClinicalHistory';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 
