@@ -21,35 +21,47 @@ function App() {
       <ThemeProvider storageKey="vite-ui-theme">
         <Router>
           <Routes>
-            {/* Doing nested routes allows to avoid re-rendering re-used components */}
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Landing />} />
               <Route path="about" element={<About />} />
             </Route>
-            <Route path="/app" element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }>
+            <Route path="/app" element={<AppLayout />}>
               <Route index element={<Home />} />
-              <Route path="register-staff" element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <RegisterStaff />
-                </ProtectedRoute>
-              } />
+              <Route path="register-staff" element={<RegisterStaff />} />
             </Route>
-            { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
-            <Route path="/clinic/add" element={<ClinicCreation />} />
-            <Route path="/clinics/:id/edit" element={<ClinicaEdicion />} />
-            <Route path="/clinics/success" element={<ClinicaCompletada />} />
-            <Route path="/clinics/cancel" element={<ClinicCreation />} />
+
+            {/* Rutas relacionadas con Clínicas */}
+            <Route
+              path="/clinics/add"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicCreation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clinics/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicaEdicion />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clinics/success"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicaCompletada />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Router>
       </ThemeProvider>
-    </AuthProvider >
+    </AuthProvider>
   );
 }
 
