@@ -22,7 +22,7 @@ export function Appointments() {
   }, []);
 
   const fetchAppointments = async () => {
-    const patientId = 'f8b8d3e7-4bb7-4d1b-99a4-e3a8f0452f63'; // todo: get patient id from auth context
+    const patientId = 'f8b8d3e7-4bb7-4d1b-99a4-e3a8f0452f63'; // TODO: Replace with auth context
     const { data } = await getAppointmentsByPatiendId(patientId);
     setAppointments(data);
     setLoading(false);
@@ -32,9 +32,7 @@ export function Appointments() {
     isAfter(parseISO(appointment.appointmentDate), new Date())
   );
 
-  const pastAppointments = appointments.filter(appointment =>
-    !isAfter(parseISO(appointment.appointmentDate), new Date())
-  );
+  const pastAppointments = appointments;
 
   const filteredPastAppointments = pastAppointments.filter(appointment => {
     const appointmentDate = parseISO(appointment.appointmentDate);
@@ -66,78 +64,87 @@ export function Appointments() {
     'anesthesiology',
     'otolaryngology',
     'gastroenterology',
-    'other'
+    'other',
   ];
   const statuses = ['pending', 'cancelled', 'completed', 'no-show'];
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
-      <Tabs defaultValue="future" className="w-full">
-        <TabsList className="mb-4">
+    <div className="flex flex-col h-dvh max-h-dvh w-full">
+      <div>
+        <h1 className="text-lg sm:text-2xl font-bold mb-2 sm:mb-4">My Appointments</h1>
+      </div>
+      <Tabs defaultValue="future" className="flex-1 flex flex-col min-h-0 px-4 sm:px-8">
+        <TabsList className="mb-2 sm:mb-4 overflow-auto flex-nowrap flex gap-2 sm:gap-4">
           <TabsTrigger value="future">Future Appointments</TabsTrigger>
           <TabsTrigger value="past">Past Appointments</TabsTrigger>
         </TabsList>
-        <TabsContent value="future">
+        <TabsContent value="future" className="flex-1 min-h-0">
           <FutureAppointments appointments={futureAppointments} loading={loading} />
         </TabsContent>
-        <TabsContent value="past">
-          <div className="mb-4 flex flex-wrap gap-4">
-            <Select onValueChange={setSelectedSpecialty} value={selectedSpecialty}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by specialty" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Specialties</SelectItem>
-                {specialties.map(specialty => (
-                  <SelectItem key={specialty} value={specialty}>
-                    {specialty.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select onValueChange={setSelectedStatus} value={selectedStatus}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                {statuses.map(status => (
-                  <SelectItem key={status} value={status}>
-                    {status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <div className="flex items-center gap-2">
-              <DatePicker
-                selected={startDate}
-                onSelect={setStartDate}
-                placeholderText="Start Date"
-              />
-              <span>to</span>
-              <DatePicker
-                selected={endDate}
-                onSelect={setEndDate}
-                placeholderText="End Date"
+        <TabsContent value="past" className="flex-1 min-h-0">
+          <div className="flex flex-col h-full">
+            <div className="mb-4 flex flex-col sm:flex-wrap sm:flex-row gap-4">
+              <Select onValueChange={setSelectedSpecialty} value={selectedSpecialty}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by specialty" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Specialties</SelectItem>
+                  {specialties.map(specialty => (
+                    <SelectItem key={specialty} value={specialty}>
+                      {specialty.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={setSelectedStatus} value={selectedStatus}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  {statuses.map(status => (
+                    <SelectItem key={status} value={status}>
+                      {status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                <DatePicker
+                  selected={startDate}
+                  onSelect={setStartDate}
+                  placeholderText="Start Date"
+                  className="w-full sm:w-auto"
+                />
+                <span className="hidden sm:inline">to</span>
+                <DatePicker
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  placeholderText="End Date"
+                  className="w-full sm:w-auto"
+                />
+              </div>
+              <Button
+                onClick={() => {
+                  setStartDate(undefined);
+                  setEndDate(undefined);
+                }}
+                variant="outline"
+                className="w-full sm:w-auto"
+              >
+                Clear Dates
+              </Button>
+            </div>
+            <div className="flex-1 min-h-0">
+              <PastAppointments
+                appointments={filteredPastAppointments}
+                loading={loading}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
               />
             </div>
-            <Button
-              onClick={() => {
-                setStartDate(undefined);
-                setEndDate(undefined);
-              }}
-              variant="outline"
-            >
-              Clear Dates
-            </Button>
           </div>
-          <PastAppointments
-            appointments={filteredPastAppointments}
-            loading={loading}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
         </TabsContent>
       </Tabs>
     </div>
