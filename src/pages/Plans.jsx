@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useParams } from 'react-router-dom';
 import { Check } from 'lucide-react';
-import { obtainPlans} from '@/services/payments';
+import { obtainPlans,registerPayment} from '@/services/payments';
 
 export function Plans() {
   const [plans, setPlans] = useState([]);
+  const { id } = useParams();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
@@ -39,6 +41,19 @@ export function Plans() {
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
+  const handleSubmit = (e) => {
+    
+    e.preventDefault();
+    registerPayment(id, selectedPlan)
+      .then(() => {
+        console.log('Plan actualizado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al actualizar el plan:', error);
+      });
+      
+    
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -71,11 +86,12 @@ export function Plans() {
               >
                 {selectedPlan === plan._id ? 'Selected' : 'Choose Plan'}
               </Button>
-              <Button type="submit" className="w-full">Next</Button>
             </CardFooter>
+            
           </Card>
         ))}
       </div>
+      <Button type="submit" className="w-full" onClick={handleSubmit} >Next</Button>
     </div>
   );
 }

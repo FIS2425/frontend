@@ -41,7 +41,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
-            <Route path="/plans" element={<Plans />} />
+            <Route path="/plans/:id" element={<Plans />} />
             <Route path="/plans/success" element={<SuccessPayment />} />
             <Route path="/plans/cancel" element={<Plans />} />
 
