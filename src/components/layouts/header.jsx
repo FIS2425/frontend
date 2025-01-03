@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import cloudMedixLogo from '@/assets/cloudmedix.png';
 import { Link } from 'react-router';
-import { Menu } from 'lucide-react';
+import { Menu, ChevronDown } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import ModeToggle from '@/components/mode-toggle';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Accordion,
   AccordionContent,
@@ -17,9 +22,20 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 
+const expandableNavItems = [
+  {
+    title: 'About Us',
+    items: [
+      { title: 'Our Mission', href: '/about/mission' },
+      { title: 'Our Team', href: 'https://github.com/orgs/FIS2425/people' },
+      { title: 'Careers', href: '/about/careers' },
+    ]
+  },
+];
 
 const navItems = [
-  { title: 'About Us', href: 'https://github.com/orgs/FIS2425/people' },
+  { title: 'Contact', href: '/contact' },
+  { title: 'Services', href: '/services' },
 ];
 
 export function Header() {
@@ -37,6 +53,25 @@ export function Header() {
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             <nav className="flex">
+              {expandableNavItems.map((item) =>
+                <DropdownMenu key={item.title}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">
+                      {item.title}
+                      <ChevronDown className="ml-1 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {item.items.map((subItem) => (
+                      <DropdownMenuItem key={subItem.title} asChild>
+                        <Link to={subItem.href} className="text-primary hover:bg-secondary/75 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                          {subItem.title}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
               {navItems.map((item) => (
                 <Link
                   key={item.title}
@@ -48,7 +83,6 @@ export function Header() {
               )
               )}
             </nav>
-            <ModeToggle />
             <div className="ml-6">
               <Button asChild>
                 <Link to="/login">Login</Link>
@@ -65,45 +99,25 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="right" className="flex flex-col h-full">
                 <nav className="flex-1 flex flex-col flex-grow space-y-8 pt-8 overflow-y-auto">
-                  <Accordion type="single" collapsible className="space-y-8">
-                    <AccordionItem value="value-1" className="border-none">
-                      <AccordionTrigger className="text-base font-medium text-primary hover:text-primary py-0">Services</AccordionTrigger>
-                      <AccordionContent className="flex flex-col pb-0">
-                        <Link
-                          to="/services/consulting"
-                          className="text-primary/80 hover:text-primary px-3 font-medium text-base"
-                          onClick={() => setIsSidebarOpen(false)}
-                        >
-                          Consulting
-                        </Link>
-                        <Link
-                          to="/services/development"
-                          className="text-primary/80 hover:text-primary px-3 font-medium text-base"
-                          onClick={() => setIsSidebarOpen(false)}
-                        >
-                          Development
-                        </Link>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="value-2" className="border-none">
-                      <AccordionTrigger className="text-base font-medium text-primary hover:text-primary py-0">Products</AccordionTrigger>
-                      <AccordionContent className="flex flex-col pb-0">
-                        <Link
-                          to="/products/a"
-                          className="text-primary/80 hover:text-primary px-3 font-medium text-base"
-                          onClick={() => setIsSidebarOpen(false)}
-                        >
-                          Product A
-                        </Link>
-                        <Link
-                          to="/products/b"
-                          className="text-primary/80 hover:text-primary px-3 font-medium text-base"
-                          onClick={() => setIsSidebarOpen(false)}
-                        >
-                          Product B
-                        </Link>
-                      </AccordionContent>
-                    </AccordionItem>
+                  <Accordion type="single" collapsible className="space-y-8"> {/* here space needs to be redeclared because items inside won't get it */}
+                    {expandableNavItems.length > 0 && expandableNavItems.map((item, index) =>
+                      <AccordionItem key={item.title} value={`value-${index + 1}`} className="border-none">
+                        <AccordionTrigger className="text-base font-medium text-primary hover:text-primary py-0">{item.title}</AccordionTrigger>
+                        <AccordionContent className="flex flex-col pb-0">
+                          {item.items.map((subItem) => (
+                            <item key={subItem.title} className="pt-4">
+                              <Link
+                                to={subItem.href}
+                                className="text-primary/80 hover:text-primary px-3 font-medium text-base"
+                                onClick={() => setIsSidebarOpen(false)}
+                              >
+                                {subItem.title}
+                              </Link>
+                            </item>
+                          ))}
+                        </AccordionContent>
+                      </AccordionItem>
+                    )}
                   </Accordion>
                   {navItems.map((item) => (
                     <Link
