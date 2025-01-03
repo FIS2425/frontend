@@ -30,8 +30,16 @@ function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Home />} />
-              <Route path="staff/:doctorId" element={<Staff />} />
-              <Route path="/me" element={<Staff isCurrentUser/>} />
+              <Route path="staff/:doctorId" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor', 'patient']}>
+                  <Staff />
+                </ProtectedRoute>
+              } />
+              <Route path="staff/me" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <Staff me={true} />
+                </ProtectedRoute>
+              } />
               <Route path="register-staff" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                   <RegisterStaff />
