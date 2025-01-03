@@ -12,7 +12,7 @@ export async function getDoctorData(doctorId) {
   return response.data;
 }
 
-export function getCurrentDoctorData() {
+export function getMyself() {
   return client.get('/staff/me').then(response => response.data);
 }
 
