@@ -1,40 +1,44 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-
-// Mock data to simulate fetching plans from an API
-const plans = [
-  {
-    _id: '550e8400-e29b-41d4-a716-446655440000',
-    name: 'Basic',
-    price: 9.99,
-    features: ['Up to 5 patients', 'Basic appointment scheduling', 'Electronic health records'],
-  },
-  {
-    _id: '550e8400-e29b-41d4-a716-446655440001',
-    name: 'Professional',
-    price: 29.99,
-    features: ['Up to 50 patients', 'Advanced appointment scheduling', 'Electronic health records', 'Billing management', 'Prescription management'],
-  },
-  {
-    _id: '550e8400-e29b-41d4-a716-446655440002',
-    name: 'Enterprise',
-    price: 99.99,
-    features: ['Unlimited patients', 'Advanced appointment scheduling', 'Electronic health records', 'Billing management', 'Prescription management', 'Analytics and reporting', 'Multi-clinic support'],
-  },
-];
+import { obtainPlans} from '@/services/payments';
 
 export function Plans() {
+  const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+
+  const fetchPlans = async () => {
+    try {
+      const response = await obtainPlans();
+      const data = await response.data;
+      setPlans(data); 
+      setLoading(false);
+    } catch (err) {
+      setError(err.message); 
+      setLoading(false); 
+    }
+  };
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
 
   const handleSelectPlan = (planId) => {
     setSelectedPlan(planId);
-    // Here you would typically initiate the subscription process
     console.log(`Selected plan: ${planId}`);
   };
+
+  if (loading) {
+    return <div className="text-center">Loading plans...</div>;
+  }
+
+  // Si hay un error, mostramos el mensaje de error
+  if (error) {
+    return <div className="text-center text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -63,10 +67,11 @@ export function Plans() {
               <Button 
                 className="w-full" 
                 onClick={() => handleSelectPlan(plan._id)}
-                variant={selectedPlan === plan._id ? ' secondary' : 'default'}
+                variant={selectedPlan === plan._id ? 'secondary' : 'default'}
               >
                 {selectedPlan === plan._id ? 'Selected' : 'Choose Plan'}
               </Button>
+              <Button type="submit" className="w-full">Next</Button>
             </CardFooter>
           </Card>
         ))}
@@ -74,4 +79,3 @@ export function Plans() {
     </div>
   );
 }
-

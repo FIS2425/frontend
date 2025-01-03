@@ -8,6 +8,7 @@ import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
 import { Plans } from '@/pages/Plans';
+import { SuccessPayment } from '@/pages/SuccessPayment';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
@@ -41,6 +42,8 @@ function App() {
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
             <Route path="/plans" element={<Plans />} />
+            <Route path="/plans/success" element={<SuccessPayment />} />
+            <Route path="/plans/cancel" element={<Plans />} />
 
           </Routes>
         </Router>
