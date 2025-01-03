@@ -143,7 +143,7 @@ export function Staff({ me }) {
               {(me || roles.includes('clinicadmin')) && <p className="text-lg"><strong>DNI:</strong> {dni}</p>}
             </CardContent>
             {roles.includes('clinicadmin') && (
-              <CardFooter className="flex gap-4">
+              <CardFooter className="flex flex-wrap gap-4">
                 {!rolesFromProfile.includes('clinicadmin') && (
                   <Button onClick={openModal} variant="destructive" disabled={deleteLoading}>
                     {deleteLoading && (
