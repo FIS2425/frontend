@@ -30,11 +30,7 @@ function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Home />} />
-              <Route path="staff/:doctorId" element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor', 'patient']}>
-                  <Staff />
-                </ProtectedRoute>
-              } />
+              <Route path="staff/:doctorId" element={<Staff />} />
               <Route path="staff/me" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <Staff me={true} />

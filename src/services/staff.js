@@ -13,7 +13,7 @@ export async function getDoctorData(doctorId) {
 }
 
 export function getMyself() {
-  return client.get('/staff/me').then(response => response.data);
+  return client.get('/staff/me');
 }
 
 export function updateSpecialty(doctorId, specialty) {

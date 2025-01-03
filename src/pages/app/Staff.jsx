@@ -176,10 +176,11 @@ export function Staff({ me }) {
               </CardFooter>
             )}
             {error && <p className="flex justify-center items-center text-base text-red-500 pb-4">{error}</p>}
+            {me && 
             <div className="flex flex-wrap gap-4 p-4 [&>*]:grow fit-content">
               <PasswordChange />
               <Enable2FA />
-            </div>
+            </div>}
           </Card>
         )
       )}
