@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import FutureAppointments from '@/components/future-appointments';
 import PastAppointments from '@/components/past-appointments';
 import { getAppointmentsByPatiendId } from '../../services/appointment';
+import { useNavigate } from 'react-router-dom';
 
 export function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -16,6 +17,7 @@ export function Appointments() {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAppointments();
@@ -68,6 +70,10 @@ export function Appointments() {
   ];
   const statuses = ['pending', 'cancelled', 'completed', 'no-show'];
 
+  const onViewAppointment = (appointmentId) => {
+    navigate(`/app/appointments/${appointmentId}`);
+  };
+
   return (
     <div className="flex flex-col h-dvh max-h-dvh w-full">
       <div>
@@ -79,7 +85,7 @@ export function Appointments() {
           <TabsTrigger value="past">Past Appointments</TabsTrigger>
         </TabsList>
         <TabsContent value="future" className="flex-1 min-h-0">
-          <FutureAppointments appointments={futureAppointments} loading={loading} />
+          <FutureAppointments appointments={futureAppointments} loading={loading} onViewAppointment={onViewAppointment} />
         </TabsContent>
         <TabsContent value="past" className="flex-1 min-h-0">
           <div className="flex flex-col h-full">
@@ -142,6 +148,7 @@ export function Appointments() {
                 loading={loading}
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
+                onViewAppointment={onViewAppointment}
               />
             </div>
           </div>

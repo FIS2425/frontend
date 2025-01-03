@@ -43,13 +43,13 @@ export default function FutureAppointments({ appointments, loading, onViewAppoin
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
           {appointments.map((appointment) => (
             <Card
-              key={appointment.id}
+              key={appointment._id}
               className={`p-2 sm:p-6 sm:hover:shadow-lg transition-all duration-200
                 cursor-pointer sm:cursor-default select-none
-                ${activeCard === appointment.id ? 'scale-95 bg-gray-50' : 'scale-100'}
-                sm:scale-100 sm:bg-white ${activeCard !== appointment.id ? 'sm:hover:scale-100 sm:transition-all' : ''}
+                ${activeCard === appointment._id ? 'scale-95 bg-gray-50' : 'scale-100'}
+                sm:scale-100  ${activeCard !== appointment._id ? 'sm:hover:scale-100 sm:transition-all' : ''}
               `}
-              onClick={() => handleCardClick(appointment.id)}
+              onClick={() => handleCardClick(appointment._id)}
             >
               <CardHeader>
                 <CardTitle className="text-base sm:text-lg font-semibold">
@@ -84,7 +84,7 @@ export default function FutureAppointments({ appointments, loading, onViewAppoin
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onViewAppointment(appointment.id);
+                      onViewAppointment(appointment._id);
                     }}
                     className="w-full text-sm sm:text-base"
                   >
