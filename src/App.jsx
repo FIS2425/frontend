@@ -11,29 +11,44 @@ import { DoctorSchedulePage } from '@/pages/app/DoctorSchedulePage';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
+import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 
 function App() {
   return (
-    <ThemeProvider storageKey="vite-ui-theme">
-      <Router>
-        <Routes>
-          {/* Doing nested routes allows to avoid re-rendering re-used components */}
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Landing />} />
-            <Route path="about" element={<About />} />
-          </Route>
-          <Route path="/app" element={<AppLayout />}>
-            <Route index element={<Home />} />
-            <Route path="register-staff" element={<RegisterStaff />} />
-            <Route path="calendar" element={<DoctorSchedulePage />} />
-          </Route>
-          { /* Routes here have no layout ON PURPOSE */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/verify-2fa" element={<Verify2FA />} />
-        </Routes>
-      </Router>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider storageKey="vite-ui-theme">
+        <Router>
+          <Routes>
+            {/* Doing nested routes allows to avoid re-rendering re-used components */}
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Landing />} />
+              <Route path="about" element={<About />} />
+            </Route>
+            <Route path="/app" element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Home />} />
+              <Route path="register-staff" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <RegisterStaff />
+                </ProtectedRoute>
+              } />
+              <Route path="calendar" element={
+                <ProtectedRoute allowedRoles={['clinicadmin', 'doctor']}>
+                  <DoctorSchedulePage />
+                </ProtectedRoute>
+              } />
+            </Route>
+            { /* Routes here have no layout ON PURPOSE */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/verify-2fa" element={<Verify2FA />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    </AuthProvider >
   );
 }
 

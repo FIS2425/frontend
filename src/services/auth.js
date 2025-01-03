@@ -8,8 +8,6 @@ export function login({ email, password }) {
 }
 
 export function logout() {
-  localStorage.removeItem('userId');
-  localStorage.removeItem('roles');
   return client.post('/logout');
 }
 
@@ -23,5 +21,12 @@ export function verify2FA(userId, { totpToken }) {
   return client.post(
     'users/verify-2fa',
     { userId, totpToken }
+  );
+}
+
+export function changePassword({ currentPassword, newPassword }) {
+  return client.post(
+    '/users/change-password',
+    { currentPassword, newPassword }
   );
 }

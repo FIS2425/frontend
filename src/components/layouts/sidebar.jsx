@@ -30,6 +30,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/hooks/use-auth';
 
 // Menu items.
 const data = [
@@ -61,6 +62,7 @@ const data = [
         title: 'Calendar',
         url: '/app/calendar',
         icon: Calendar,
+        roles: ['doctor'],
       },
       {
         title: 'Search',
@@ -128,6 +130,7 @@ export function AppSidebar() {
     open,
     isMobile,
   } = useSidebar();
+  const { userData } = useAuth();
 
   return (
     <Sidebar
@@ -145,10 +148,12 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu className="space-y-4 sm:space-y-2">
                 {group.items.map((item) => (
-                  item.items ? (
-                    <CollapsibleItem key={item.title} item={item} />
-                  ) : (
-                    <NonCollapsibleItem key={item.title} item={item} />
+                  (item.roles && item.roles.some(r => userData.roles.includes(r)) || item.roles == undefined) && (
+                    item.items ? (
+                      <CollapsibleItem key={item.title} item={item} />
+                    ) : (
+                      <NonCollapsibleItem key={item.title} item={item} />
+                    )
                   )
                 ))}
               </SidebarMenu>
@@ -167,7 +172,7 @@ export function AppSidebar() {
                 >
                   {(open || isMobile) ? (
                     <FooterButton />
-                  ) : null }
+                  ) : null}
                   <ChevronsUpDown className="m-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -269,13 +274,14 @@ function FooterItem({ item, ...props }) {
 }
 
 function FooterButton() {
+  const { userData } = useAuth();
   return (
     <div className="grid flex-1 text-left text-sm leading-tight">
       <span className="truncate font-semibold">
-        User Placeholder
+        {userData && userData.email}
       </span>
       <span className="truncate text-xs">
-        Data placeholder
+        {userData && userData.roles.join(', ')}
       </span>
     </div>
   );

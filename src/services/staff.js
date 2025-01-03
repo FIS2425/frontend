@@ -6,3 +6,7 @@ export function registerStaff({ name, surname, email, password, specialty, dni }
     { name, surname, email, password, specialty, dni }
   );
 }
+
+export function getMyself() {
+  return client.get('/staff/me');
+}
