@@ -71,7 +71,7 @@ export function Appointments() {
   const statuses = ['pending', 'cancelled', 'completed', 'no-show'];
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="flex min-h-dvh max-h-dvh flex-col p-8 h-full w-full">
       <h1 className="text-2xl font-bold mb-4">My Appointments</h1>
       <Tabs defaultValue="future" className="w-full">
         <TabsList className="mb-4">

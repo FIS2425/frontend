@@ -47,11 +47,15 @@ export default function PastAppointments({ appointments, loading, currentPage, s
                 </div>
                 <div className="flex items-center mb-2">
                   <UserIcon className="mr-2 h-4 w-4" />
-                  <span>Doctor: {appointment.doctorId}</span>
+                  <span className="truncate" title={appointment.doctorId}>
+                    Doctor: {appointment.doctorId}
+                  </span>
                 </div>
                 <div className="flex items-center mb-2">
                   <HospitalIcon className="mr-2 h-4 w-4" />
-                  <span>Clinic: {appointment.clinicId}</span>
+                  <span className="truncate" title={appointment.clinicId}>
+                    Clinic: {appointment.clinicId}
+                  </span>
                 </div>
                 <div className="mt-2 text-sm font-semibold">
                   Status: {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
