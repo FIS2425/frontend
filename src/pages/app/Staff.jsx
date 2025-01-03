@@ -12,7 +12,8 @@ import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
 export function Staff({ me }) {
-  const [doctorId, setDoctorId] = useState(useParams().doctorId);
+  const { doctorId: paramDoctorId } = useParams();
+  const [doctorId, setDoctorId] = useState(me ? '' : paramDoctorId);
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [specialty, setSpecialty] = useState('');
@@ -34,12 +35,12 @@ export function Staff({ me }) {
   const closeModal = () => setModalIsOpen(false);
 
   useEffect(() => {
-    const roles = localStorage.getItem('roles') || [];
+    setLoading(true);
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    setRoles(roles);
+    setRoles(userData.roles || []);
     setUserData(userData);
     me && setDoctorId(userData.doctorid);
-  }, [me]);
+  }, [me, paramDoctorId]);
 
   useEffect(() => {
     if (Object.keys(userData).length === 0) return;
@@ -69,12 +70,14 @@ export function Staff({ me }) {
         console.error('Error fetching doctor data:', error);
         setNoDoctor(true);
       } finally {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 5000);
       }
     }
 
     fetchDoctorData();
-  }, [doctorId, me, userData, navigate]);
+  }, [doctorId, me, userData, navigate, paramDoctorId]);
 
   const handleDeleteDoctor = async () => {
     try {

@@ -44,6 +44,12 @@ const data = [
         icon: Home,
       },
       {
+        title: 'My staff profile',
+        url: '/app/staff/me',
+        icon: Home,
+        roles: ['doctor'],
+      },
+      {
         title: 'Inbox',
         url: '#',
         icon: Inbox,
