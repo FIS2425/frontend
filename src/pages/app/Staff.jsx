@@ -41,8 +41,6 @@ export function Staff({ me }) {
     me && setDoctorId(userData.doctorid);
   }, [me]);
 
-  console.log(userData.doctorid, doctorId);
-
   useEffect(() => {
     if (Object.keys(userData).length === 0) return;
 
@@ -92,7 +90,6 @@ export function Staff({ me }) {
     }
   };
 
-
   const handleUpdateSpecialty = async (newSpecialty) => {
     setErrorModal('');
     try {
@@ -107,7 +104,6 @@ export function Staff({ me }) {
       setUpdateLoading(false);
     }
   };
-
 
   if (loading) {
     return <LoaderCircle className="animate-spin"/>;
