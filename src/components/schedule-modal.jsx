@@ -1,36 +1,48 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { WorkshiftForm } from '@/forms/workshift/forms';
+import { WorkshiftFormSchema } from '@/forms/workshift/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { createWorkshift } from '@/services/workshift';
 
-export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onSave, existingSchedule }) {
+export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onSave, existingSchedule, setSelectedDate }) {
   const [startTime, setStartTime] = useState(existingSchedule?.startTime || `${selectedHour.toString().padStart(2, '0')}:00`);
-  const [endTime, setEndTime] = useState(existingSchedule?.endTime || `${(selectedHour + 2).toString().padStart(2, '0')}:00`);
+  const [endTime, setEndTime] = useState(existingSchedule?.endTime || `${(selectedHour + 1).toString().padStart(2, '0')}:00`);
 
   useEffect(() => {
     if (existingSchedule) {
+      console.log('existingSchedule', existingSchedule);
       setStartTime(existingSchedule.startTime);
       setEndTime(existingSchedule.endTime);
     } else {
       setStartTime(`${selectedHour.toString().padStart(2, '0')}:00`);
-      setEndTime(`${(selectedHour + 2).toString().padStart(2, '0')}:00`);
+      setEndTime(`${(selectedHour + 1).toString().padStart(2, '0')}:00`);
     }
   }, [existingSchedule, selectedHour]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave({ date: selectedDate, startTime, endTime });
+
+  const handleSubmit = (data) => {
+    const { date, startTime, endTime } = data;
+    createWorkshift({ date, startTime, endTime }).then((newSchedule) => {
+      onSave(newSchedule);
+      onClose();
+    });
   };
+
+  const form = useForm({
+    resolver: zodResolver(WorkshiftFormSchema),
+    defaultValues: {
+      date: selectedDate,
+      startTime,
+      endTime,
+    },
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby="">
         <DialogHeader>
           <VisuallyHidden>
             <DialogTitle>
@@ -38,39 +50,7 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
             </DialogTitle>
           </VisuallyHidden>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="date">Selected Date and Time</Label>
-            <Input
-              id="date"
-              value={`${format(selectedDate, 'dd/MM/yyyy', { locale: es })} - ${selectedHour}:00`}
-              readOnly
-            />
-          </div>
-          <div>
-            <Label htmlFor="startTime">Start Time</Label>
-            <Input
-              id="startTime"
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="endTime">End Time</Label>
-            <Input
-              id="endTime"
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
-            />
-          </div>
-          <Button type="submit">
-            {existingSchedule ? 'Update Schedule' : 'Save Schedule'}
-          </Button>
-        </form>
+        <WorkshiftForm form={form} onSubmit={form.handleSubmit(handleSubmit)} selectedDate={selectedDate} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} existingSchedule={existingSchedule} setSelectedDate={setSelectedDate}/>
       </DialogContent>
     </Dialog>
   );

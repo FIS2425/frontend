@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/calendar';
 import { ScheduleModal } from '@/components/schedule-modal';
@@ -9,23 +7,21 @@ import { DatePickerWithPresets } from '@/components/ui/date-picker-with-presets'
 import { workshifts } from '@/services/workshift';
 import { transformDatesToSchedule } from '@/utils/utils';
 
-const workshiftsList = await workshifts();
-
-const initialSchedules =  workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
-
 export function DoctorSchedulePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
-  const [schedules, setSchedules] = useState(initialSchedules);
+  const [schedules, setSchedules] = useState([]);
 
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   const openModal = () => setIsModalOpen(true);
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedSchedule(null);
+    setSelectedHour(null);
   };
 
   const handleDateSelect = (date, hour) => {
@@ -42,18 +38,36 @@ export function DoctorSchedulePage() {
     openModal();
   };
 
+  const addNewWorkshift = () => {
+    setSelectedDate(new Date());
+    setSelectedHour(new Date().getHours());
+    setSelectedSchedule(null);
+    openModal();
+  };
+
+  useEffect(() => {
+    const fetchWorkshifts = async () => {
+      const workshiftsList = await workshifts();
+      const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
+      setSchedules(schedules);
+    };
+
+    fetchWorkshifts();
+  }, []);
+
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {
       if (selectedSchedule) {
         // Update existing schedule
         return prevSchedules.map(schedule => 
-          (schedule === selectedSchedule) ? newSchedule : schedule
+          (schedule.id === selectedSchedule.id) ? newSchedule : schedule
         );
       } else {
         // Add new schedule
         return [...prevSchedules, newSchedule];
       }
     });
+    console.log(schedules);
     closeModal();
   };
 
@@ -65,7 +79,7 @@ export function DoctorSchedulePage() {
     <div className="flex min-h-dvh max-h-dvh flex-col p-8 h-full w-full">
       <div className="w-full flex p-4 justify-center gap-8">
         <DatePickerWithPresets date={currentWeek} setDate={handleWeekChange} />
-        <Button onClick={openModal}>Add Schedule</Button>
+        <Button onClick={addNewWorkshift}>Add Schedule</Button>
       </div>
       <Calendar 
         onDateSelect={handleDateSelect} 
@@ -82,6 +96,7 @@ export function DoctorSchedulePage() {
           selectedHour={selectedSchedule ? parseInt(selectedSchedule.startTime.split(':')[0]) : selectedHour}
           onSave={handleSaveSchedule}
           existingSchedule={selectedSchedule}
+          setSelectedDate={setSelectedDate}
         />
       ) : null}
     </div>
