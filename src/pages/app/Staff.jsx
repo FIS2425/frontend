@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import PasswordChange from '@/components/forms/password-change';
+import { Enable2FA } from '@/components/enable-2fa';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { getDoctorData, updateSpecialty, deleteDoctor } from '@/services/staff';
-import { getUserData } from '../../services/auth';
+import { getUserData } from '@/services/auth';
 import { specialtiesWithLabels } from '@/utils/utils';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { LoaderCircle } from 'lucide-react';
@@ -46,10 +48,10 @@ export function Staff({ me }) {
     if (Object.keys(userData).length === 0) return;
 
     async function fetchDoctorData() {
-      
 
-      if (userData.doctorid === doctorId) { 
-        navigate('/app/staff/me', {me: true});
+
+      if (userData.doctorid === doctorId) {
+        navigate('/app/staff/me', { me: true });
       }
 
       try {
@@ -65,7 +67,7 @@ export function Staff({ me }) {
         setDni(data.dni);
         me && setRolesFromProfile(userData.roles);
         me && setEmail(userData.email);
-        
+
       } catch (error) {
         console.error('Error fetching doctor data:', error);
         setNoDoctor(true);
@@ -109,7 +111,7 @@ export function Staff({ me }) {
   };
 
   if (loading) {
-    return <LoaderCircle className="animate-spin"/>;
+    return <LoaderCircle className="animate-spin" />;
   }
 
   const getSpecialtyLabel = (value) => {
@@ -166,7 +168,7 @@ export function Staff({ me }) {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                {roles.includes('patient') &&(
+                {roles.includes('patient') && (
                   <Button variant="secondary">
                     <span className="text-base font-large">TODO: Book an appointment</span>
                   </Button>
@@ -174,6 +176,10 @@ export function Staff({ me }) {
               </CardFooter>
             )}
             {error && <p className="flex justify-center items-center text-base text-red-500 pb-4">{error}</p>}
+            <div className="flex flex-wrap gap-4 p-4 [&>*]:grow fit-content">
+              <PasswordChange />
+              <Enable2FA />
+            </div>
           </Card>
         )
       )}
@@ -190,7 +196,7 @@ export function Staff({ me }) {
               <CardTitle>Delete Doctor</CardTitle>
               <CardDescription>Are you sure you want to delete this doctor? You cannot undo this action.</CardDescription>
             </CardHeader>
-            
+
             <CardFooter className="flex gap-4 justify-center">
               <Button onClick={handleDeleteDoctor} variant="destructive" disabled={deleteLoading}>
                 {deleteLoading && (
