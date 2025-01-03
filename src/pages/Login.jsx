@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import { useAuth } from '@/hooks/use-auth';
 
 export function Login() {
   const icons = {
@@ -43,6 +44,7 @@ function LoginCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { authenticate } = useAuth();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -55,9 +57,12 @@ function LoginCard() {
   function onSubmit(values) {
     setIsLoading(true);
     login(values)
-      .then((response) => {
-        if (response.status === 200 && response.data.message === 'Login successful')
+      .then(async (response) => {
+        if (response.status === 200 && response.data.message === 'Login successful') {
+          const { message: _, ...userData } = response.data;
+          await authenticate(userData);
           navigate('/app');
+        }
 
         else if (response.status === 200 && response.data.message === 'Credentials validated, please verify 2FA token')
           navigate('/verify-2fa', { state: { userId: response.data.userId } });
