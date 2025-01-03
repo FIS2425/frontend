@@ -54,14 +54,14 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { isAuthenticated, roles } = useAuth();
+  const { isAuthenticated, userData } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  const hasAccess = allowedRoles == undefined || allowedRoles.some((role) => roles[role]);
+  const hasAccess = allowedRoles == undefined || allowedRoles.some((role) => userData.roles.includes(role));
   if (!hasAccess) {
     return <Navigate to="/unauthorized" replace />;
   }
