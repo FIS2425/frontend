@@ -6,8 +6,11 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Button } from '@/components/ui/button';
 import FutureAppointments from '@/components/future-appointments';
 import PastAppointments from '@/components/past-appointments';
-import { getAppointmentsByPatiendId } from '../../services/appointment';
+import { getAppointmentsByPatiendId } from '@/services/appointment';
 import { useNavigate } from 'react-router-dom';
+import { specialties } from '@/utils/utils';
+import { getDoctorData } from '@/services/staff';
+import { getClinicData } from '@/services/payment';
 
 export function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -24,17 +27,26 @@ export function Appointments() {
   }, []);
 
   const fetchAppointments = async () => {
-    const patientId = 'f8b8d3e7-4bb7-4d1b-99a4-e3a8f0452f63'; // TODO: Replace with auth context
+    const patientId = JSON.parse(localStorage.getItem('userData')).patientid;
     const { data } = await getAppointmentsByPatiendId(patientId);
+    for (let appointment of data) {
+      const doctorData = await getDoctorData(appointment.doctorId);
+      print(doctorData);
+      const clinicData = await getClinicData(doctorData.clinicId);
+      appointment.doctorName = `${doctorData.name} ${doctorData.surname}`;
+      appointment.clinicName = clinicData.name;
+    }
     setAppointments(data);
     setLoading(false);
-  };
+  };  
 
   const futureAppointments = appointments.filter(appointment =>
     isAfter(parseISO(appointment.appointmentDate), new Date())
   );
 
-  const pastAppointments = appointments;
+  const pastAppointments = appointments.filter(appointment =>
+    isBefore(parseISO(appointment.appointmentDate), new Date())
+  );
 
   const filteredPastAppointments = pastAppointments.filter(appointment => {
     const appointmentDate = parseISO(appointment.appointmentDate);
@@ -46,28 +58,6 @@ export function Appointments() {
     );
   });
 
-  const specialties = [
-    'family_medicine',
-    'nursing',
-    'physiotherapy',
-    'gynecology',
-    'pediatrics',
-    'dermatology',
-    'cardiology',
-    'neurology',
-    'orthopedics',
-    'psychiatry',
-    'endocrinology',
-    'oncology',
-    'radiology',
-    'surgery',
-    'ophthalmology',
-    'urology',
-    'anesthesiology',
-    'otolaryngology',
-    'gastroenterology',
-    'other',
-  ];
   const statuses = ['pending', 'cancelled', 'completed', 'no-show'];
 
   const onViewAppointment = (appointmentId) => {

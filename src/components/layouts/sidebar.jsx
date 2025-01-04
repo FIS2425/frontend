@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, CalendarCheck } from 'lucide-react';
+import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, CalendarCheck, UserPen } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {

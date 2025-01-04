@@ -36,12 +36,8 @@ export function AppointmentDetails({ appointmentId }) {
       setLoading(false);
     }, 1000);
 
-    const roles = localStorage.getItem('roles');
-    if (roles.includes('patient')) {
-      setUserRole('patient');
-    } else if (roles.includes('doctor')) {
-      setUserRole('doctor');
-    }
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    setUserRole(userData?.roles);
   }, [appointmentId]);
 
   const fetchWeather = async () => {

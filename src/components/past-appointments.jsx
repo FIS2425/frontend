@@ -72,14 +72,14 @@ export default function PastAppointments({ appointments, loading, currentPage, s
                 </div>
                 <div className="flex items-center mb-2 text-sm sm:text-base">
                   <UserIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="truncate" title={appointment.doctorId}>
-                    Doctor: {appointment.doctorId}
+                  <span className="truncate" title={appointment.doctorName}>
+                    Doctor: {appointment.doctorName}
                   </span>
                 </div>
                 <div className="flex items-center mb-2 text-sm sm:text-base">
                   <HospitalIcon className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                  <span className="truncate" title={appointment.clinicId}>
-                    Clinic: {appointment.clinicId}
+                  <span className="truncate" title={appointment.clinicName}>
+                    Clinic: {appointment.clinicName}
                   </span>
                 </div>
                 <div className="mt-2 text-sm sm:text-base font-semibold">
