@@ -10,10 +10,8 @@ export async function registerClinic({
   plan,
   active,
   postalCode,
-  countryCode = 'ES', // Valor por defecto
+  countryCode = 'ES',
 }) {
-  console.log(name, city, district, plan, active, postalCode, countryCode);
-
   const clinicData = {
     name,
     city,
@@ -21,7 +19,7 @@ export async function registerClinic({
     plan,
     active,
     postalCode,
-    countryCode, // Se utiliza el valor del parámetro (o el valor por defecto)
+    countryCode,
   };
 
   try {
@@ -32,14 +30,10 @@ export async function registerClinic({
       },
       withCredentials: true,
     });
-
-    // Captura el _id desde la respuesta del servidor
     const { data } = response;
-    console.log('Respuesta del servidor:', data);
-    return data._id; // Devuelve el _id
+    return data._id;
   } catch (error) {
-    console.error('Error al registrar la clínica:', error);
-    throw new Error('No se pudo registrar la clínica');
+    throw new Error('Error registering the clinic',error);
   }
 }
 
@@ -48,8 +42,6 @@ export async function getClinicById(id) {
   return await client.get(`clinics/${id}`);
 }
 export async function updateClinic(id, clinicData) {
-  const token = localStorage.getItem('token'); // Obtén el token desde localStorage
-  console.log(token);
   return await client.put(`/clinics/${id}`, {
     method: 'PUT',
     headers: {
@@ -80,10 +72,8 @@ export async function registerPayment({
     });
 
     const { data } = response;
-    console.log('Respuesta del servidor:', data.url);
-    return data.url; // Devuelve el _id
+    return data.url;
   } catch (error) {
-    console.error('Error al registrar el pago:', error);
-    throw new Error('No se pudo registrar el pago');
+    throw new Error('Error registering the payment',error);
   }
 }

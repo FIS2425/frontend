@@ -36,11 +36,11 @@ export function ClinicCreation() {
 
   const validateForm = () => {
     let newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'El nombre es requerido';
-    if (!formData.city.trim()) newErrors.city = 'La ciudad es requerida';
-    if (!formData.district.trim()) newErrors.district = 'El distrito es requerido';
-    if (!formData.plan) newErrors.plan = 'Debe seleccionar un plan';
-    if (!formData.postalCode.trim()) newErrors.postalCode = 'El código postal es requerido';
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
+    if (!formData.district.trim()) newErrors.district = 'District is required';
+    if (!formData.plan) newErrors.plan = 'You must select a plan';
+    if (!formData.postalCode.trim()) newErrors.postalCode = 'Postal code is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -56,8 +56,7 @@ export function ClinicCreation() {
         });
         window.location.href = urlStripe;
       } catch (error) {
-        console.error('Error al registrar la clínica:', error);
-        setErrors({ submit: 'Error al registrar la clínica. Inténtelo de nuevo más tarde.'});
+        setErrors({ submit: 'Error al registrar la clínica. Inténtelo de nuevo más tarde.', ...error });
       }
     }
   };

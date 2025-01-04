@@ -26,7 +26,6 @@ export function PlansCreatedClinic({ onSelectPlan, selectedPlan }) {
   }, []);
 
   const handleSelect = (planId) => {
-    console.log('Plan seleccionado:', planId);
     onSelectPlan(planId);
   };
 
