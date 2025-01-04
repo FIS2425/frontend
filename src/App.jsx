@@ -41,9 +41,22 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
-            <Route path="/plans/:id" element={<Plans />} />
-            <Route path="/plans/success" element={<SuccessPayment />} />
-            <Route path="/plans/cancel" element={<Plans />} />
+
+            <Route path="/plans" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <Plans />
+              </ProtectedRoute>
+            } />
+            <Route path="/success" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <SuccessPayment />
+              </ProtectedRoute>
+            } />
+            <Route path="/cancel" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <Plans />
+              </ProtectedRoute>
+            } />
 
           </Routes>
         </Router>

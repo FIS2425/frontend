@@ -17,4 +17,3 @@ export const client = createAxiosClient({
   refreshTokenUrl: REFRESH_TOKEN_URL,
   logout: logout,
 });
-    timeout: 300000,
