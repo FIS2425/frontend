@@ -35,7 +35,7 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
-              <Route path="history" element={<ClinicalHistory />} />  
+              <Route path="history/:id" element={<ClinicalHistory />} />  
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
