@@ -78,7 +78,7 @@ function Analytics({ analytics }) {
           {analytics.map((analysis, index) => (
             <li key={index} className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <FileIcon className="h-5 w-5" style={{ color: 'var(--doc-icon-color)' }}/>
+                <FileIcon className="min-h-5 min-w-5" style={{ color: 'var(--doc-icon-color)' }}/>
                 <span>{analysis.originalName}</span>
               </div>
               <div className="flex items-center space-x-2">
@@ -109,7 +109,7 @@ function Images({ images }) {
           {images.map((image, index) => (
             <li key={index} className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <ImageIcon className="h-5 w-5" style={{ color: 'var(--img-icon-color)' }}/>
+                <ImageIcon className="min-h-5 min-w-5" style={{ color: 'var(--img-icon-color)' }}/>
                 <span>{image.originalName}</span>
               </div>
               <div className="flex items-center space-x-2">
