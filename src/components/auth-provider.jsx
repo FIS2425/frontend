@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       });
     }
     if (user.roles && user.roles.includes('patient')) {
-      await getPatientById(user.userId).then((response) => {
+      await getPatientById(user.patientid).then((response) => {
         user = { ...user, ...response.data };
       }).catch((error) => {
         console.error(error);
@@ -54,14 +54,14 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { isAuthenticated, roles } = useAuth();
+  const { isAuthenticated, userData } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  const hasAccess = allowedRoles == undefined || allowedRoles.some((role) => roles[role]);
+  const hasAccess = allowedRoles == undefined || allowedRoles.some((role) => userData.roles.includes(role));
   if (!hasAccess) {
     return <Navigate to="/unauthorized" replace />;
   }
