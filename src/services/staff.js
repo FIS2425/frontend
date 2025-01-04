@@ -24,7 +24,7 @@ export async function getDoctorData(doctorId) {
 }
 
 export function updateSpecialty(doctorId, specialty) {
-  return client.put(`/staff/${doctorId}, { specialty }`).then(response => response.data);
+  return client.put(`/staff/${doctorId}`, { specialty }).then(response => response.data);
 }
 
 export function deleteDoctor(doctorId) {

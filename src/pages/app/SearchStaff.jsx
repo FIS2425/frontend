@@ -58,6 +58,31 @@ export function SearchStaff() {
     navigate(`/app/staff/${doctorId}`);
   };
 
+  const cardDoctors = () => {
+    return (
+      <Card className="w-full max-w-md mt-4">
+        <CardHeader>
+          <CardTitle>Doctors List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center gap-4 w-full">
+            {doctors.length > 0 && (doctors.map((doctor) => {
+              return (
+                <Card key={doctor._id} className="carddoctor w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
+                  <CardHeader>
+                    <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p>Specialty: {specialtiesWithLabels.find(s => s.value === doctor.specialty)?.label}</p>
+                  </CardContent>
+                </Card>);
+            }))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Search Doctors</h1>
@@ -125,26 +150,7 @@ export function SearchStaff() {
       </div>
       {showDoctors && doctors?.length > 0 && (
         <div className="flex justify-center">
-          <Card className="w-full max-w-md mt-4">
-            <CardHeader>
-              <CardTitle>Doctors List</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center gap-4 w-full">
-                {doctors.length > 0 && (doctors.map((doctor) => {
-                  return (
-                    <Card key={doctor._id} className="carddoctor w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
-                      <CardHeader>
-                        <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p>Specialty: {specialtiesWithLabels.find(s => s.value === doctor.specialty)?.label}</p>
-                      </CardContent>
-                    </Card>);
-                }))}
-              </div>
-            </CardContent>
-          </Card>
+          {cardDoctors()}
         </div>
       )}
     </div>
