@@ -7,13 +7,11 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
 import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
-import { ClinicCreation } from '@/pages/ClinicCreation';
-import { ClinicaEdicion } from '@/pages/EditClinic';
-import { ClinicaCompletada } from '@/pages/SuccessPage';
 
 function App() {
   return (
@@ -21,47 +19,37 @@ function App() {
       <ThemeProvider storageKey="vite-ui-theme">
         <Router>
           <Routes>
+            {/* Doing nested routes allows to avoid re-rendering re-used components */}
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Landing />} />
               <Route path="about" element={<About />} />
             </Route>
-            <Route path="/app" element={<AppLayout />}>
+            <Route path="/app" element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<Home />} />
-              <Route path="register-staff" element={<RegisterStaff />} />
+              <Route path="staff/:doctorId" element={<Staff />} />
+              <Route path="staff/me" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <Staff me={true} />
+                </ProtectedRoute>
+              } />
+              <Route path="register-staff" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <RegisterStaff />
+                </ProtectedRoute>
+              } />
             </Route>
+            { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
-
-            {/* Rutas relacionadas con Clínicas */}
-            <Route
-              path="/clinics/add"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicCreation />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/clinics/:id/edit"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicaEdicion />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/clinics/success"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicaCompletada />
-                </ProtectedRoute>
-              }
-            />
           </Routes>
         </Router>
       </ThemeProvider>
-    </AuthProvider>
+    </AuthProvider >
   );
 }
 
