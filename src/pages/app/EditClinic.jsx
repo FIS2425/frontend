@@ -1,16 +1,123 @@
-import { useState } from 'react';
-import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Edit, Save, X } from 'lucide-react';
-import { getClinicById } from '@/services/payments';
-import { updateClinic } from '@/services/payments';
+import { Edit, Save, X, LoaderCircle } from 'lucide-react';
+import { getClinicById, updateClinic } from '@/services/payments';
 import { getDoctorsBySpeciality } from '@/services/staff';
-import { useNavigate } from 'react-router-dom';
-import { LoaderCircle } from 'lucide-react';
+
+function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit }) {
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="name">Nombre</Label>
+        {editando ? (
+          <Input
+            type="text"
+            id="name"
+            name="name"
+            value={clinica.name}
+            onChange={onChange}
+            className={errors.name ? 'border-red-500' : ''}
+          />
+        ) : (
+          <p className="mt-1">{clinica.name}</p>
+        )}
+        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+      </div>
+
+      <div>
+        <Label htmlFor="city">Ciudad</Label>
+        {editando ? (
+          <Input
+            type="text"
+            id="city"
+            name="city"
+            value={clinica.city}
+            onChange={onChange}
+            className={errors.city ? 'border-red-500' : ''}
+          />
+        ) : (
+          <p className="mt-1">{clinica.city}</p>
+        )}
+        {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+      </div>
+
+      <div>
+        <Label htmlFor="district">Distrito</Label>
+        {editando ? (
+          <Input
+            type="text"
+            id="district"
+            name="district"
+            value={clinica.district}
+            onChange={onChange}
+            className={errors.district ? 'border-red-500' : ''}
+          />
+        ) : (
+          <p className="mt-1">{clinica.district}</p>
+        )}
+        {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
+      </div>
+
+      <div>
+        <Label htmlFor="postalCode">Código Postal</Label>
+        {editando ? (
+          <Input
+            type="text"
+            id="postalCode"
+            name="postalCode"
+            value={clinica.postalCode}
+            onChange={onChange}
+            className={errors.postalCode ? 'border-red-500' : ''}
+          />
+        ) : (
+          <p className="mt-1">{clinica.postalCode}</p>
+        )}
+        {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
+      </div>
+
+      <div>
+        <Label htmlFor="plan">Plan</Label>
+        <p className="mt-1">{clinica.plan}</p>
+      </div>
+    </form>
+  );
+}
+
+function DoctorsList({ doctors, onCardClick }) {
+  return (
+    <Card className="w-full max-w-md mt-4">
+      <CardHeader>
+        <CardTitle>Doctors List</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col items-center gap-4 w-full">
+          {doctors.length > 0 ? (
+            doctors.map((doctor) => (
+              <Card
+                key={doctor._id}
+                className="carddoctor w-full cursor-pointer"
+                onClick={() => onCardClick(doctor._id)}
+              >
+                <CardHeader>
+                  <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>Specialty: {doctor.specialty}</p>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p>No doctors available</p>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export function ClinicaEdicion({ clinicaInicial = {} }) {
   const { id } = useParams();
@@ -24,9 +131,9 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setClinica(prevData => ({
+    setClinica((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -39,7 +146,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
         setClinica(data);
         clinicaInicialRef.current = data;
       } catch (error) {
-        console.error('Error al obtener datos de la clinicas:', error);
+        console.error('Error al obtener datos de la clínica:', error);
       }
     };
     fetchClinic();
@@ -47,8 +154,8 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     const fetchDoctors = async () => {
       try {
         const clinicId = id;
-        const doctorsfetched = await getDoctorsBySpeciality({clinicId});
-        setDoctors(doctorsfetched.data);
+        const doctorsFetched = await getDoctorsBySpeciality({ clinicId });
+        setDoctors(doctorsFetched.data);
       } catch (error) {
         setLoading(false);
         console.error('Error al obtener datos de los doctores:', error);
@@ -60,7 +167,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   }, [id]);
 
   const validateForm = () => {
-    let newErrors = {};
+    const newErrors = {};
     if (!clinica.name.trim()) newErrors.name = 'El nombre es requerido';
     if (!clinica.city.trim()) newErrors.city = 'La ciudad es requerida';
     if (!clinica.district.trim()) newErrors.district = 'El distrito es requerido';
@@ -73,12 +180,8 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     e.preventDefault();
     if (validateForm()) {
       updateClinic(id, clinica)
-        .then(() => {
-          console.log('Paciente actualizado con éxito');
-        })
-        .catch((error) => {
-          console.error('Error al actualizar el paciente:', error);
-        });
+        .then(() => console.log('Clínica actualizada con éxito'))
+        .catch((error) => console.error('Error al actualizar la clínica:', error));
       setEditando(false);
     }
   };
@@ -89,17 +192,14 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     setErrors({});
   };
 
-  const handleUpdatePlan = () => {
-    console.log('Actualizar plan');
-  };
+  const handleUpdatePlan = () => console.log('Actualizar plan');
 
-  const handleCardClick = (doctorId) => {
-    navigate(`/app/staff/${doctorId}`);
-  };
+  const handleCardClick = (doctorId) => navigate(`/app/staff/${doctorId}`);
 
   if (loading) {
     return <LoaderCircle className="animate-spin" />;
   }
+
 
   return (
     <div className="flex flex-col items-center space-y-8">
@@ -109,85 +209,14 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
           <CardDescription>Visualiza y edita los detalles de tu clínica</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="name">Nombre</Label>
-              {editando ? (
-                <Input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={clinica.name}
-                  onChange={handleChange}
-                  className={errors.name ? 'border-red-500' : ''}
-                />
-              ) : (
-                <p className="mt-1">{clinica.name}</p>
-              )}
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
-            
-            <div>
-              <Label htmlFor="city">Ciudad</Label>
-              {editando ? (
-                <Input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={clinica.city}
-                  onChange={handleChange}
-                  className={errors.city ? 'border-red-500' : ''}
-                />
-              ) : (
-                <p className="mt-1">{clinica.city}</p>
-              )}
-              {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="district">Distrito</Label>
-              {editando ? (
-                <Input
-                  type="text"
-                  id="district"
-                  name="district"
-                  value={clinica.district}
-                  onChange={handleChange}
-                  className={errors.district ? 'border-red-500' : ''}
-                />
-              ) : (
-                <p className="mt-1">{clinica.district}</p>
-              )}
-              {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="plan">Plan</Label>
-              <p className="mt-1">{clinica.plan}</p>
-            </div>
-
-            <div>
-              <Label htmlFor="postalCode">Código Postal</Label>
-              {editando ? (
-                <Input
-                  type="text"
-                  id="postalCode"
-                  name="postalCode"
-                  value={clinica.postalCode}
-                  onChange={handleChange}
-                  className={errors.postalCode ? 'border-red-500' : ''}
-                />
-              ) : (
-                <p className="mt-1">{clinica.postalCode}</p>
-              )}
-              {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="countryCode">Código de País</Label>
-              <p className="mt-1">{clinica.countryCode}</p>
-            </div>
-          </form>
+          <ClinicForm
+            clinica={clinica}
+            editando={editando}
+            errors={errors}
+            onChange={handleChange}
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
         </CardContent>
         <CardFooter className="flex justify-center space-x-2">
           {editando ? (
@@ -215,35 +244,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
       </Card>
 
       <div className="flex justify-center mt-8">
-        <Card className="w-full max-w-md mt-4">
-          <CardHeader>
-            <CardTitle>Doctors List</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center gap-4 w-full">
-              {doctors.length > 0 ? (
-                doctors.map((doctor) => (
-                  <Card
-                    key={doctor._id}
-                    className="carddoctor w-full cursor-pointer"
-                    onClick={() => handleCardClick(doctor._id)}
-                  >
-                    <CardHeader>
-                      <CardTitle>
-                        {doctor.name} {doctor.surname}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Specialty: {doctor.specialty}</p>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <p>No doctors available</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <DoctorsList doctors={doctors} onCardClick={handleCardClick} />
       </div>
     </div>
   );
