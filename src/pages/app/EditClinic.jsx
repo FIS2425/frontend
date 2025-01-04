@@ -25,7 +25,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    let ID_doctor = userData.doctorid;
+    const ID_doctor = userData.doctorid;
     const fetchDoctor = async () => {
       try {
         const response = await getDoctorById(ID_doctor);
