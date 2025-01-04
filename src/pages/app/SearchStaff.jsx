@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { specialtiesWithLabels } from '@/utils/utils';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 
@@ -18,7 +17,6 @@ export function SearchStaff() {
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [error, setError] = useState('');
   const [showDoctors, setShowDoctors] = useState(false);
-  const isMobile = useIsMobile();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,7 +29,7 @@ export function SearchStaff() {
         console.error('Error fetching clinics:', error);
         setLoadingClinics(false);
       });
-  }, []);
+  }, [doctors]);
 
   const handleSearch = async () => {
     if (!clinicId) {
@@ -42,14 +40,17 @@ export function SearchStaff() {
     try {
       setLoadingDoctors(true);
       const doctorsResponse = await getDoctorsBySpeciality({ clinicId, speciality });
+      console.log(doctorsResponse);
       setDoctors(doctorsResponse.data.doctors);
-      setShowDoctors(true); 
       setError(''); 
     } catch (error) {
       setLoadingDoctors(false);
       console.error(error); 
       setError(error.response.data.message); 
       setShowDoctors(false);
+    } finally{
+      setShowDoctors(true);
+      setLoadingDoctors(false);
     }
   };
 
@@ -129,17 +130,20 @@ export function SearchStaff() {
               <CardTitle>Doctors List</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-4`}>
-                {doctors.map((doctor) => (
-                  <Card key={doctor._id} className="w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
-                    <CardHeader>
-                      <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p>Speciality: {doctor.speciality}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+              <div className="flex flex-col items-center gap-4 w-full">
+                {doctors && (doctors.map((doctor) => {
+                  console.log(doctor);
+                  return (
+                    <Card key={doctor._id} className="carddoctor w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
+                      <CardHeader>
+                        <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p>Speciality: {doctor.speciality}</p>
+                      </CardContent>
+                    </Card>
+                  );
+                }))}
               </div>
             </CardContent>
           </Card>
