@@ -8,8 +8,6 @@ export function login({ email, password }) {
 }
 
 export function logout() {
-  localStorage.removeItem('userId');
-  localStorage.removeItem('roles');
   return client.post('/logout');
 }
 
@@ -31,4 +29,8 @@ export function changePassword({ currentPassword, newPassword }) {
     '/users/change-password',
     { currentPassword, newPassword }
   );
+}
+
+export function getUserData(userId) {
+  return client.get(`/users/${userId}`).then(response => response.data);
 }
