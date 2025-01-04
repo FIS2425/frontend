@@ -1,12 +1,45 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { RefreshCw } from 'lucide-react';
 
 export function Payments() {
+  /* const { userData } = useAuth();
+   const idPlan = null;
+   const plan = null; 
+   const payments = null; 
+   const [error, setError] = useState(null);
+ 
+   const fetchClinica = async () => {
+     try {
+       const response = await getClinicById(userData.clinicId);
+       const data = await response.data;
+       idPlan = data.plan;
+     } catch (err) {
+       setError(err.message);
+     }
+   };
+ 
+   const fetchPlan = async () => {
+     try {
+       const response = await getPlanById(idPlan);
+       plan = await response.data;
+     } catch (err) {
+       setError(err.message);
+     }
+   };
+ 
+   const fetchPayments = async () => {
+     try {
+       const response = await getAllPaymentByClinicId(clinicId);
+       payments = await response.data;
+     } catch (err) {
+       setError(err.message);
+     }
+   };
+ */
+
   useEffect(() => {
     const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.documentElement.classList.toggle('dark', isDarkMode);
@@ -17,7 +50,7 @@ export function Payments() {
       <h1 className="text-3xl font-bold mb-6">Payments</h1>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Card className="bg-card text-card-foreground">
+        {/* <Card className="bg-card text-card-foreground">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <div>
               <CardTitle>Current Plan</CardTitle>
@@ -33,21 +66,19 @@ export function Payments() {
               <div className="flex justify-between">
                 
                 <span className="font-semibold">Plan:</span>
-                <span>Professional</span>
+                <span>{plan.name}</span>
               </div>
               <div className="text-left">
                 <span className="font-semibold">Characteristics:</span>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li>Up to 50 patients</li>
-                  <li>Advanced appointment scheduling</li>
-                  <li>Electronic health records</li>
-                  <li>Billing management</li>
-                  <li>Prescription management</li>
+                  {plan.features.map((feature, index) => (
+                    <li key={index}>{feature}</li>
+                  ))}
                 </ul>
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card>  */}
 
         <Card className="bg-card text-card-foreground">
           <CardHeader>

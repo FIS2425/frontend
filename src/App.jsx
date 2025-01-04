@@ -28,7 +28,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/verify-2fa" element={<Verify2FA />} />
-          <Route path="/payments" element={<Payments />} />
+          <Route path="/allPayments" element={<Payments />} />
         </Routes>
       </Router>
     </ThemeProvider>
