@@ -29,7 +29,7 @@ export function SearchStaff() {
         console.error('Error fetching clinics:', error);
         setLoadingClinics(false);
       });
-  }, [doctors]);
+  }, []);
 
   const handleSearch = async () => {
     if (!clinicId) {
@@ -40,14 +40,14 @@ export function SearchStaff() {
     try {
       setLoadingDoctors(true);
       const doctorsResponse = await getDoctorsBySpeciality({ clinicId, speciality });
-      console.log(doctorsResponse);
-      setDoctors(doctorsResponse.data.doctors);
+      setDoctors(doctorsResponse.data);
       setError(''); 
     } catch (error) {
-      setLoadingDoctors(false);
-      console.error(error); 
+      setDoctors([]);
+      setLoadingDoctors(false);   
       setError(error.response.data.message); 
       setShowDoctors(false);
+      console.error(error); 
     } finally{
       setShowDoctors(true);
       setLoadingDoctors(false);
@@ -123,7 +123,7 @@ export function SearchStaff() {
           </CardContent>
         </Card>
       </div>
-      {showDoctors && (
+      {showDoctors && doctors?.length > 0 && (
         <div className="flex justify-center">
           <Card className="w-full max-w-md mt-4">
             <CardHeader>
@@ -131,18 +131,16 @@ export function SearchStaff() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col items-center gap-4 w-full">
-                {doctors && (doctors.map((doctor) => {
-                  console.log(doctor);
+                {doctors.length > 0 && (doctors.map((doctor) => {
                   return (
                     <Card key={doctor._id} className="carddoctor w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
                       <CardHeader>
                         <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p>Speciality: {doctor.speciality}</p>
+                        <p>Specialty: {specialtiesWithLabels.find(s => s.value === doctor.specialty)?.label}</p>
                       </CardContent>
-                    </Card>
-                  );
+                    </Card>);
                 }))}
               </div>
             </CardContent>
