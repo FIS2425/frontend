@@ -14,13 +14,13 @@ export function getDoctorsBySpeciality({ clinicId, speciality }) {
   return client.get(url);
 }
 
+export function getMyself() {
+  return client.get('/staff/me');
+}
+
 export async function getDoctorData(doctorId) {
   const response = await client.get(`/staff/${doctorId}`);
   return response.data;
-}
-
-export function getMyself() {
-  return client.get('/staff/me');
 }
 
 export function updateSpecialty(doctorId, specialty) {
