@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { specialties } from '@/utils/utils';
 import { getDoctorData } from '@/services/staff';
 import { getClinicData } from '@/services/payment';
+import { useAuth } from '@/hooks/use-auth';
 
 export function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -21,17 +22,17 @@ export function Appointments() {
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
   const navigate = useNavigate();
+  const { userData } = useAuth();
 
   useEffect(() => {
     fetchAppointments();
   }, []);
 
   const fetchAppointments = async () => {
-    const patientId = JSON.parse(localStorage.getItem('userData')).patientid;
+    const patientId = userData.patientid;
     const { data } = await getAppointmentsByPatiendId(patientId);
     for (let appointment of data) {
       const doctorData = await getDoctorData(appointment.doctorId);
-      print(doctorData);
       const clinicData = await getClinicData(doctorData.clinicId);
       appointment.doctorName = `${doctorData.name} ${doctorData.surname}`;
       appointment.clinicName = clinicData.name;

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Sun, Cloud, CloudRain, User, MapPin, Phone, Mail, Calendar, Clock } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
+import { useAuth } from '@/hooks/use-auth';
 
 const mockAppointment = {
   id: '123456',
@@ -28,6 +29,7 @@ export function AppointmentDetails({ appointmentId }) {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState(null);
+  const { userData } = useAuth();
 
   useEffect(() => {
     setTimeout(() => {
@@ -35,8 +37,6 @@ export function AppointmentDetails({ appointmentId }) {
       fetchWeather();
       setLoading(false);
     }, 1000);
-
-    const userData = JSON.parse(localStorage.getItem('userData'));
     setUserRole(userData?.roles);
   }, [appointmentId]);
 
