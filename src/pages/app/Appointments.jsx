@@ -10,7 +10,7 @@ import { getAppointmentsByPatiendId } from '@/services/appointment';
 import { useNavigate } from 'react-router-dom';
 import { specialties } from '@/utils/utils';
 import { getDoctorData } from '@/services/staff';
-import { getClinicData } from '@/services/payment';
+import { getClinicData } from '@/services/payments';
 import { useAuth } from '@/hooks/use-auth';
 
 export function Appointments() {

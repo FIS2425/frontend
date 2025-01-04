@@ -46,7 +46,7 @@ export default function FutureAppointments({ appointments, loading, onViewAppoin
               key={appointment._id}
               className={`p-2 sm:p-6 sm:hover:shadow-lg transition-all duration-200
                 cursor-pointer sm:cursor-default select-none
-                ${activeCard === appointment._id ? 'scale-95 bg-gray-50' : 'scale-100'}
+                ${activeCard === appointment._id ? 'scale-95 bg-' : 'scale-100'}
                 sm:scale-100  ${activeCard !== appointment._id ? 'sm:hover:scale-100 sm:transition-all' : ''}
               `}
               onClick={() => handleCardClick(appointment._id)}

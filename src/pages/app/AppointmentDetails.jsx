@@ -3,59 +3,108 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Sun, Cloud, CloudRain, User, MapPin, Phone, Mail, Calendar, Clock } from 'lucide-react';
+import { Sun, Cloud, CloudRain, User, MapPin, Calendar, Clock, Hospital, Cake } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/use-auth';
+import { getAppointmentById, completeAppointment, cancelAppointment, noShowAppointment } from '@/services/appointment';
+import { getDoctorData } from '@/services/staff';
+import { getClinicData } from '@/services/payments';
+import { getPatientById } from '@/services/patient';
+import { useNavigate } from 'react-router-dom';
 
-const mockAppointment = {
-  id: '123456',
-  patientId: 'P12345',
-  patientName: 'John Doe',
-  patientEmail: 'john.doe@example.com',
-  patientPhone: '+1 (555) 123-4567',
-  clinicId: 'C789',
-  clinicName: 'City Health Clinic',
-  clinicAddress: '123 Main St, Anytown, AN 12345',
-  doctorId: 'D456',
-  doctorName: 'Dr. Jane Smith',
-  specialty: 'Cardiology',
-  appointmentDate: '2025-01-15T10:30:00Z',
-  status: 'scheduled',
-  createdAt: '2025-01-01T09:00:00Z',
-};
-
-export function AppointmentDetails({ appointmentId }) {
+export function AppointmentDetails() {
   const [appointment, setAppointment] = useState(null);
+  const [doctor, setDoctor] = useState(null);
+  const [clinic, setClinic] = useState(null);
+  const [patient, setPatient] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState(null);
+  const [allowed, setAllowed] = useState(null);
+  const [error, setError] = useState(null);
   const { userData } = useAuth();
+  const navigate = useNavigate();
+  const appointmentId = window.location.pathname.split('/').pop();
 
   useEffect(() => {
-    setTimeout(() => {
-      setAppointment(mockAppointment);
-      fetchWeather();
-      setLoading(false);
-    }, 1000);
-    setUserRole(userData?.roles);
+    fetchAppointment(appointmentId);
   }, [appointmentId]);
 
-  const fetchWeather = async () => {
+  const fetchAppointment = async (appointmentId) => {
     try {
-      // Replace with your actual API key and endpoint
+      const appointmentData = await getAppointmentById(appointmentId);
+      await Promise.all([
+        fetchDoctorData(appointmentData.doctorId),
+        fetchClinicData(appointmentData.clinicId),
+        fetchPatientData(appointmentData.patientId),
+        fetchWeather(appointmentId),
+      ]);
+      if (userData.roles.includes('clinicadmin')) {
+        setAllowed(appointmentData.clinicId === userData.clinicId);
+      } else if (userData.roles.includes('doctor')) {
+        setAllowed(appointmentData.doctorId === userData.doctorid);
+      } else if (userData.roles.includes('patient')) {
+        setAllowed(appointmentData.patientId === userData.patientid);
+      } else {
+        setAllowed(false);
+      }
+      setAppointment(appointmentData);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDoctorData = async (doctorId) => {
+    try {
+      const doctorData = await getDoctorData(doctorId);
+      setDoctor(doctorData);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  const fetchClinicData = async (clinicId) => {
+    try {
+      const clinicData = await getClinicData(clinicId);
+      setClinic(clinicData);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  const fetchPatientData = async (patientId) => {
+    try {
+      const patientData = await getPatientById(patientId).then(response => response.data);
+      setPatient(patientData);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  const fetchWeather = async (appointmentId) => {
+    try {
+      //const weatherData = await getAppointmentWeather(appointmentId);
       setWeather({
-        main: 'clear',
+        main: 'rain',
         description: 'Light rain',
         temp: '10',
       });
-    } catch (err) {
-      console.error('Error fetching weather:', err);
+    } catch {
+      setWeather(null);
     }
   };
 
   const handleAction = (action) => {
-    // Implement action logic here
-    console.log(`Appointment ${action}d`);
+    if (action === 'complete') {
+      completeAppointment(appointmentId).then(() => fetchAppointment(appointmentId));
+    } else if (action === 'cancel') {
+      cancelAppointment(appointmentId).then(() => fetchAppointment(appointmentId));
+    } else if (action === 'no-show') {
+      noShowAppointment(appointmentId).then(() => fetchAppointment(appointmentId));
+    } else if (action === 'history') {
+      navigate(`/app/history/${appointment.patientId}`);
+    }
   };
 
   if (loading) {
@@ -69,7 +118,11 @@ export function AppointmentDetails({ appointmentId }) {
     );
   }
 
-  if (!appointment) {
+  if (!loading && allowed === false) {
+    return <div className="text-red-500">You are not allowed to view this appointment.</div>;
+  }
+
+  if (error || !appointment || !doctor || !clinic) {
     return <div className="text-red-500">Error loading appointment details.</div>;
   }
 
@@ -90,12 +143,14 @@ export function AppointmentDetails({ appointmentId }) {
   return (
     <div className="flex flex-col h-dvh max-h-dvh w-9/12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-4">
-        <div className='p-2'>
-          <h2 className="text-2xl font-bold">{appointment.specialty} Appointment</h2>
-          <p className="text-gray-500">Appointment ID: {appointment.id}</p>
+        <div className="p-2 text-left">
+          <h2 className="text-2xl font-bold">
+            { appointment.specialty.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) } Appointment
+          </h2>
+          <p className="text-gray-500">Appointment ID: {appointmentId}</p>
         </div>
-        <Badge variant={appointment.status === 'scheduled' ? 'default' : 'secondary'} className="text-lg self-center">
-          {appointment.status}
+        <Badge variant={appointment.status === 'pending' ? 'default' : 'secondary'} className="text-lg self-center">
+          {appointment.status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
         </Badge>
       </div>
 
@@ -115,14 +170,8 @@ export function AppointmentDetails({ appointmentId }) {
             </div>
             <div className="flex items-center">
               <User className="w-5 h-5 mr-2" />
-              <span>Dr. {appointment.doctorName}</span>
+              <span>Dr. {doctor.name} {doctor.surname}</span>
             </div>
-            {weather && (
-              <div className="flex items-center">
-                <WeatherIcon />
-                <span className="ml-2">{weather.description}, {weather.temp}°C</span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -130,18 +179,29 @@ export function AppointmentDetails({ appointmentId }) {
           <h3 className="text-xl font-semibold mb-4">Clinic Information</h3>
           <div className="space-y-4">
             <div className="flex items-start">
-              <MapPin className="w-5 h-5 mr-2 mt-1" />
-              <span>{appointment.clinicName}<br />{appointment.clinicAddress}</span>
+              <Hospital className="w-5 h-5 mr-2 mt-1" />
+              <span>{clinic.name}</span>
             </div>
             <div className="flex items-center">
-              <Phone className="w-5 h-5 mr-2" />
-              <span>+1 (555) 987-6543</span>
+              <MapPin className="w-5 h-5 mr-2" />
+              <span>{clinic.city}, {clinic.postalCode}, {clinic.countryCode}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {userRole === 'doctor' && (
+      <Separator />
+
+      {weather ? (
+        <div className="flex justify-center items-center m-4">
+          <WeatherIcon />
+          <span className="ml-2">{weather.description}, {weather.temp}°C</span>
+        </div>
+      ) :
+        <div className="text-foreground m-4">Weather data not available</div>
+      }
+
+      {userData.roles.includes('doctor') && (
         <>
           <Separator />
           <div className='p-4'>
@@ -149,22 +209,19 @@ export function AppointmentDetails({ appointmentId }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center">
                 <User className="w-5 h-5 mr-2" />
-                <span>{appointment.patientName}</span>
+                <span>{patient.name} {patient.surname}</span>
               </div>
               <div className="flex items-center">
-                <Mail className="w-5 h-5 mr-2" />
-                <span>{appointment.patientEmail}</span>
-              </div>
-              <div className="flex items-center">
-                <Phone className="w-5 h-5 mr-2" />
-                <span>{appointment.patientPhone}</span>
+                <Cake className="w-5 h-5 mr-2" />
+                <span>{format(new Date(patient.birthdate), 'PPP')}</span>
               </div>
             </div>
+            <Button className='m-4' onClick={() => handleAction('history')}>View Patient History</Button>
           </div>
         </>
       )}
 
-      {userRole === 'doctor' && (
+      {userData.roles.includes('doctor') && (
         <div className="flex justify-end space-x-4">
           <Button onClick={() => handleAction('complete')}>Complete</Button>
           <Button variant="outline" onClick={() => handleAction('cancel')}>Cancel</Button>

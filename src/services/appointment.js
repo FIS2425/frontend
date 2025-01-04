@@ -5,5 +5,21 @@ export function getAppointmentsByPatiendId(patientId) {
 }
 
 export function getAppointmentById(appointmentId) {
-  return client.get(`/appointments/${appointmentId}`);
+  return client.get(`/appointments/${appointmentId}`).then(response => response.data);
+}
+
+export function getAppointmentWeather(appointmentDate) {
+  return client.get(`/appointments/${appointmentDate}/weather`).then(response => response.data);
+}
+
+export function cancelAppointment(appointmentId) {
+  return client.put(`/appointments/${appointmentId}/cancel`);
+}
+
+export function completeAppointment(appointmentId) {
+  return client.put(`/appointments/${appointmentId}/complete`);
+}
+
+export function noShowAppointment(appointmentId) {
+  return client.put(`/appointments/${appointmentId}/noshow`);
 }
