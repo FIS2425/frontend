@@ -12,6 +12,7 @@ import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
+import { SearchStaff } from '@/pages/app/SearchStaff';
 import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
@@ -46,6 +47,11 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="history/:id" element={<ClinicalHistory />} />  
+              <Route path="search-staff" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <SearchStaff />
+                </ProtectedRoute>
+              } />
               <Route
                 path="clinics/add"
                 element={
