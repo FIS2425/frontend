@@ -12,6 +12,9 @@ import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
 import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
+import { ClinicCreation } from '@/pages/ClinicCreation';
+import  {ClinicaEdicion} from '@/pages/EditClinic';
+import {ClinicaCompletada} from '@/pages/SuccessPage';
 
 function App() {
   return (
@@ -42,6 +45,30 @@ function App() {
                 </ProtectedRoute>
               } />
             </Route>
+            <Route
+              path="/clinics/add"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicCreation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clinics/:id/edit"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicaEdicion />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clinics/success"
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <ClinicaCompletada />
+                </ProtectedRoute>
+              }
+            />
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
