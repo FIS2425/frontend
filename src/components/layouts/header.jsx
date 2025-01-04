@@ -27,7 +27,7 @@ const expandableNavItems = [
     title: 'About Us',
     items: [
       { title: 'Our Mission', href: '/about/mission' },
-      { title: 'Our Team', href: '/about/team' },
+      { title: 'Our Team', href: 'https://github.com/orgs/FIS2425/people' },
       { title: 'Careers', href: '/about/careers' },
     ]
   },
