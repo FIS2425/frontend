@@ -44,31 +44,31 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
+              <Route
+                path="clinics/add"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                    <ClinicCreation />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="clinics/:id/edit"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                    <ClinicaEdicion />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="clinics/success"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                    <ClinicaCompletada />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
-            <Route
-              path="/clinics/add"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicCreation />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/clinics/:id/edit"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicaEdicion />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/clinics/success"
-              element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                  <ClinicaCompletada />
-                </ProtectedRoute>
-              }
-            />
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />

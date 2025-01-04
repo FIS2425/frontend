@@ -11,23 +11,21 @@ export function ClinicaCompletada() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md">
-        <CardHeader className="flex flex-col items-center space-y-2">
-          <CheckCircle className="h-12 w-12 text-green-500" />
-          <CardTitle className="text-2xl font-bold text-center">
-            Clínica Creada Correctamente
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center">
-            La clínica ha sido registrada con éxito en nuestro sistema.
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <Button onClick={handleAccept}>Aceptar</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Card className="w-full max-w-md">
+      <CardHeader className="flex flex-col items-center space-y-2">
+        <CheckCircle className="h-12 w-12 text-green-500" />
+        <CardTitle className="text-2xl font-bold text-center">
+          Clínica Creada Correctamente
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-center">
+          La clínica ha sido registrada con éxito en nuestro sistema.
+        </p>
+      </CardContent>
+      <CardFooter className="flex justify-center">
+        <Button onClick={handleAccept}>Aceptar</Button>
+      </CardFooter>
+    </Card>
   );
 }

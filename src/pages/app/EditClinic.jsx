@@ -74,7 +74,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto h-fit">
       <CardHeader>
         <CardTitle>Información de la Clínica</CardTitle>
         <CardDescription>Visualiza y edita los detalles de tu clínica</CardDescription>
@@ -187,4 +187,3 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     </Card>
   );
 }
-
