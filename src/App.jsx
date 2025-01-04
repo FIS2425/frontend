@@ -9,6 +9,7 @@ import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
 import { Plans } from '@/pages/Plans';
 import { SuccessPayment } from '@/pages/SuccessPayment';
+import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
@@ -31,6 +32,12 @@ function App() {
               </ProtectedRoute>
             }>
               <Route index element={<Home />} />
+              <Route path="staff/:doctorId" element={<Staff />} />
+              <Route path="staff/me" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <Staff me={true} />
+                </ProtectedRoute>
+              } />
               <Route path="register-staff" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                   <RegisterStaff />
