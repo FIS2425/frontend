@@ -9,8 +9,8 @@ export function registerStaff({ name, surname, email, password, specialty, dni }
 
 export function getDoctorsBySpeciality({ clinicId, speciality }) {
   const url = speciality 
-    ? `/clinic/${clinicId}/speciality/${speciality}?` 
-    : `/clinic/${clinicId}/speciality/`;
+    ? `/staff/clinic/${clinicId}/speciality/${speciality}` 
+    : `/staff/clinic/${clinicId}/speciality`;
   return client.get(url);
 }
 

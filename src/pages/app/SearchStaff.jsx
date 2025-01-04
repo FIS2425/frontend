@@ -7,6 +7,7 @@ import { specialtiesWithLabels } from '@/utils/utils';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useNavigate } from 'react-router-dom';
+import { LoaderCircle } from 'lucide-react';
 
 export function SearchStaff() {
   const [clinicId, setClinicId] = useState(''); 
@@ -14,6 +15,7 @@ export function SearchStaff() {
   const [doctors, setDoctors] = useState([]);
   const [clinics, setClinics] = useState([]);
   const [loadingClinics, setLoadingClinics] = useState(true);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [error, setError] = useState('');
   const [showDoctors, setShowDoctors] = useState(false);
   const isMobile = useIsMobile();
@@ -37,23 +39,18 @@ export function SearchStaff() {
       setShowDoctors(false);
       return;
     }
-
     console.log(`Selected clinicId: ${clinicId}`); 
     try {
+      setLoadingDoctors(true);
       const doctorsResponse = await getDoctorsBySpeciality({ clinicId, speciality });
       console.log('Doctors response:', doctorsResponse.data); 
-
-      if (doctorsResponse.data.doctors.length === 0) {
-        setError('No doctors found for the selected clinic and speciality'); 
-        setShowDoctors(false);
-      } else {
-        setDoctors(doctorsResponse.data.doctors);
-        setShowDoctors(true); 
-        setError(''); 
-      }
+      setDoctors(doctorsResponse.data.doctors);
+      setShowDoctors(true); 
+      setError(''); 
     } catch (error) {
-      console.error('Error fetching doctors:', error); 
-      setError('An error occurred while fetching doctors'); 
+      setLoadingDoctors(false);
+      console.error(error); 
+      setError(error.response.data.message); 
       setShowDoctors(false);
     }
   };
@@ -119,7 +116,12 @@ export function SearchStaff() {
               </div>
             </div>
             {error && <p className="text-red-500 mb-4">{error}</p>}
-            <Button onClick={handleSearch} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Search</Button>
+            <Button onClick={handleSearch} className="bg-blue-500 text-white px-4 py-2 rounded-lg" disabled={loadingDoctors}>
+              {loadingDoctors && (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              <span className="text-base font-large">Search</span>
+            </Button>
           </CardContent>
         </Card>
       </div>
