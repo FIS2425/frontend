@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Edit, Save, X } from 'lucide-react';
-import { getClinicById } from '@/services/payments';
+import { getClinicById,getDoctorById } from '@/services/payments';
 import { updateClinic } from '@/services/payments';
 
 export function ClinicaEdicion({ clinicaInicial = {} }) {
-  const { id } = useParams();
   const [clinica, setClinica] = useState(clinicaInicial);
+  const [ID_Clinica, setIdClinica] = useState(null);
   const [editando, setEditando] = useState(false);
   const [errors, setErrors] = useState({});
   const clinicaInicialRef = useRef(null);
@@ -25,18 +24,37 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   };
 
   useEffect(() => {
-    const fetchClinic = async () => {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    let ID_doctor = userData.doctorid;
+    const fetchDoctor = async () => {
       try {
-        const response = await getClinicById(id);
-        const data = response.data;
-        setClinica(data);
-        clinicaInicialRef.current = data;
+        const response = await getDoctorById(ID_doctor);
+        const data = response.data.clinicId;
+        setIdClinica(data); // Actualizar el ID de la clínica
       } catch (error) {
-        console.error('Error al obtener el paciente:', error);
+        console.error('Error al obtener el doctor:', error);
       }
     };
-    fetchClinic();
-  }, [id]);
+
+    fetchDoctor();
+  }, []);
+
+  useEffect(() => {
+    if (ID_Clinica) {
+      const fetchClinic = async () => {
+        try {
+          const response = await getClinicById(ID_Clinica);
+          const data = response.data;
+          setClinica(data);
+          clinicaInicialRef.current = data;
+        } catch (error) {
+          console.error('Error al obtener la clínica:', error);
+        }
+      };
+
+      fetchClinic();
+    }
+  }, [ID_Clinica]);
 
   const validateForm = () => {
     let newErrors = {};
@@ -51,7 +69,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      updateClinic(id, clinica)
+      updateClinic(ID_Clinica, clinica)
         .then(() => {
           console.log('Paciente actualizado con éxito');
         })
@@ -59,7 +77,6 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
           console.error('Error al actualizar el paciente:', error);
         });
       setEditando(false);
-      // Aquí se enviarían los datos actualizados al servidor
     }
   };
 

@@ -1,4 +1,4 @@
-import { client } from '@/api/axiosClient';
+import { client,client3 } from '@/api/axiosClient';
 
 export async function obtainPlans() {
   return await client.get('/plans');
@@ -41,6 +41,11 @@ export async function registerClinic({
 export async function getClinicById(id) {
   return await client.get(`clinics/${id}`);
 }
+
+export async function getDoctorById(id) {
+  return await client3.get(`staff/${id}`);
+}
+
 export async function updateClinic(id, clinicData) {
   return await client.put(`/clinics/${id}`, {
     method: 'PUT',
