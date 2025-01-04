@@ -22,3 +22,6 @@ export async function registerPatient({ name, surname, email, password, city, dn
     withCredentials: true,
   });
 }
+export function getPatientById(id) {
+  return client.get(`/patients/${id}`);
+}
