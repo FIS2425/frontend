@@ -145,7 +145,7 @@ export function Staff({ me }) {
             {roles.includes('clinicadmin') && (
               <CardFooter className="flex flex-wrap gap-4">
                 {!rolesFromProfile.includes('clinicadmin') && (
-                  <Button onClick={openModal} variant="destructive" disabled={deleteLoading}>
+                  <Button className="w-full lg:col-span-2" onClick={openModal} variant="destructive" disabled={deleteLoading}>
                     {deleteLoading && (
                       <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
                     )}

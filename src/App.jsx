@@ -11,6 +11,7 @@ import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
+import { SearchStaff } from '@/pages/app/SearchStaff';
 import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
@@ -42,6 +43,11 @@ function App() {
               <Route path="register-staff" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                   <RegisterStaff />
+                </ProtectedRoute>
+              } />
+              <Route path="search-staff" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <SearchStaff />
                 </ProtectedRoute>
               } />
               <Route
