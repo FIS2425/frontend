@@ -39,11 +39,9 @@ export function SearchStaff() {
       setShowDoctors(false);
       return;
     }
-    console.log(`Selected clinicId: ${clinicId}`); 
     try {
       setLoadingDoctors(true);
       const doctorsResponse = await getDoctorsBySpeciality({ clinicId, speciality });
-      console.log('Doctors response:', doctorsResponse.data); 
       setDoctors(doctorsResponse.data.doctors);
       setShowDoctors(true); 
       setError(''); 
@@ -85,7 +83,6 @@ export function SearchStaff() {
                           key={clinic._id}
                           onSelect={() => {
                             setClinicId(clinic._id);
-                            console.log(`Clinic selected: ${clinic.name} with ID: ${clinic._id}`);
                           }}
                         >
                           {clinic.name}

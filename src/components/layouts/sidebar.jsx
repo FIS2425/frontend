@@ -71,14 +71,6 @@ const data = [
         active: false,
         items: [
           {
-            title: 'Search by name',
-            url: '/search/name',
-          },
-          {
-            title: 'Search by date',
-            url: '/search/date',
-          },
-          {
             title: 'Search doctor',
             url: '/app/search-staff',
           },
