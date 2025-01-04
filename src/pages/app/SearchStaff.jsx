@@ -1,0 +1,151 @@
+import { useState, useEffect } from 'react';
+import { getDoctorsBySpeciality } from '@/services/staff';
+import { getAllClinics } from '@/services/payment';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { specialtiesWithLabels } from '@/utils/utils';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
+
+export function SearchStaff() {
+  const [clinicId, setClinicId] = useState(''); 
+  const [speciality, setSpeciality] = useState('');
+  const [doctors, setDoctors] = useState([]);
+  const [clinics, setClinics] = useState([]);
+  const [loadingClinics, setLoadingClinics] = useState(true);
+  const [error, setError] = useState('');
+  const [showDoctors, setShowDoctors] = useState(false);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getAllClinics()
+      .then((response) => {
+        setClinics(response.data);
+        setLoadingClinics(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching clinics:', error);
+        setLoadingClinics(false);
+      });
+  }, []);
+
+  const handleSearch = async () => {
+    if (!clinicId) {
+      setError('Clinic is required'); 
+      setShowDoctors(false);
+      return;
+    }
+
+    console.log(`Selected clinicId: ${clinicId}`); 
+    try {
+      const doctorsResponse = await getDoctorsBySpeciality({ clinicId, speciality });
+      console.log('Doctors response:', doctorsResponse.data); 
+
+      if (doctorsResponse.data.doctors.length === 0) {
+        setError('No doctors found for the selected clinic and speciality'); 
+        setShowDoctors(false);
+      } else {
+        setDoctors(doctorsResponse.data.doctors);
+        setShowDoctors(true); 
+        setError(''); 
+      }
+    } catch (error) {
+      console.error('Error fetching doctors:', error); 
+      setError('An error occurred while fetching doctors'); 
+      setShowDoctors(false);
+    }
+  };
+
+  const handleCardClick = (doctorId) => {
+    navigate(`/app/staff/${doctorId}`);
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Search Doctors</h1>
+      <div className="flex justify-center mb-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Search Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col space-y-2 mb-4">
+              <div className="w-full">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="w-full text-left">
+                    <p className="flex h-9 w-3/4 mx-auto rounded-md border border-input bg-transparent px-2 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
+                      {clinics.find((clinic) => clinic._id === clinicId)?.name || 'Select Clinic'}
+                    </p>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    {loadingClinics ? (
+                      <DropdownMenuItem disabled>Loading...</DropdownMenuItem>
+                    ) : (
+                      clinics.map((clinic) => (
+                        <DropdownMenuItem
+                          key={clinic._id}
+                          onSelect={() => {
+                            setClinicId(clinic._id);
+                            console.log(`Clinic selected: ${clinic.name} with ID: ${clinic._id}`);
+                          }}
+                        >
+                          {clinic.name}
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="w-full">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="w-full text-left">
+                    <p className="flex h-9 w-3/4 mx-auto rounded-md border border-input bg-transparent px-2 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
+                      {specialtiesWithLabels.find((s) => s.value === speciality)?.label || 'Select Speciality'}
+                    </p>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    {specialtiesWithLabels.map((specialty) => (
+                      <DropdownMenuItem
+                        key={specialty.value}
+                        onSelect={() => setSpeciality(specialty.value)}
+                      >
+                        {specialty.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            <Button onClick={handleSearch} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Search</Button>
+          </CardContent>
+        </Card>
+      </div>
+      {showDoctors && (
+        <div className="flex justify-center">
+          <Card className="w-full max-w-md mt-4">
+            <CardHeader>
+              <CardTitle>Doctors List</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} gap-4`}>
+                {doctors.map((doctor) => (
+                  <Card key={doctor._id} className="w-full cursor-pointer" onClick={() => handleCardClick(doctor._id)}>
+                    <CardHeader>
+                      <CardTitle>{doctor.name} {doctor.surname}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Speciality: {doctor.speciality}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+}

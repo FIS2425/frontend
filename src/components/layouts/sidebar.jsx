@@ -78,6 +78,10 @@ const data = [
             title: 'Search by date',
             url: '/search/date',
           },
+          {
+            title: 'Search doctor',
+            url: '/app/search-staff',
+          },
         ],
       },
       {
