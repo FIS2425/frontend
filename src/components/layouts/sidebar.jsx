@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle } from 'lucide-react';
+import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, UserPen } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -42,6 +42,12 @@ const data = [
         title: 'Home',
         url: '/',
         icon: Home,
+      },
+      {
+        title: 'My staff profile',
+        url: '/app/staff/me',
+        icon: UserPen,
+        roles: ['doctor'],
       },
       {
         title: 'Inbox',
