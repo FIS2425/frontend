@@ -7,10 +7,11 @@ import { FileIcon, ImageIcon, DownloadIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getHistoryByPatientId } from '@/services/history';
 import { useParams } from 'react-router-dom';
-import { CardDiv, CardActions, AddIcon, EditIcon, RemoveIcon } from '@/components/history';
+import { CardDiv, CardActions, AddIcon, EditConditionIcon, RemoveConditionIcon, EditIcon, RemoveIcon } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { ConditionForm } from '@/forms/history/forms';
-import { useConditionForm, handleConditionSubmit, handleDeleteCondition, handleEditCondition } from '@/utils/historyUtils';
+import { ConditionForm, TreatmentForm } from '@/forms/history/forms';
+import { useConditionForm, handleConditionSubmit, handleDeleteCondition, 
+  handleEditCondition, useTreatmentForm, handleTreatmentSubmit, handleEditTreatment, handleDeleteTreatment } from '@/utils/historyUtils';
 
 function Conditions({ conditions, historyId, updateHistoryPart }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -76,8 +77,8 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
               <CardDiv>
                 <h3 className="font-semibold text-lg">{condition.name}</h3>
                 <CardActions>
-                  <EditIcon onClick={() => handleOpenDialog(condition)} />
-                  <RemoveIcon onClick={() => handleDeleteCondition(historyId, condition._id, updateHistoryPart, setError)} />
+                  <EditConditionIcon onClick={() => handleOpenDialog(condition)} />
+                  <RemoveConditionIcon onClick={() => handleDeleteCondition(historyId, condition._id, updateHistoryPart, setError)} />
                 </CardActions>
               </CardDiv>
               <p className="text-sm text-muted-foreground">{condition.details}</p>
@@ -100,11 +101,62 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
   );
 }
 
-function Treatments({ treatments }) {
+function Treatments({ treatments, historyId, updateHistoryPart }) {
+  
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const form = useTreatmentForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState(null);
+
+  const handleOpenDialog = (treatment = null) => {
+    
+    if (treatment) {
+      setSelectedTreatment(treatment);
+      form.reset({
+        ...treatment,
+        startDate: treatment.startDate ? new Date(treatment.startDate).toISOString().split('T')[0] : '',
+        endDate: treatment.endDate ? new Date(treatment.endDate).toISOString().split('T')[0] : '',
+      });
+      setIsEditing(true);
+    } else {
+      form.reset({
+        name: '',
+        instructions: '',
+        startDate: 'dd/mm/aaaa',
+        endDate: 'dd/mm/aaaa',
+      }
+      );
+      setIsEditing(false);
+      setSelectedTreatment(null);
+    }
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setIsEditing(false);
+    setSelectedTreatment(null);
+  };
+
+  const onSubmit = (values) => {
+    if (isEditing && selectedTreatment) {
+      handleEditTreatment(historyId, selectedTreatment._id, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    } else {
+      handleTreatmentSubmit(historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Treatments</CardTitle>
+        <CardDiv>
+          <CardTitle>Treatments</CardTitle>
+          <CardActions>
+            <AddIcon onClick={handleOpenDialog} />
+          </CardActions>
+        </CardDiv>
         <CardDescription>Current and past treatments</CardDescription>
       </CardHeader>
       <CardContent>
@@ -116,6 +168,7 @@ function Treatments({ treatments }) {
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead>Instructions</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,12 +178,27 @@ function Treatments({ treatments }) {
                   <TableCell>{new Date(treatment.startDate).toLocaleDateString('en-CA')}</TableCell>
                   <TableCell>{new Date(treatment.endDate).toLocaleDateString('en-CA')}</TableCell>
                   <TableCell>{treatment.instructions}</TableCell>
+                  <TableCell className="flex items-center space-x-3">
+                    <CardActions>
+                      <EditIcon onClick={() => handleOpenDialog(treatment)} />
+                      <RemoveIcon onClick={() => handleDeleteTreatment(historyId, treatment._id, updateHistoryPart, setError)} />
+                    </CardActions>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
       </CardContent>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{isEditing ? 'Edit Treatment' : 'Add Treatment'}</DialogTitle>
+            <DialogClose onClick={handleCloseDialog} />
+          </DialogHeader>
+          <TreatmentForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -282,7 +350,7 @@ export function ClinicalHistory() {
       </div>
       <div className="space-y-6">
         <Conditions conditions={conditions} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
-        <Treatments treatments={treatments} />
+        <Treatments treatments={treatments} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
         <Analytics analytics={analytics} />
         <Images images={images} />
         <Allergies allergies={allergies} />
