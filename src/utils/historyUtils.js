@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { conditionSchema } from '@/forms/history/schemas';
+import { conditionSchema, treatmentSchema } from '@/forms/history/schemas';
 import { useForm } from 'react-hook-form';
-import { addCondition, deleteCondition, editCondition } from '@/services/history';
+import { addCondition, deleteCondition, editCondition, addTreatment } from '@/services/history';
 
 export const useConditionForm = () => {
   return useForm({
@@ -61,3 +61,34 @@ export const handleDeleteCondition = async (historyId, conditionId, updateHistor
     setIsLoading(false);
   }
 };
+
+export const useTreatmentForm = () => {
+  return useForm({
+    resolver: zodResolver(treatmentSchema),
+    defaultValues: {
+      name: '',
+      instructions: '',
+      startDate: 'dd/mm/aaaa',
+      endDate: 'dd/mm/aaaa',
+    },
+  });
+};
+
+export const handleTreatmentSubmit = async (historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError) => {
+  setIsLoading(true);
+  try {
+    const response = await addTreatment(historyId, values);
+    if (response.status === 200) {
+      handleCloseDialog();
+      updateHistoryPart('treatments', response.data.treatments);
+    }
+  } catch (err) {
+    setError('An error occurred. Please try again later.');
+    console.error(err);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+export const handleEditTreatment = null;
+export const handleDeleteTreatment = null;

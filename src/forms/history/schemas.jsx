@@ -27,3 +27,23 @@ export const conditionSchema = z.object({
   message: 'Until date must be equal to or after since date',
   path: ['until'],
 });
+
+export const treatmentSchema = z.object({
+  name: z
+    .string({ required_error: 'Name is required' })
+    .min(1, 'Name is required')
+    .transform((val) => val.trim()),
+  instructions: z
+    .string({ required_error: 'Instructions is required' })
+    .min(1, 'Instructions is required')
+    .transform((val) => val.trim()),
+  startDate: pastDateString.refine((date) => date !== null, {
+    message: 'Start date is required',
+  }),
+  endDate: pastDateString.refine((date) => date !== null, {
+    message: 'End date is required',
+  }),
+}).refine((data) => !data.endDate || data.endDate >= data.startDate, {
+  message: 'End date must be equal to or after start date',
+  path: ['endDate'],
+});

@@ -31,7 +31,7 @@ export function AddIcon({ onClick }) {
   );
 }
 
-export function RemoveIcon({ onClick}) {
+export function RemoveConditionIcon({ onClick}) {
   if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
@@ -40,11 +40,29 @@ export function RemoveIcon({ onClick}) {
   );
 }
 
-export function EditIcon({ onClick}) {
+export function EditConditionIcon({ onClick}) {
   if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <Pencil className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />
+    </button>
+  );
+}
+
+export function EditIcon({ onClick}) {
+  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  return (
+    <button onClick={() => onClick()}>
+      <Pencil className="min-h-4 min-w-4 hover:text-muted-foreground" />
+    </button>
+  );
+}
+
+export function RemoveIcon({ onClick}) {
+  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  return (
+    <button onClick={() => onClick()}>
+      <CircleMinus className="min-h-4 min-w-4 hover:text-muted-foreground" />
     </button>
   );
 }
