@@ -10,6 +10,13 @@ const pastDateString = z
     message: 'Date must be today or in the past',
   });
 
+const dateString = z
+  .string()
+  .refine((val) => val === 'dd/mm/aaaa' || val === '' || !isNaN(Date.parse(val)), {
+    message: 'Invalid date format',
+  })
+  .transform((val) => (val === 'dd/mm/aaaa' || val === '' ? null : new Date(val)));
+
 export const conditionSchema = z.object({
   name: z
     .string({ required_error: 'Name is required' })
@@ -37,10 +44,10 @@ export const treatmentSchema = z.object({
     .string({ required_error: 'Instructions is required' })
     .min(1, 'Instructions is required')
     .transform((val) => val.trim()),
-  startDate: pastDateString.refine((date) => date !== null, {
+  startDate: dateString.refine((date) => date !== null, {
     message: 'Start date is required',
   }),
-  endDate: pastDateString.refine((date) => date !== null, {
+  endDate: dateString.refine((date) => date !== null, {
     message: 'End date is required',
   }),
 }).refine((data) => !data.endDate || data.endDate >= data.startDate, {

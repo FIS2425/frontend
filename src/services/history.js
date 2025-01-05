@@ -28,3 +28,10 @@ export function addTreatment(id, { name, instructions, startDate, endDate }) {
     { name, instructions, startDate, endDate }
   );
 }
+
+export function editTreatment(id, treatmentId, { name, instructions, startDate, endDate }) {
+  return client.put(
+    `/histories/${id}/treatment/${treatmentId}`,
+    { name, instructions, startDate, endDate }
+  );
+}

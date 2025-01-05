@@ -116,8 +116,8 @@ function Treatments({ treatments, historyId, updateHistoryPart }) {
       setSelectedTreatment(treatment);
       form.reset({
         ...treatment,
-        startDate: treatment.since ? new Date(treatment.startDate).toISOString().split('T')[0] : '',
-        endDate: treatment.until ? new Date(treatment.endDate).toISOString().split('T')[0] : '',
+        startDate: treatment.startDate ? new Date(treatment.startDate).toISOString().split('T')[0] : '',
+        endDate: treatment.endDate ? new Date(treatment.endDate).toISOString().split('T')[0] : '',
       });
       setIsEditing(true);
     } else {
