@@ -3,6 +3,11 @@ import { client } from '@/api/axiosClient';
 export async function obtainPlans() {
   return await client.get('/plans');
 }
+
+export function getClinicData(clinicId) {
+  return client.get(`/clinics/${clinicId}`).then(response => response.data);
+}
+
 export async function registerClinic({
   name,
   city,

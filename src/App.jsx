@@ -7,6 +7,8 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { Appointments } from '@/pages/app/Appointments';
+import { AppointmentDetails } from '@/pages/app/AppointmentDetails';
 import { ClinicalHistory } from '@/pages/app/ClinicalHistory';
 import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
@@ -46,12 +48,20 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
+              <Route path="appointments" element={
+                <ProtectedRoute allowedRoles={['patient']}>
+                  <Appointments />
+                </ProtectedRoute>
+              } />
+              <Route path="appointments/:appointmentId" element={<AppointmentDetails />} />
+
               <Route path="history/:id" element={<ClinicalHistory />} />  
               <Route path="search-staff" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <SearchStaff />
                 </ProtectedRoute>
               } />
+
               <Route
                 path="clinics/add"
                 element={
