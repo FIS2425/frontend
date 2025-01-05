@@ -69,12 +69,21 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="register-patient" element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+              <Route path="patients/register-patient" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <RegisterPatient />
                 </ProtectedRoute>
               } 
               />
+              <Route
+                path="patients/success"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin','doctor']}>
+                    <ClinicaCompletada />
+                  </ProtectedRoute>
+                }
+              />
+              
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />

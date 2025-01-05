@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/forms/password-input';
 
 export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
@@ -77,8 +76,12 @@ export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
               <FormControl>
                 <Input
                   type="date"
-                  {...field}
-                  value={field.value || ''} // Asegúrate de usar un valor válido
+                  {...field} // Registra el campo con react-hook-form
+                  value={field.value || ''} // Asegura que siempre haya un valor
+                  onChange={(e) => {
+                    field.onChange(e.target.value); // Actualiza el valor del campo
+                    console.log('Nueva fecha:', e.target.value); // Para depuración
+                  }}
                 />
               </FormControl>
               <FormMessage />

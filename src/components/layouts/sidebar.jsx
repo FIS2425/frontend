@@ -50,6 +50,12 @@ const data = [
         roles: ['doctor'],
       },
       {
+        title: 'Patient creation',
+        url: '/app/patients/register-patient',
+        icon: UserPen,
+        roles: ['doctor'],
+      },
+      {
         title: 'Inbox',
         url: '#',
         icon: Inbox,

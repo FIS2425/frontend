@@ -39,9 +39,10 @@ export const registerPatientSchema = z.object({
     }, {
       message: 'Invalid DNI number',
     }),
-  birthdate: z
-    .string({ required_error: 'Birthdate is required' })
-    .transform((val) => val.trim()),
+  birthdate: z.string().refine(
+    (date) => !isNaN(Date.parse(date)), // Valida que sea una fecha válida
+    { message: 'Formato de fecha no válido' }
+  ),
   city: z
     .string({ required_error: 'City is required' })
     .min(1, 'City is required')

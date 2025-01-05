@@ -41,7 +41,7 @@ function RegisterPatientCard() {
       .then((response) => {
 
         if (response.status === 201)
-          navigate('/app');
+          navigate('/app/patients/success');
       })
       .catch((err) => {
         
