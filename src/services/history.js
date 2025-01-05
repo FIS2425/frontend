@@ -35,3 +35,7 @@ export function editTreatment(id, treatmentId, { name, instructions, startDate, 
     { name, instructions, startDate, endDate }
   );
 }
+
+export function deleteTreatment(id, treatmentId) {
+  return client.delete(`/histories/${id}/treatment/${treatmentId}`);
+}

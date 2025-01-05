@@ -181,7 +181,7 @@ function Treatments({ treatments, historyId, updateHistoryPart }) {
                   <TableCell className="flex items-center space-x-3">
                     <CardActions>
                       <EditIcon onClick={() => handleOpenDialog(treatment)} />
-                      <RemoveIcon onClick={() => handleDeleteTreatment(treatment._id)} />
+                      <RemoveIcon onClick={() => handleDeleteTreatment(historyId, treatment._id, updateHistoryPart, setError)} />
                     </CardActions>
                   </TableCell>
                 </TableRow>
