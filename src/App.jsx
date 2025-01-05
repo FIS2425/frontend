@@ -19,6 +19,7 @@ import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
 import { ClinicaCompletada } from '@/pages/app/SuccessPage';
+import { BookingSystem } from '@/pages/app/BookAppointment';
 
 function App() {
   return (
@@ -54,14 +55,11 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="appointments/:appointmentId" element={<AppointmentDetails />} />
-
+              <Route path="appointments/:doctorId/book" element={<BookingSystem />} />
               <Route path="history/:id" element={<ClinicalHistory />} />  
               <Route path="search-staff" element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
-                  <SearchStaff />
-                </ProtectedRoute>
+                <SearchStaff />
               } />
-
               <Route
                 path="clinics/add"
                 element={
