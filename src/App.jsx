@@ -7,6 +7,8 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { Plans } from '@/pages/Plans';
+import { SuccessPayment } from '@/pages/SuccessPayment';
 import { Appointments } from '@/pages/app/Appointments';
 import { AppointmentDetails } from '@/pages/app/AppointmentDetails';
 import { ClinicalHistory } from '@/pages/app/ClinicalHistory';
@@ -91,6 +93,23 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
+
+            <Route path="/plans" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <Plans />
+              </ProtectedRoute>
+            } />
+            <Route path="/success" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <SuccessPayment />
+              </ProtectedRoute>
+            } />
+            <Route path="/cancel" element={
+              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                <Plans />
+              </ProtectedRoute>
+            } />
+
           </Routes>
         </Router>
       </ThemeProvider>
