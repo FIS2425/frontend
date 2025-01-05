@@ -7,13 +7,20 @@ export function registerStaff({ name, surname, email, password, specialty, dni }
   );
 }
 
-export async function getDoctorData(doctorId) {
-  const response = await client.get(`/staff/${doctorId}`);
-  return response.data;
+export function getDoctorsBySpeciality({ clinicId, speciality }) {
+  const url = speciality 
+    ? `/staff/clinic/${clinicId}/speciality/${speciality}` 
+    : `/staff/clinic/${clinicId}/speciality`;
+  return client.get(url);
 }
 
 export function getMyself() {
   return client.get('/staff/me');
+}
+
+export async function getDoctorData(doctorId) {
+  const response = await client.get(`/staff/${doctorId}`);
+  return response.data;
 }
 
 export function updateSpecialty(doctorId, specialty) {

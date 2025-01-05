@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, UserPen } from 'lucide-react';
+import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, CalendarCheck, UserPen } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -50,6 +50,28 @@ const data = [
         roles: ['doctor'],
       },
       {
+        title: 'Appointments',
+        url: '/app/appointments',
+        icon: CalendarCheck,
+        roles: ['patient'],
+      },
+      {
+        title: 'Clinic actions',
+        url: '#',
+        icon: UserPen,
+        roles: ['admin','clinicadmin'],
+        items: [
+          {
+            title: 'Create new clinic',
+            url: '/app/clinics/add',
+          },
+          {
+            title: 'Edit actual clinic',
+            url: 'clinics/edit',
+          },
+        ],
+      },
+      {
         title: 'Inbox',
         url: '#',
         icon: Inbox,
@@ -77,12 +99,8 @@ const data = [
         active: false,
         items: [
           {
-            title: 'Search by name',
-            url: '/search/name',
-          },
-          {
-            title: 'Search by date',
-            url: '/search/date',
+            title: 'Search doctor',
+            url: '/app/search-staff',
           },
         ],
       },
