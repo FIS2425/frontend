@@ -51,7 +51,6 @@ function RegisterPatientCard() {
           setError('You must be logged in as a admin or doctor to register Patient');
         } else {
           setError('An error occurred. Please try again later.');
-          console.error(err);
         }
       })
       .finally(() => {

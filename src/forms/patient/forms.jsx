@@ -80,7 +80,6 @@ export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
                   value={field.value || ''} // Asegura que siempre haya un valor
                   onChange={(e) => {
                     field.onChange(e.target.value); // Actualiza el valor del campo
-                    console.log('Nueva fecha:', e.target.value); // Para depuración
                   }}
                 />
               </FormControl>
