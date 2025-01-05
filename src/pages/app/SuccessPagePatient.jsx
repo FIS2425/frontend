@@ -3,7 +3,7 @@ import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-export function ClinicaCompletada() {
+export function PacienteRegistrado() {
   const navigate = useNavigate();
 
   const handleAccept = () => {

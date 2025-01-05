@@ -18,6 +18,7 @@ import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
 import { ClinicaCompletada } from '@/pages/app/SuccessPage';
 import { RegisterPatient } from '@/pages/app/RegisterPatient';
+import {PacienteRegistrado} from '@/pages/app/SuccessPagePatient';
 
 function App() {
   return (
@@ -87,7 +88,7 @@ function App() {
                 path="patients/success"
                 element={
                   <ProtectedRoute allowedRoles={['admin', 'clinicadmin','doctor']}>
-                    <ClinicaCompletada />
+                    <PacienteRegistrado />
                   </ProtectedRoute>
                 }
               />

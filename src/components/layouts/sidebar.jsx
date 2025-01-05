@@ -53,7 +53,7 @@ const data = [
         title: 'Patient creation',
         url: '/app/patients/register-patient',
         icon: UserPen,
-        roles: ['doctor'],
+        roles: ['doctor','admin','clinicadmin'],
       },
       {
         title: 'Inbox',
