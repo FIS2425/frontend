@@ -25,8 +25,8 @@ export function CardActions({ children }) {
 export function AddIcon({ onClick }) {
   if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
   return (
-    <button onClick={() => onClick()} className="text-muted-foreground hover:text-primary">
-      <CirclePlus className="min-h-7 min-w-7" />
+    <button onClick={() => onClick()}>
+      <CirclePlus className="min-h-7 min-w-7 hover:text-muted-foreground" />
     </button>
   );
 }
@@ -34,8 +34,8 @@ export function AddIcon({ onClick }) {
 export function RemoveIcon({ onClick}) {
   if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
   return (
-    <button onClick={() => onClick()} className="text-muted-foreground hover:text-primary">
-      <CircleMinus className="min-h-4 min-w-4" />
+    <button onClick={() => onClick()}>
+      <CircleMinus className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />
     </button>
   );
 }
@@ -43,8 +43,8 @@ export function RemoveIcon({ onClick}) {
 export function EditIcon({ onClick}) {
   if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
   return (
-    <button onClick={() => onClick()} className="text-muted-foreground hover:text-primary">
-      <Pencil className="min-h-4 min-w-4" />
+    <button onClick={() => onClick()}>
+      <Pencil className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />
     </button>
   );
 }
