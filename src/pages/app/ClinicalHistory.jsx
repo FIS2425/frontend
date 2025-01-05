@@ -1,58 +1,29 @@
 import '@/styles/history.css';
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { FileIcon, ImageIcon, DownloadIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getHistoryByPatientId, addCondition } from '@/services/history';
+import { getHistoryByPatientId } from '@/services/history';
 import { useParams } from 'react-router-dom';
 import { CardDiv, CardActions, AddIcon, EditIcon, RemoveIcon } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ConditionForm } from '@/forms/history/forms';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { conditionSchema } from '@/forms/history/schemas';
+import { useConditionForm, handleConditionSubmit } from '@/utils/historyUtils';
 
 function Conditions({ conditions, historyId, updateHistoryPart }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const form  = useForm({
-    resolver: zodResolver(conditionSchema),
-    defaultValues: {
-      name: '',
-      details: '',
-      since: 'dd/mm/aaaa',
-      until: 'dd/mm/aaaa',
-    },
-  });
+  const form  = useConditionForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleOpenDialog = () => setIsDialogOpen(true);
   const handleCloseDialog = () => setIsDialogOpen(false);
 
-  function onSubmit(values) {
-    setIsLoading(true);
-    console.log(historyId, values);
-    addCondition(historyId, values)
-      .then((response) => {
-        if (response.status === 200) {
-          handleCloseDialog();
-          updateHistoryPart('conditions', response.data.currentConditions);
-        }
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 400) {
-          setError('An error occurred. Please try again later.');
-        } else {
-          setError('An error occurred. Please try again later.');
-          console.error(err);
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
+  const onSubmit = (values) => {
+    handleConditionSubmit(historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+  };
 
   return (
     <Card>
@@ -72,8 +43,8 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
               <CardDiv>
                 <h3 className="font-semibold text-lg">{condition.name}</h3>
                 <CardActions>
-                  <EditIcon onClick={handleOpenDialog} url={`/edit-condition/${condition.id}`} />
-                  <RemoveIcon onClick={handleOpenDialog} url={`/remove-condition/${condition.id}`} />
+                  <EditIcon onClick={handleOpenDialog} />
+                  <RemoveIcon onClick={handleOpenDialog} />
                 </CardActions>
               </CardDiv>
               <p className="text-sm text-muted-foreground">{condition.details}</p>
