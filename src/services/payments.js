@@ -87,21 +87,3 @@ export async function registerPayment({
     throw new Error('Error registering the payment',error);
   }
 }
-
-export async function registerPayment({planId,clinicId}) {
-  const paymentData = {planId,clinicId};
-
-  try {
-    const response = await client.post('/payments', paymentData);
-    const { data } = response;
-
-    if (data.url) {
-      window.location.href = data.url; 
-    } else {
-      console.error('No se recibió una URL para redirigir');
-    }
-  } catch (error) {
-    console.error('Error al registrar el pago:', error);
-    throw new Error('No se pudo registrar el pago');
-  }
-}
