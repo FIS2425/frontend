@@ -6,10 +6,12 @@ import { WorkshiftFormSchema } from '@/forms/workshift/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createWorkshift } from '@/services/workshift';
+import { useAuth } from '@/hooks/use-auth';
 
 export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onSave, existingSchedule, setSelectedDate }) {
   const [startTime, setStartTime] = useState(existingSchedule?.startTime || `${selectedHour.toString().padStart(2, '0')}:00`);
   const [endTime, setEndTime] = useState(existingSchedule?.endTime || `${(selectedHour + 1).toString().padStart(2, '0')}:00`);
+  const { userData } = useAuth();
 
   useEffect(() => {
     if (existingSchedule) {
@@ -24,8 +26,10 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
 
 
   const handleSubmit = (data) => {
+    const doctorId = userData.doctorId;
+    const clinicId = userData.clinicId;
     const { date, startTime, endTime } = data;
-    createWorkshift({ date, startTime, endTime }).then((newSchedule) => {
+    createWorkshift({ date, startTime, endTime, doctorId, clinicId }).then((newSchedule) => {
       onSave(newSchedule);
       onClose();
     });

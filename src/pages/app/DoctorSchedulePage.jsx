@@ -4,7 +4,8 @@ import { Calendar } from '@/components/calendar';
 import { ScheduleModal } from '@/components/schedule-modal';
 import { startOfWeek } from 'date-fns';
 import { DatePickerWithPresets } from '@/components/ui/date-picker-with-presets';
-import { workshifts } from '@/services/workshift';
+import { useAuth } from '@/hooks/use-auth';
+import { workshiftsByDoctor } from '@/services/workshift';
 import { transformDatesToSchedule } from '@/utils/utils';
 
 export function DoctorSchedulePage() {
@@ -15,6 +16,8 @@ export function DoctorSchedulePage() {
 
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [selectedSchedule, setSelectedSchedule] = useState(null);
+
+  const { userData } = useAuth();
 
   const openModal = () => setIsModalOpen(true);
 
@@ -47,13 +50,13 @@ export function DoctorSchedulePage() {
 
   useEffect(() => {
     const fetchWorkshifts = async () => {
-      const workshiftsList = await workshifts();
+      const workshiftsList = await workshiftsByDoctor(userData.doctorId);
       const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
       setSchedules(schedules);
     };
 
     fetchWorkshifts();
-  }, []);
+  }, [userData.doctorId]);
 
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {

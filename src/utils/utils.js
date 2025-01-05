@@ -36,3 +36,11 @@ export function calculateDuration(startTime, endTime) {
 
   return endTotalMinutes - startTotalMinutes;
 }
+
+export function parseWorkshiftDateTime(date, startTime, endTime){
+  const startDate = new Date(date);
+  startDate.setHours(parseInt(startTime.split(':')[0]) + 1);
+  startDate.setMinutes(parseInt(startTime.split(':')[1]));
+  const duration = (parseInt(endTime.split(':')[0]) - parseInt(startTime.split(':')[0])) * 60;
+  return { startDate, duration };
+}
