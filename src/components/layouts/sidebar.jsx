@@ -56,6 +56,22 @@ const data = [
         roles: ['patient'],
       },
       {
+        title: 'Clinic actions',
+        url: '#',
+        icon: UserPen,
+        roles: ['admin','clinicadmin'],
+        items: [
+          {
+            title: 'Create new clinic',
+            url: '/app/clinics/add',
+          },
+          {
+            title: 'Edit actual clinic',
+            url: 'clinics/edit',
+          },
+        ],
+      },
+      {
         title: 'Inbox',
         url: '#',
         icon: Inbox,
