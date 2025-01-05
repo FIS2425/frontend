@@ -30,3 +30,7 @@ export function changePassword({ currentPassword, newPassword }) {
     { currentPassword, newPassword }
   );
 }
+
+export function getUserData(userId) {
+  return client.get(`/users/${userId}`).then(response => response.data);
+}
