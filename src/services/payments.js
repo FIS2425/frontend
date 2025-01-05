@@ -3,24 +3,13 @@ import { client } from '@/api/axiosClient';
 export async function obtainPlans() {
   return await client.get('/plans');
 }
-export async function registerClinic({
-  name,
-  city,
-  district,
-  plan,
-  active,
-  postalCode,
-  countryCode = 'ES',
-}) {
-  const clinicData = {
-    name,
-    city,
-    district,
-    plan,
-    active,
-    postalCode,
-    countryCode,
-  };
+
+export async function getPlanById(id) {
+  return await client.get(`plans/${id}`);
+}
+
+export async function registerClinic({ name,  city,  district,  plan,  active, postalCode, countryCode = 'ES',}) {
+  const clinicData = {name, city, district, plan, active, postalCode, countryCode,  };
 
   try {
     const response = await client.post('/clinics/', clinicData, {
@@ -33,8 +22,12 @@ export async function registerClinic({
     const { data } = response;
     return data._id;
   } catch (error) {
-    throw new Error('Error registering the clinic',error);
+    throw new Error('Error registering the clinic', error);
   }
+}
+
+export async function getAllPaymentByClinicId(clinicId) {
+  return await client.get(`payments/clinic/${clinicId}`);
 }
 
 
@@ -53,10 +46,7 @@ export async function updateClinic(id, clinicData) {
   });
 }
 
-export async function registerPayment({
-  planId,
-  clinicId
-}) {
+export async function registerPayment({ planId, clinicId}) {
   const paymentData = {
     planId,
     clinicId
@@ -74,6 +64,6 @@ export async function registerPayment({
     const { data } = response;
     return data.url;
   } catch (error) {
-    throw new Error('Error registering the payment',error);
+    throw new Error('Error registering the payment', error);
   }
 }
