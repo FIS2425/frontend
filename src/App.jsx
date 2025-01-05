@@ -46,7 +46,7 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
-              <Route path="history/:id" element={<ClinicalHistory />} />  
+              <Route path="history/:id" element={<ClinicalHistory />} /> 
               <Route path="search-staff" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <SearchStaff />
