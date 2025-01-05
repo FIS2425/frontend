@@ -9,7 +9,6 @@ export async function registerPayment({planId,clinicId}) {
   try {
     const response = await client.post('/payments', paymentData);
     const { data } = response;
-    console.log('Respuesta del servidor:', data.url);
 
     if (data.url) {
       window.location.href = data.url; 

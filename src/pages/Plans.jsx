@@ -31,7 +31,6 @@ export function Plans() {
 
   const handleSelectPlan = (planId) => {
     setSelectedPlan(planId);
-    console.log(`Selected plan: ${planId}`);
   };
 
   const handleSubmit = async (e) => {
@@ -39,7 +38,6 @@ export function Plans() {
     setIsSubmitting(true);
     try {
       await registerPayment({ planId: selectedPlan, clinicId: userData.clinicId });
-      console.log('Payment registered successfully!');
     } catch (error) {
       console.error('Error submitting payment:', error);
       setError('Failed to register payment. Please try again.');

@@ -16,11 +16,11 @@ export function SuccessPayment() {
         <CardHeader className="flex flex-col items-center space-y-2">
           <CheckCircle className="h-12 w-12 text-green-500" />
           <CardTitle className="text-2xl font-bold text-center">
-            El pago ha sido realizado correctamente.
+            The payment has been made successfully.
           </CardTitle>
         </CardHeader>
         <CardFooter className="flex justify-center">
-          <Button onClick={handleAccept}>Aceptar</Button>
+          <Button onClick={handleAccept}>Accept</Button>
         </CardFooter>
       </Card>
     </div>
