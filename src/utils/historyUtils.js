@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { conditionSchema } from '@/forms/history/schemas';
 import { useForm } from 'react-hook-form';
-import { addCondition } from '../../services/history';
+import { addCondition, deleteCondition } from '@/services/history';
 
 export const useConditionForm = () => {
   return useForm({
@@ -33,4 +33,15 @@ export const handleConditionSubmit = async (historyId, values, handleCloseDialog
   } finally {
     setIsLoading(false);
   }
+};
+
+export const handleDeleteCondition = (historyId, conditionId, updateHistoryPart, setError) => () => {
+  deleteCondition(historyId, conditionId)
+    .then((response) => {
+      updateHistoryPart('conditions', response.data.currentConditions);
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    });
 };

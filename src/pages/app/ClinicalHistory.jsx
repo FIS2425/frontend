@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { CardDiv, CardActions, AddIcon, EditIcon, RemoveIcon } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ConditionForm } from '@/forms/history/forms';
-import { useConditionForm, handleConditionSubmit } from '@/utils/historyUtils';
+import { useConditionForm, handleConditionSubmit, handleDeleteCondition } from '@/utils/historyUtils';
 
 function Conditions({ conditions, historyId, updateHistoryPart }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,11 +44,12 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
                 <h3 className="font-semibold text-lg">{condition.name}</h3>
                 <CardActions>
                   <EditIcon onClick={handleOpenDialog} />
-                  <RemoveIcon onClick={handleOpenDialog} />
+                  <RemoveIcon onClick={handleDeleteCondition(historyId, condition._id, updateHistoryPart, setError)} />
                 </CardActions>
               </CardDiv>
               <p className="text-sm text-muted-foreground">{condition.details}</p>
               <p className="text-sm text-muted-foreground mt-2">Since: {new Date(condition.since).toLocaleDateString('en-CA')}</p>
+              {condition.until && <p className="text-sm text-muted-foreground">Until: {new Date(condition.until).toLocaleDateString('en-CA')}</p>}
             </li>
           ))}
         </ul>
