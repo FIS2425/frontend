@@ -48,7 +48,6 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
-
               <Route path="appointments" element={
                 <ProtectedRoute allowedRoles={['patient']}>
                   <Appointments />
