@@ -10,19 +10,52 @@ import { useParams } from 'react-router-dom';
 import { CardDiv, CardActions, AddIcon, EditIcon, RemoveIcon } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ConditionForm } from '@/forms/history/forms';
-import { useConditionForm, handleConditionSubmit, handleDeleteCondition } from '@/utils/historyUtils';
+import { useConditionForm, handleConditionSubmit, handleDeleteCondition, handleEditCondition } from '@/utils/historyUtils';
 
 function Conditions({ conditions, historyId, updateHistoryPart }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const form  = useConditionForm();
+  const form = useConditionForm();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedCondition, setSelectedCondition] = useState(null);
 
-  const handleOpenDialog = () => setIsDialogOpen(true);
-  const handleCloseDialog = () => setIsDialogOpen(false);
+  const handleOpenDialog = (condition = null) => {
+    
+    if (condition) {
+      setSelectedCondition(condition);
+      form.reset({
+        ...condition,
+        since: condition.since ? new Date(condition.since).toISOString().split('T')[0] : '',
+        until: condition.until ? new Date(condition.until).toISOString().split('T')[0] : '',
+      });
+      setIsEditing(true);
+    } else {
+      form.reset({
+        name: '',
+        details: '',
+        since: 'dd/mm/aaaa',
+        until: 'dd/mm/aaaa',
+      }
+      );
+      setIsEditing(false);
+      setSelectedCondition(null);
+    }
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setIsEditing(false);
+    setSelectedCondition(null);
+  };
 
   const onSubmit = (values) => {
-    handleConditionSubmit(historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    if (isEditing && selectedCondition) {
+      handleEditCondition(historyId, selectedCondition._id, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    } else {
+      handleConditionSubmit(historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    }
   };
 
   return (
@@ -31,7 +64,7 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
         <CardDiv>
           <CardTitle>Conditions</CardTitle>
           <CardActions>
-            <AddIcon onClick={handleOpenDialog} />
+            <AddIcon onClick={() => handleOpenDialog()} />
           </CardActions>
         </CardDiv>
         <CardDescription>Current and past medical conditions</CardDescription>
@@ -43,8 +76,8 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
               <CardDiv>
                 <h3 className="font-semibold text-lg">{condition.name}</h3>
                 <CardActions>
-                  <EditIcon onClick={handleOpenDialog} />
-                  <RemoveIcon onClick={handleDeleteCondition(historyId, condition._id, updateHistoryPart, setError)} />
+                  <EditIcon onClick={() => handleOpenDialog(condition)} />
+                  <RemoveIcon onClick={() => handleDeleteCondition(historyId, condition._id, updateHistoryPart, setError)} />
                 </CardActions>
               </CardDiv>
               <p className="text-sm text-muted-foreground">{condition.details}</p>
@@ -57,7 +90,7 @@ function Conditions({ conditions, historyId, updateHistoryPart }) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add Condition</DialogTitle>
+            <DialogTitle>{isEditing ? 'Edit Condition' : 'Add Condition'}</DialogTitle>
             <DialogClose onClick={handleCloseDialog} />
           </DialogHeader>
           <ConditionForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
