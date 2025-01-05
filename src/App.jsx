@@ -9,10 +9,12 @@ import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
 import { Appointments } from '@/pages/app/Appointments';
 import { AppointmentDetails } from '@/pages/app/AppointmentDetails';
+import { ClinicalHistory } from '@/pages/app/ClinicalHistory';
 import { Staff } from '@/pages/app/Staff';
 import MainLayout from '@/layouts/MainLayout';
 import AppLayout from '@/layouts/AppLayout';
 import { RegisterStaff } from '@/pages/app/RegisterStaff';
+import { SearchStaff } from '@/pages/app/SearchStaff';
 import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
@@ -53,7 +55,14 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="appointments/:appointmentId" element={<AppointmentDetails />} />
-                
+
+              <Route path="history/:id" element={<ClinicalHistory />} />  
+              <Route path="search-staff" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <SearchStaff />
+                </ProtectedRoute>
+              } />
+
               <Route
                 path="clinics/add"
                 element={
@@ -86,7 +95,7 @@ function App() {
           </Routes>
         </Router>
       </ThemeProvider>
-    </AuthProvider >
+    </AuthProvider>
   );
 }
 

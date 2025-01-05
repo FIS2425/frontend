@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       });
     }
     if (user.roles && user.roles.includes('patient')) {
-      await getPatientById(user.userId).then((response) => {
+      await getPatientById(user.patientid).then((response) => {
         user = { ...user, ...response.data };
       }).catch((error) => {
         console.error(error);

@@ -3,14 +3,15 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Sun, Cloud, CloudRain, User, MapPin, Calendar, Clock, Hospital, Cake } from 'lucide-react';
+import { User, MapPin, Calendar, Clock, Hospital, Cake } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/use-auth';
-import { getAppointmentById, completeAppointment, cancelAppointment, noShowAppointment } from '@/services/appointment';
+import { getAppointmentById, completeAppointment, cancelAppointment, noShowAppointment, getAppointmentWeather } from '@/services/appointment';
 import { getDoctorData } from '@/services/staff';
 import { getClinicData } from '@/services/payments';
 import { getPatientById } from '@/services/patient';
 import { useNavigate } from 'react-router-dom';
+import { WeatherDisplay } from '@/components/weather';
 
 export function AppointmentDetails() {
   const [appointment, setAppointment] = useState(null);
@@ -84,13 +85,11 @@ export function AppointmentDetails() {
 
   const fetchWeather = async (appointmentId) => {
     try {
-      //const weatherData = await getAppointmentWeather(appointmentId);
-      setWeather({
-        main: 'rain',
-        description: 'Light rain',
-        temp: '10',
-      });
-    } catch {
+      const weatherData = await getAppointmentWeather(appointmentId);
+      console.log(weatherData);
+      setWeather(weatherData);
+    } catch (err){
+      console.error(err);
       setWeather(null);
     }
   };
@@ -126,19 +125,9 @@ export function AppointmentDetails() {
     return <div className="text-red-500">Error loading appointment details.</div>;
   }
 
-  const WeatherIcon = () => {
-    if (!weather) return null;
-    switch (weather.main.toLowerCase()) {
-    case 'clear':
-      return <Sun className="w-6 h-6 text-yellow-400" />;
-    case 'clouds':
-      return <Cloud className="w-6 h-6 text-gray-400" />;
-    case 'rain':
-      return <CloudRain className="w-6 h-6 text-blue-400" />;
-    default:
-      return null;
-    }
-  };
+  if (error || !appointment || !doctor || !clinic) {
+    return <div className="text-red-500">Error loading appointment details.</div>;
+  }
 
   return (
     <div className="flex flex-col h-dvh max-h-dvh w-9/12">
@@ -192,14 +181,13 @@ export function AppointmentDetails() {
 
       <Separator />
 
-      {weather ? (
-        <div className="flex justify-center items-center m-4">
-          <WeatherIcon />
-          <span className="ml-2">{weather.description}, {weather.temp}°C</span>
-        </div>
-      ) :
-        <div className="text-foreground m-4">Weather data not available</div>
-      }
+      <div className="flex flex-col items-center m-4 p-4">
+        {weather ? (
+          <WeatherDisplay weatherData={weather} />
+        ) : (
+          <div className="text-gray-500">Weather data not available</div>
+        )}
+      </div>
 
       {userData.roles.includes('doctor') && (
         <>
