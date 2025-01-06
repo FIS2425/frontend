@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import PatientEdit from '@/forms/patient/formsEdit';
+import PasswordChange from '@/components/forms/password-change';
+import { Enable2FA } from '@/components/enable-2fa';
 import { getPatientById, updatePatient } from '@/services/patient';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -59,7 +61,7 @@ function PatientEditPage({ initialPatient = {} }) {
     if (!patient.dni) newErrors.dni = 'El DNI es requerido';
     else if (!validateDNI(patient.dni)) newErrors.dni = 'El DNI no es válido';
     if (!patient.city) newErrors.city = 'La ciudad es requerida';
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,7 +78,7 @@ function PatientEditPage({ initialPatient = {} }) {
           console.error('Error al actualizar el paciente:', error);
         });
       setIsEditing(false);
-    } else{
+    } else {
       console.log('Formulario inválido');
     }
   };
@@ -108,6 +110,10 @@ function PatientEditPage({ initialPatient = {} }) {
           error={errors}
         />
       </CardContent>
+      <CardFooter className="flex flex-wrap gap-4 p-4 [&>*]:grow fit-content">
+        <PasswordChange />
+        <Enable2FA />
+      </CardFooter>
     </Card>
   );
 }
