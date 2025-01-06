@@ -1,105 +1,139 @@
+import { LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { PasswordInput } from '@/components/forms/password-input';
 
-export default function PatientEdit({ isEditing,handleSubmit,handleEdit,handleCancel,handleChange,patient={},errors={} }) {
+export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>{isEditing ? 'Editar Paciente' : 'Información del Paciente'}</CardTitle>
-      </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="name">Nombre</Label>
-            {isEditing ? (
-              <Input
-                id="name"
-                name="name"
-                value={patient.name || ''}
-                onChange={handleChange}
-                className={errors.name ? 'border-red-500' : ''}
-              />
-            ) : (
-              <p className="mt-1">{patient.name || 'No disponible'}</p>
-            )}
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-          </div>
-          <div>
-            <Label htmlFor="surname">Apellido</Label>
-            {isEditing ? (
-              <Input
-                id="surname"
-                name="surname"
-                value={patient.surname || ''}
-                onChange={handleChange}
-                className={errors.surname ? 'border-red-500' : ''}
-              />
-            ) : (
-              <p className="mt-1">{patient.surname || 'No disponible'}</p>
-            )}
-            {errors.surname && <p className="text-red-500 text-sm">{errors.surname}</p>}
-          </div>
-          <div>
-            <Label htmlFor="birthdate">Fecha de Nacimiento</Label>
-            {isEditing ? (
-              <Input
-                id="birthdate"
-                name="birthdate"
-                type="date"
-                value={patient.birthdate || ''}
-                onChange={handleChange}
-                className={errors.birthdate ? 'border-red-500' : ''}
-              />
-            ) : (
-              <p className="mt-1">{patient.birthdate || 'No disponible'}</p>
-            )}
-            {errors.birthdate && <p className="text-red-500 text-sm">{errors.birthdate}</p>}
-          </div>
-          <div>
-            <Label htmlFor="dni">DNI</Label>
-            {isEditing ? (
-              <Input
-                id="dni"
-                name="dni"
-                value={patient.dni || ''}
-                onChange={handleChange}
-                className={errors.dni ? 'border-red-500' : ''}
-              />
-            ) : (
-              <p className="mt-1">{patient.dni || 'No disponible'}</p>
-            )}
-            {errors.dni && <p className="text-red-500 text-sm">{errors.dni}</p>}
-          </div>
-          <div>
-            <Label htmlFor="city">Ciudad</Label>
-            {isEditing ? (
-              <Input
-                id="city"
-                name="city"
-                value={patient.city || ''}
-                onChange={handleChange}
-                className={errors.city ? 'border-red-500' : ''}
-              />
-            ) : (
-              <p className="mt-1">{patient.city || 'No disponible'}</p>
-            )}
-            {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
-          </div>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          {isEditing ? (
-            <>
-              <Button type="button" onClick={handleSubmit} className="w-1/2 mr-2">Guardar</Button>
-              <Button type="button" onClick={handleCancel} className="w-1/2 ml-2" variant="outline">Cancelar</Button>
-            </>
-          ) : (
-            <Button type="button" onClick={handleEdit} className="w-full">Editar</Button>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Name</FormLabel>
+              <FormControl>
+                <Input placeholder="John" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </CardFooter>
+        />
+        <FormField
+          control={form.control}
+          name="surname"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Surname</FormLabel>
+              <FormControl>
+                <Input placeholder="Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="dni"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">DNI</FormLabel>
+              <FormControl>
+                <Input placeholder="12345678A" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="city"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">City</FormLabel>
+              <FormControl>
+                <Input placeholder="Sevilla" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birthdate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Fecha de nacimiento</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  {...field} // Registra el campo con react-hook-form
+                  value={field.value || ''} // Asegura que siempre haya un valor
+                  onChange={(e) => {
+                    field.onChange(e.target.value); // Actualiza el valor del campo
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Email</FormLabel>
+              <FormControl>
+                <Input placeholder="email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Username</FormLabel>
+              <FormControl>
+                <Input placeholder="username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Password</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button className="w-full lg:col-span-2" type="submit" disabled={isLoading}>
+          {isLoading && (
+            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          <span className="text-base font-large">Register</span>
+        </Button>
+        {error && <FormMessage className="flex flex-col items-start text-base lg:col-span-2">{error}</FormMessage>}
       </form>
-    </Card>
+    </Form>
   );
 }
-

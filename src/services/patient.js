@@ -1,18 +1,27 @@
-import { client } from '@/api/axiosClient';
+import { clientPatient } from '@/api/axiosClient';
 
-// Obtener un paciente por ID
-export async function getPatientById(id) {
-  return await client.get(`patients/${id}`);
-}
+export async function registerPatient({ name, surname, email, password, city, dni, birthdate,username }) {
+  console.log(name, surname, email, password, city, dni, birthdate,username);
+  const patientData = {
+    name,
+    surname,
+    email,
+    password,
+    city,
+    dni,
+    birthdate,
+    username,
+  };
 
-// Actualizar un paciente por ID
-export async function updatePatient(id, patientData) {
-  return await client.put(`/patients/${id}`,patientData, {
-    method: 'PUT',
+  return await clientPatient.post('/patients/',patientData, {
+    method: 'POST',
     headers: {
       'accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    withCredentials: true
+    withCredentials: true,
   });
+}
+export function getPatientById(id) {
+  return clientPatient.get(`/patients/${id}`);
 }
