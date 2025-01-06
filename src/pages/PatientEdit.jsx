@@ -15,7 +15,8 @@ function PatientEditPage({ initialPatient = {} }) {
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const response = await getPatientById(id);
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const response = await getPatientById(userData._id);
         const data = response.data;
         if (data.birthdate) {
           data.birthdate = format(new Date(data.birthdate), 'yyyy-MM-dd');
