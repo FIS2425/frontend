@@ -75,7 +75,7 @@ function App() {
                 }
               />
               <Route
-                path="clinics/:id/edit"
+                path="clinics/edit"
                 element={
                   <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                     <ClinicaEdicion />
