@@ -1,55 +1,56 @@
-import { RegisterStaffForm } from '@/forms/staff/forms';
-import { registerStaffSchema } from '@/forms/staff/schemas';
+import { RegisterPatientForm } from '@/forms/patient/formsCreate';
+import { registerPatientSchema } from '@/forms/patient/schemas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { registerStaff } from '@/services/staff';
+import { registerPatient } from '@/services/patient';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-export function RegisterStaff() {
+export function RegisterPatient() {
     
   return (
     <div className="w-full flex items-center justify-center p-8">
-      <RegisterStaffCard />
+      <RegisterPatientCard />
     </div>
   );
 }
 
-function RegisterStaffCard() {
+function RegisterPatientCard() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const form = useForm({
-    resolver: zodResolver(registerStaffSchema),
+    resolver: zodResolver(registerPatientSchema),
     defaultValues: {
       email: '',
       password: '',
       name: '',
       surname: '',
-      specialty: '',
+      city: '',
       dni: '',
+      birthdate: '',
+      username:'',
     },
   });
 
   function onSubmit(values) {
     setIsLoading(true);
-    registerStaff(values)
+    registerPatient(values)
       .then((response) => {
 
         if (response.status === 201)
-          navigate('/app');
+          navigate('/app/patients/success');
       })
       .catch((err) => {
         
         if (err.response && err.response.status === 400) {
-          setError('A doctor with the same DNI or Email already exists');
-        } else if (err.response && err.response.status === 403) {
-          setError(err.reponse.data.message);
+          setError('A patient with the same DNI or Email already exists');
+        } else if ((err.response && err.response.status === 401) || (err.response && err.response.status === 403)) {
+          setError('You must be logged in as a admin or doctor to register Patient');
         } else {
           setError('An error occurred. Please try again later.');
-          console.error(err);
         }
       })
       .finally(() => {
@@ -60,11 +61,11 @@ function RegisterStaffCard() {
   return (
     <Card className="w-full max-w-md lg:min-w-[600px] rounded-lg shadow-sm">
       <CardHeader className="items-start">
-        <CardTitle>Register Staff</CardTitle>
-        <CardDescription>Register new staff member</CardDescription>
+        <CardTitle>Register Patient</CardTitle>
+        <CardDescription>Register new patient</CardDescription>
       </CardHeader>
       <CardContent>
-        <RegisterStaffForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
+        <RegisterPatientForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} />
       </CardContent>
     </Card>
   );

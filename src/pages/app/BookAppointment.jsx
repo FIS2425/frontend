@@ -112,22 +112,22 @@ export function BookingSystem() {
   };
 
   const handleTimeSelect = (time) => {
-    const [hours, minutes] = time.split(':');
-    const selectedDate = new Date();
-    selectedDate.setHours(hours);
-    selectedDate.setMinutes(minutes);
-    selectedDate.setSeconds(0);
-    selectedDate.setHours(selectedDate.getHours() - 1);
-
-    const adjustedTime = format(selectedDate, 'HH:mm');
-    setSelectedTime(adjustedTime);
+    setSelectedTime(time);
     setIsDialogOpen(true);
   };
 
   const handleConfirmBooking = async () => {
     try {
       const formattedDate = format(date, 'yyyy-MM-dd');
-      const appointmentDate = `${formattedDate}T${selectedTime}:00`;
+      const [hours, minutes] = selectedTime.split(':');
+      const selectedDate = new Date();
+      selectedDate.setHours(hours);
+      selectedDate.setMinutes(minutes);
+      selectedDate.setSeconds(0);
+      selectedDate.setHours(selectedDate.getHours() - 1);
+
+      const adjustedTime = format(selectedDate, 'HH:mm');
+      const appointmentDate = `${formattedDate}T${adjustedTime}:00`;
       await bookAppointment(userData.patientid, clinic._id, doctorId, doctor.specialty, appointmentDate);
       navigate('/app/appointments');
     } catch (error) {

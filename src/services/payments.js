@@ -46,15 +46,19 @@ export async function registerClinic({
 export async function getClinicById(id) {
   return await client.get(`clinics/${id}`);
 }
+
+export async function getDoctorById(id) {
+  return await client.get(`staff/${id}`);
+}
+
 export async function updateClinic(id, clinicData) {
-  return await client.put(`/clinics/${id}`, {
+  return await client.put(`/clinics/${id}`, clinicData,{
     method: 'PUT',
     headers: {
       'accept': 'application/json',
       'Content-Type': 'application/json',
     },
     withCredentials: true,
-    body: JSON.stringify(clinicData),
   });
 }
 

@@ -50,10 +50,38 @@ const data = [
         roles: ['doctor'],
       },
       {
+        title: 'Patient creation',
+        url: '/app/patients/register-patient',
+        icon: UserPen,
+        roles: ['doctor','admin','clinicadmin'],
+      },
+      {
         title: 'Appointments',
         url: '/app/appointments',
         icon: CalendarCheck,
         roles: ['patient'],
+      },
+      {
+        title: 'Edit patient profile',
+        url: '/app/patients/edit',
+        icon: UserPen,
+        roles: ['patient'],
+      },
+      {
+        title: 'Clinic actions',
+        url: '#',
+        icon: UserPen,
+        roles: ['admin','clinicadmin'],
+        items: [
+          {
+            title: 'Create new clinic',
+            url: '/app/clinics/add',
+          },
+          {
+            title: 'Edit actual clinic',
+            url: 'clinics/edit',
+          },
+        ],
       },
       {
         title: 'Calendar',
