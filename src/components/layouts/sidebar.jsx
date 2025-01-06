@@ -62,6 +62,12 @@ const data = [
         roles: ['patient'],
       },
       {
+        title: 'Edit patient profile',
+        url: '/app/patients/edit',
+        icon: UserPen,
+        roles: ['patient'],
+      },
+      {
         title: 'Clinic actions',
         url: '#',
         icon: UserPen,

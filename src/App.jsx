@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import PatientEditPage from '@/pages/app/PatientEdit';
 import { Plans } from '@/pages/Plans';
 import { SuccessPayment } from '@/pages/SuccessPayment';
 import { Appointments } from '@/pages/app/Appointments';
@@ -90,6 +91,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route 
+                path="patients/edit" element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin','patient']}>
+                    <PatientEditPage />
+                  </ProtectedRoute>} />
               <Route path="patients/register-patient" element={
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <RegisterPatient />
