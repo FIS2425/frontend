@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import PatientEdit from '@/forms/patient/forms';
+import PatientEdit from '@/forms/patient/formsEdit';
 import { getPatientById, updatePatient } from '@/services/patient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { useAuth } from '@/hooks/use-auth';
 
 function PatientEditPage({ initialPatient = {} }) {
   const { id } = useParams();
@@ -11,11 +12,10 @@ function PatientEditPage({ initialPatient = {} }) {
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const initialPatientRef = useRef(null);
-
+  const { userData } = useAuth();
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
         const response = await getPatientById(userData._id);
         const data = response.data;
         if (data.birthdate) {

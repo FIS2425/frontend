@@ -1,4 +1,4 @@
-import { RegisterPatientForm } from '@/forms/patient/forms';
+import { RegisterPatientForm } from '@/forms/patient/formsCreate';
 import { registerPatientSchema } from '@/forms/patient/schemas';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { registerPatient } from '@/services/patient';

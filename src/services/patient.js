@@ -25,3 +25,15 @@ export async function registerPatient({ name, surname, email, password, city, dn
 export function getPatientById(id) {
   return clientPatient.get(`/patients/${id}`);
 }
+
+// Actualizar un paciente por ID
+export async function updatePatient(id, patientData) {
+  return await clientPatient.put(`/patients/${id}`,patientData, {
+    method: 'PUT',
+    headers: {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true
+  });
+}
