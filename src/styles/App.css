@@ -4,16 +4,16 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
+.logohome {
+  height: 15em;
+  padding: 0.5em;
   will-change: filter;
   transition: filter 300ms;
 }
-.logo:hover {
+.logohome:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
-.logo.react:hover {
+.logohome.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
@@ -36,6 +36,22 @@
   padding: 2em;
 }
 
+.carddoctor {
+  padding: 2em;
+  transition: transform 300ms, filter 300ms;
+}
+
+.carddoctor:hover {
+  transform: translateY(-10px);
+  filter: drop-shadow(0 0 1em #646cffaa);
+}
+
 .read-the-docs {
   color: #888;
+}
+
+@media (max-width: 768px) {
+  .carddoctor {
+    padding: 1em;
+  }
 }

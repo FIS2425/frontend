@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router';
+import { useAuth } from '@/hooks/use-auth';
 
 export function Verify2FA() {
   const icons = {
@@ -45,6 +46,7 @@ function Verify2FACard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = location.state || { userId: null };
+  const { authenticate } = useAuth();
 
   const form = useForm({
     resolver: zodResolver(verify2FASchema),
@@ -56,17 +58,17 @@ function Verify2FACard() {
   function onSubmit(values) {
     setIsLoading(true);
     verify2FA(userId, values)
-      .then((response) => {
+      .then(async (response) => {
         if (response.status === 200 && response.data.message === 'Login successful') {
-          localStorage.setItem('userId', response.data.userId);
-          localStorage.setItem('roles', response.data.roles);
+          const { message: _, ...userData } = response.data;
+          await authenticate(userData);
           navigate('/app');
         }
       })
       .catch((err) => {
         if (err.response) {
           const { status, data } = err.response;
-  
+
           if (status === 403) {
             setError(data.message || '2FA session expired or invalid');
           } else if (status === 400) {

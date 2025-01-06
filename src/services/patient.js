@@ -1,21 +1,18 @@
-import { client } from '@/api/axiosClient';
+import { clientPacientes } from '@/api/axiosClient';
 
 // Obtener un paciente por ID
 export async function getPatientById(id) {
-  return await client.get(`patients/${id}`);
+  return await clientPacientes.get(`patients/9a80657b-0b94-4d37-b139-ce6c409fd78e`);
 }
 
 // Actualizar un paciente por ID
 export async function updatePatient(id, patientData) {
-  const token = localStorage.getItem('token'); // Obtén el token desde localStorage
-  console.log(token);
-  return await client.put(`/patients/${id}`, {
+  return await clientPacientes.put(`/patients/9a80657b-0b94-4d37-b139-ce6c409fd78e`, patientData,{
     method: 'PUT',
     headers: {
       'accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    withCredentials: true,
-    body: JSON.stringify(patientData),
+    withCredentials: true
   });
 }
