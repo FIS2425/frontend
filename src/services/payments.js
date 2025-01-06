@@ -51,6 +51,10 @@ export async function getDoctorById(id) {
   return await client.get(`staff/${id}`);
 }
 
+export async function getPlanById(id) {
+  return await client.get(`plans/${id}`);
+}
+
 export async function updateClinic(id, clinicData) {
   return await client.put(`/clinics/${id}`, clinicData,{
     method: 'PUT',
