@@ -7,8 +7,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createWorkshift } from '@/services/workshift';
 import { useAuth } from '@/hooks/use-auth';
+import { Button } from '@/components/ui/button';
 
-export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onSave, existingSchedule, setSelectedDate }) {
+export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onSave, onDelete, existingSchedule, setSelectedDate }) {
   const [startTime, setStartTime] = useState(existingSchedule?.startTime || `${selectedHour.toString().padStart(2, '0')}:00`);
   const [endTime, setEndTime] = useState(existingSchedule?.endTime || `${(selectedHour + 1).toString().padStart(2, '0')}:00`);
   const { userData } = useAuth();
@@ -55,6 +56,9 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
           </VisuallyHidden>
         </DialogHeader>
         <WorkshiftForm form={form} onSubmit={form.handleSubmit(handleSubmit)} selectedDate={selectedDate} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} existingSchedule={existingSchedule} setSelectedDate={setSelectedDate}/>
+        {existingSchedule && (
+          <Button onClick={onDelete} variant="destructive">Delete Schedule</Button>
+        )}
       </DialogContent>
     </Dialog>
   );

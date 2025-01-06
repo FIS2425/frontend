@@ -49,6 +49,10 @@ export function DoctorSchedulePage() {
     navigation(`/app/appointments/${appointment.id}`);
   };
 
+  const handleDeleteSchedule = (schedule) => {
+    //todo: delete schedule
+  }
+
   const addNewWorkshift = () => {
     setSelectedDate(new Date());
     setSelectedHour(new Date().getHours());
@@ -113,6 +117,7 @@ export function DoctorSchedulePage() {
           selectedDate={selectedSchedule?.date || selectedDate}
           selectedHour={selectedSchedule ? parseInt(selectedSchedule.startTime.split(':')[0]) : selectedHour}
           onSave={handleSaveSchedule}
+          onDelete={handleDeleteSchedule}
           existingSchedule={selectedSchedule}
           setSelectedDate={setSelectedDate}
         />
