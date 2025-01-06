@@ -1,4 +1,4 @@
-import { clientPatient } from '@/api/axiosClient';
+import { client } from '@/api/axiosClient';
 
 export async function registerPatient({ name, surname, email, password, city, dni, birthdate,username }) {
   console.log(name, surname, email, password, city, dni, birthdate,username);
@@ -13,7 +13,7 @@ export async function registerPatient({ name, surname, email, password, city, dn
     username,
   };
 
-  return await clientPatient.post('/patients/',patientData, {
+  return await client.post('/patients/',patientData, {
     method: 'POST',
     headers: {
       'accept': 'application/json',
@@ -23,12 +23,12 @@ export async function registerPatient({ name, surname, email, password, city, dn
   });
 }
 export function getPatientById(id) {
-  return clientPatient.get(`/patients/${id}`);
+  return client.get(`/patients/${id}`);
 }
 
 // Actualizar un paciente por ID
 export async function updatePatient(id, patientData) {
-  return await clientPatient.put(`/patients/${id}`,patientData, {
+  return await client.put(`/patients/${id}`,patientData, {
     method: 'PUT',
     headers: {
       'accept': 'application/json',
