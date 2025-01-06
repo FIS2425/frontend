@@ -1,5 +1,9 @@
 import { client } from '@/api/axiosClient';
 
+export function getHistoryById(id) {
+  return client.get(`/histories/${id}`);
+}
+
 export function getHistoryByPatientId(id) {
   return client.get(`/histories/patient/${id}`);
 }
@@ -42,7 +46,11 @@ export function deleteTreatment(id, treatmentId) {
 }
 
 export function uploadImage(id, formData) {
-  return client.post(`/histories/${id}/image`, formData);
+  return client.post(`/histories/${id}/image`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 }
 
 export function deleteImage(id, imageId) {

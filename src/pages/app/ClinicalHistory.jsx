@@ -13,7 +13,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@
 import { ConditionForm, TreatmentForm, FileForm, AllergyForm } from '@/forms/history/forms';
 import { useConditionForm, handleConditionSubmit, handleDeleteCondition, 
   handleEditCondition, useTreatmentForm, handleTreatmentSubmit, handleEditTreatment, handleDeleteTreatment,
-  handleUploadAnalytic, handleAddAllergy, handleDeleteAllergy
+  handleUploadAnalytic, handleDeleteAnalytic, handleAddAllergy, handleDeleteAllergy, handleUploadImage,
+  handleDeleteImage
 } from '@/utils/historyUtils';
 import { useForm } from 'react-hook-form';
 
@@ -207,7 +208,7 @@ function Treatments({ treatments, historyId, updateHistoryPart }) {
   );
 }
 
-function Analytics({ analytics, historyId, updateHistoryPart }) {
+function Analytics({ analytics = [], historyId, updateHistoryPart }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -227,14 +228,21 @@ function Analytics({ analytics, historyId, updateHistoryPart }) {
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setFileSelected(false);
-    form.reset();
+    form.reset({'file': null});
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const formData = new FormData();
     formData.append('file', data.file);
     setIsLoading(true);
-    handleUploadAnalytic(historyId, formData, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    try {
+      await handleUploadAnalytic(historyId, formData, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    } catch (error) {
+      setError('Failed to upload file');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -243,48 +251,95 @@ function Analytics({ analytics, historyId, updateHistoryPart }) {
         <CardDiv>
           <CardTitle>Analytics</CardTitle>
           <CardActions>
-            <UploadIcon onClick={handleOpenDialog}/>
+            <UploadIcon onClick={handleOpenDialog} />
           </CardActions>
         </CardDiv>
         <CardDescription>Medical analytics</CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-2">
-          {analytics.map((analysis, index) => (
-            <li key={index} className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <FileIcon className="h-5 w-5" style={{ color: 'var(--doc-icon-color)' }}/>
-                <span>{analysis.originalName}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">{new Date(analysis.date).toLocaleDateString('en-CA')}</span>
-                <Button variant="outline" size="sm" asChild>
-                  <a href={analysis.url} target="_blank" rel="noopener noreferrer">View</a>
-                </Button>
-              </div>
-            </li>
-          ))}
+          {analytics.length > 0 ? (
+            analytics.map((analysis, index) => (
+              <li key={index} className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <FileIcon className="h-5 w-5" style={{ color: 'var(--doc-icon-color)' }} />
+                  <span>{analysis.originalName}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm text-muted-foreground">{new Date(analysis.date).toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short' })}</span>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={analysis.url} target="_blank" rel="noopener noreferrer">View</a>
+                  </Button>
+                  <RemoveIcon onClick={() => handleDeleteAnalytic(historyId, analysis._id, updateHistoryPart, setIsLoading, setError)} className="cursor-pointer" />
+                </div>
+              </li>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">No analytics available.</p>
+          )}
         </ul>
       </CardContent>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        if (!open) handleCloseDialog();
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{'Upload Analytic'}</DialogTitle>
             <DialogClose onClick={handleCloseDialog} />
           </DialogHeader>
-          <FileForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} onChange={handleFileChange} 
-            fileSelected={fileSelected}/>
+          <FileForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} onChange={handleFileChange} fileSelected={fileSelected} />
         </DialogContent>
       </Dialog>
     </Card>
   );
 }
 
-function Images({ images }) {
+function Images({ images, historyId, updateHistoryPart }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [fileSelected, setFileSelected] = useState(false);
+  const form = useForm();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFileSelected(!!file);
+    form.setValue('file', file);
+  };
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setFileSelected(false);
+    form.reset({'file': null});
+  };
+
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append('file', data.file);
+    setIsLoading(true);
+    try {
+      await handleUploadImage(historyId, formData, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+    } catch (error) {
+      setError('Failed to upload file');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Images</CardTitle>
+        <CardDiv>
+          <CardTitle>Images</CardTitle>
+          <CardActions>
+            <UploadIcon onClick={handleOpenDialog} />
+          </CardActions>
+        </CardDiv>
         <CardDescription>Medical Images</CardDescription>
       </CardHeader>
       <CardContent>
@@ -296,15 +351,27 @@ function Images({ images }) {
                 <span>{image.originalName}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">{new Date(image.date).toLocaleDateString('en-CA')}</span>
+                <span className="text-sm text-muted-foreground">{new Date(image.date).toLocaleString('en-CA', { dateStyle: 'short', timeStyle: 'short' })}</span>
                 <Button variant="outline" size="sm" asChild>
                   <a href={image.url} target="_blank" rel="noopener noreferrer">View</a>
                 </Button>
+                <RemoveIcon onClick={() => handleDeleteImage(historyId, image._id, updateHistoryPart, setIsLoading, setError)} className="cursor-pointer" />
               </div>
             </li>
           ))}
         </ul>
       </CardContent>
+      <Dialog open={isDialogOpen} onOpenChange={(open) => {
+        if (!open) handleCloseDialog();
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{'Upload Image'}</DialogTitle>
+            <DialogClose onClick={handleCloseDialog} />
+          </DialogHeader>
+          <FileForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} onChange={handleFileChange} fileSelected={fileSelected} />
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -440,7 +507,7 @@ export function ClinicalHistory() {
         <Conditions conditions={conditions} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
         <Treatments treatments={treatments} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
         <Analytics analytics={analytics} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
-        <Images images={images} />
+        <Images images={images} historyId={historyId} updateHistoryPart={updateHistoryPart} />
         <Allergies allergies={allergies} historyId={historyId} updateHistoryPart={updateHistoryPart} />
       </div>
     </div>

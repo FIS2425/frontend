@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { conditionSchema, treatmentSchema } from '@/forms/history/schemas';
 import { useForm } from 'react-hook-form';
 import { addCondition, deleteCondition, editCondition, addTreatment, editTreatment,
-  deleteTreatment, uploadAnalytic, addAllergy, deleteAllergy
+  deleteTreatment, uploadAnalytic, addAllergy, deleteAllergy, deleteAnalytic, getHistoryById, uploadImage, deleteImage
 } from '@/services/history';
 
 export const useConditionForm = () => {
@@ -123,10 +123,14 @@ export const handleDeleteTreatment = async (historyId, treatmentId, updateHistor
   }
 };
 
-export const handleUploadAnalytic = async (historyId, formData, updateHistoryPart, setIsLoading, setError) => {
+export const handleUploadAnalytic = async (historyId, formData, setIsDialogOpen, updateHistoryPart, setIsLoading, setError) => {
   uploadAnalytic(historyId, formData)
-    .then((response) => {
-      updateHistoryPart('analytics', response.data.analytics);
+    .then(() => {
+      getHistoryById(historyId)
+        .then((response) => {
+          updateHistoryPart('analytics', response.data.analytics);
+          setIsDialogOpen(false);
+        });
     })
     .catch((err) => {
       setError('An error occurred. Please try again later.');
@@ -136,6 +140,59 @@ export const handleUploadAnalytic = async (historyId, formData, updateHistoryPar
       setIsLoading(false);
     });
 };
+
+export const handleDeleteAnalytic = async (historyId, analyticId, updateHistoryPart, setIsLoading, setError) => {
+  deleteAnalytic(historyId, analyticId)
+    .then(() => {
+      getHistoryById(historyId)
+        .then((response) => {
+          updateHistoryPart('analytics', response.data.analytics);
+        });
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
+export const handleUploadImage = async (historyId, formData, setIsDialogOpen, updateHistoryPart, setIsLoading, setError) => {
+  uploadImage(historyId, formData)
+    .then(() => {
+      getHistoryById(historyId)
+        .then((response) => {
+          updateHistoryPart('images', response.data.images);
+          setIsDialogOpen(false);
+        });
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
+export const handleDeleteImage = async (historyId, imageId, updateHistoryPart, setIsLoading, setError) => {
+  deleteImage(historyId, imageId)
+    .then(() => {
+      getHistoryById(historyId)
+        .then((response) => {
+          updateHistoryPart('images', response.data.images);
+        });
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
 
 export const handleAddAllergy = async (historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError) => {
   addAllergy(historyId, values)
