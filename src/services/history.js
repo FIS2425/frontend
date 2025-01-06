@@ -12,9 +12,10 @@ export function addCondition(id, { name, details, since, until }) {
 }
 
 export function editCondition(id, conditionId, { name, details, since, until }) {
+  console.log(id, conditionId, name, details, since, until);
   return client.put(
     `/histories/${id}/condition/${conditionId}`,
-    { name, details, since, until }
+    { name, details, since, until: until || null }
   );
 }
 
@@ -38,4 +39,32 @@ export function editTreatment(id, treatmentId, { name, instructions, startDate, 
 
 export function deleteTreatment(id, treatmentId) {
   return client.delete(`/histories/${id}/treatment/${treatmentId}`);
+}
+
+export function uploadImage(id, formData) {
+  return client.post(`/histories/${id}/image`, formData);
+}
+
+export function deleteImage(id, imageId) {
+  return client.delete(`/histories/${id}/image/${imageId}`);
+}
+
+export function uploadAnalytic(id, formData) {
+  return client.post(`/histories/${id}/analytic`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+}
+
+export function deleteAnalytic(id, analyticId) {
+  return client.delete(`/histories/${id}/analytic/${analyticId}`);
+}
+
+export function addAllergy(id, { allergy }) {
+  return client.post(`/histories/${id}/allergy`, {allergy});
+}
+
+export function deleteAllergy(id, allergyId) {
+  return client.delete(`/histories/${id}/allergy/${allergyId}`);
 }

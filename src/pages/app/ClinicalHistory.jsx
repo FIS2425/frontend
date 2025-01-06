@@ -7,11 +7,15 @@ import { FileIcon, ImageIcon, DownloadIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getHistoryByPatientId } from '@/services/history';
 import { useParams } from 'react-router-dom';
-import { CardDiv, CardActions, AddIcon, EditConditionIcon, RemoveConditionIcon, EditIcon, RemoveIcon } from '@/components/history';
+import { CardDiv, CardActions, AddIcon, EditConditionIcon, RemoveConditionIcon,
+  EditIcon, RemoveIcon, UploadIcon, RemoveAllergyIcon } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
-import { ConditionForm, TreatmentForm } from '@/forms/history/forms';
+import { ConditionForm, TreatmentForm, FileForm, AllergyForm } from '@/forms/history/forms';
 import { useConditionForm, handleConditionSubmit, handleDeleteCondition, 
-  handleEditCondition, useTreatmentForm, handleTreatmentSubmit, handleEditTreatment, handleDeleteTreatment } from '@/utils/historyUtils';
+  handleEditCondition, useTreatmentForm, handleTreatmentSubmit, handleEditTreatment, handleDeleteTreatment,
+  handleUploadAnalytic, handleAddAllergy, handleDeleteAllergy
+} from '@/utils/historyUtils';
+import { useForm } from 'react-hook-form';
 
 function Conditions({ conditions, historyId, updateHistoryPart }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -203,11 +207,45 @@ function Treatments({ treatments, historyId, updateHistoryPart }) {
   );
 }
 
-function Analytics({ analytics }) {
+function Analytics({ analytics, historyId, updateHistoryPart }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [fileSelected, setFileSelected] = useState(false);
+  const form = useForm();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFileSelected(!!file);
+    form.setValue('file', file);
+  };
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setFileSelected(false);
+    form.reset();
+  };
+
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append('file', data.file);
+    setIsLoading(true);
+    handleUploadAnalytic(historyId, formData, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Analytics</CardTitle>
+        <CardDiv>
+          <CardTitle>Analytics</CardTitle>
+          <CardActions>
+            <UploadIcon onClick={handleOpenDialog}/>
+          </CardActions>
+        </CardDiv>
         <CardDescription>Medical analytics</CardDescription>
       </CardHeader>
       <CardContent>
@@ -228,6 +266,16 @@ function Analytics({ analytics }) {
           ))}
         </ul>
       </CardContent>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{'Upload Analytic'}</DialogTitle>
+            <DialogClose onClick={handleCloseDialog} />
+          </DialogHeader>
+          <FileForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error} onChange={handleFileChange} 
+            fileSelected={fileSelected}/>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -261,20 +309,60 @@ function Images({ images }) {
   );
 }
 
-function Allergies({ allergies }) {
+function Allergies({ allergies, historyId, updateHistoryPart }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const form = useForm({
+    defaultValues: {
+      allergy: '',
+    }
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+    form.reset();
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const onSubmit = (data) => {
+    setIsLoading(true);
+    handleAddAllergy(historyId, data, handleCloseDialog, updateHistoryPart, setIsLoading, setError);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Allergies</CardTitle>
+        <CardDiv>
+          <CardTitle>Allergies</CardTitle>
+          <CardActions> 
+            <AddIcon onClick={handleOpenDialog}/>
+          </CardActions>
+        </CardDiv>
         <CardDescription>Known allergies and sensitivities</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-2">
           {allergies.map((allergy, index) => (
-            <Badge key={index} variant="secondary">{allergy}</Badge>
+            <Badge key={index} variant="secondary" className="flex items-center space-x-2 p-1 text-xs">
+              <span>{allergy}</span>
+              <RemoveAllergyIcon onClick={() => handleDeleteAllergy(historyId, allergy, updateHistoryPart, setIsLoading, setError)} className="cursor-pointer" />
+            </Badge>
           ))}
         </div>
       </CardContent>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{'Upload Analytic'}</DialogTitle>
+            <DialogClose onClick={handleCloseDialog} />
+          </DialogHeader>
+          <AllergyForm form={form} onSubmit={onSubmit} isLoading={isLoading} error={error}/>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
@@ -351,9 +439,9 @@ export function ClinicalHistory() {
       <div className="space-y-6">
         <Conditions conditions={conditions} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
         <Treatments treatments={treatments} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
-        <Analytics analytics={analytics} />
+        <Analytics analytics={analytics} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
         <Images images={images} />
-        <Allergies allergies={allergies} />
+        <Allergies allergies={allergies} historyId={historyId} updateHistoryPart={updateHistoryPart} />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { conditionSchema, treatmentSchema } from '@/forms/history/schemas';
 import { useForm } from 'react-hook-form';
 import { addCondition, deleteCondition, editCondition, addTreatment, editTreatment,
-  deleteTreatment
+  deleteTreatment, uploadAnalytic, addAllergy, deleteAllergy
 } from '@/services/history';
 
 export const useConditionForm = () => {
@@ -121,4 +121,48 @@ export const handleDeleteTreatment = async (historyId, treatmentId, updateHistor
   } finally {
     setIsLoading(false);
   }
+};
+
+export const handleUploadAnalytic = async (historyId, formData, updateHistoryPart, setIsLoading, setError) => {
+  uploadAnalytic(historyId, formData)
+    .then((response) => {
+      updateHistoryPart('analytics', response.data.analytics);
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
+export const handleAddAllergy = async (historyId, values, handleCloseDialog, updateHistoryPart, setIsLoading, setError) => {
+  addAllergy(historyId, values)
+    .then((response) => {
+      handleCloseDialog();
+      updateHistoryPart('allergies', response.data.allergies);
+      
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
+export const handleDeleteAllergy = async (historyId, allergyName, updateHistoryPart, setIsLoading, setError) => {
+  deleteAllergy(historyId, allergyName)
+    .then((response) => {
+      updateHistoryPart('allergies', response.data.allergies);
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
 };
