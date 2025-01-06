@@ -6,18 +6,22 @@ import { startOfWeek } from 'date-fns';
 import { DatePickerWithPresets } from '@/components/ui/date-picker-with-presets';
 import { useAuth } from '@/hooks/use-auth';
 import { workshiftsByDoctor } from '@/services/workshift';
-import { transformDatesToSchedule } from '@/utils/utils';
+import { transformDatesToSchedule, transformDatesToAppointment } from '@/utils/utils';
+import { getAppointmentsByDoctorId } from '@/services/appointment';
+import { useNavigate } from 'react-router-dom';
 
 export function DoctorSchedulePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
   const [schedules, setSchedules] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const [currentWeek, setCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [selectedSchedule, setSelectedSchedule] = useState(null);
 
   const { userData } = useAuth();
+  const navigation = useNavigate();
 
   const openModal = () => setIsModalOpen(true);
 
@@ -41,6 +45,10 @@ export function DoctorSchedulePage() {
     openModal();
   };
 
+  const handleAppointmentSelect = (appointment) => {
+    navigation(`/app/appointments/${appointment.id}`);
+  };
+
   const addNewWorkshift = () => {
     setSelectedDate(new Date());
     setSelectedHour(new Date().getHours());
@@ -48,15 +56,21 @@ export function DoctorSchedulePage() {
     openModal();
   };
 
+  const fetchAppointments = async () => {
+    const appointmentsList = await getAppointmentsByDoctorId(userData.doctorid).then((res) => res.data);
+    const appointments = appointmentsList.map(({ _id, patientId, appointmentDate, appointmentEndDate }) => transformDatesToAppointment(_id, patientId, appointmentDate, appointmentEndDate));
+    setAppointments(appointments);
+  };
+
   useEffect(() => {
     const fetchWorkshifts = async () => {
-      const workshiftsList = await workshiftsByDoctor(userData.doctorId);
+      const workshiftsList = await workshiftsByDoctor(userData.doctorid);
       const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
       setSchedules(schedules);
     };
-
     fetchWorkshifts();
-  }, [userData.doctorId]);
+    fetchAppointments();
+  }, [userData.doctorid]);
 
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {
@@ -70,7 +84,6 @@ export function DoctorSchedulePage() {
         return [...prevSchedules, newSchedule];
       }
     });
-    console.log(schedules);
     closeModal();
   };
 
@@ -87,7 +100,9 @@ export function DoctorSchedulePage() {
       <Calendar 
         onDateSelect={handleDateSelect} 
         onScheduleSelect={handleScheduleSelect}
+        onAppointmentSelect={handleAppointmentSelect}
         schedules={schedules} 
+        appointments={appointments}
         currentWeek={currentWeek}
         onWeekChange={setCurrentWeek}
       />

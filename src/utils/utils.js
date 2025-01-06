@@ -27,6 +27,25 @@ export function transformDatesToSchedule(startDate, endDate) {
   };
 }
 
+export function transformDatesToAppointment(id, patientId, startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const formatTime = (date) => {
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  return {
+    id: id,
+    patientId: patientId,
+    date: startDate,
+    startTime: formatTime(start),
+    endTime: formatTime(end)
+  };
+}
+
 export function calculateDuration(startTime, endTime) {
   const [startHours, startMinutes] = startTime.split(':').map(Number);
   const [endHours, endMinutes] = endTime.split(':').map(Number);

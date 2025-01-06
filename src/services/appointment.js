@@ -4,6 +4,10 @@ export function getAppointmentsByPatiendId(patientId) {
   return client.get(`/appointments/patient/${patientId}`);
 }
 
+export function getAppointmentsByDoctorId(doctorId) {
+  return client.get(`/appointments/doctor/${doctorId}`);
+}
+
 export function getAppointmentById(appointmentId) {
   return client.get(`/appointments/${appointmentId}`).then(response => response.data);
 }

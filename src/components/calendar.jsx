@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { addWeeks, subWeeks, startOfWeek, endOfWeek, eachDayOfInterval, format, isToday, isSameDay } from 'date-fns';
 import { enGB } from 'date-fns/locale';
 import { ScheduleCard } from '@/components/schedule-card';
+import { AppointmentCard } from '@/components/appointment-card';
 
-export function Calendar({ onDateSelect, onScheduleSelect, schedules, currentWeek, onWeekChange }) {
+
+export function Calendar({ onDateSelect, onScheduleSelect, onAppointmentSelect, schedules, appointments, currentWeek, onWeekChange }) {
   const nextWeek = () => onWeekChange(addWeeks(currentWeek, 1));
   const prevWeek = () => onWeekChange(subWeeks(currentWeek, 1));
 
@@ -22,6 +24,12 @@ export function Calendar({ onDateSelect, onScheduleSelect, schedules, currentWee
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
   };
 
+  const getAppointmentsForDay = (day) => {
+    return appointments
+      .filter(appointment => isSameDay(appointment.date, day))
+      .sort((a, b) => a.startTime.localeCompare(b.startTime));
+  };
+  
   return (
     <div className="flex flex-col w-full flex-grow h-full overflow-x-auto overflow-y-auto">
       <div className="flex items-center justify-between mb-4">
@@ -71,6 +79,19 @@ export function Calendar({ onDateSelect, onScheduleSelect, schedules, currentWee
                     onClick={(e) => {
                       e.stopPropagation();
                       onScheduleSelect(schedule);
+                    }}
+                  />
+                ))}
+                {hour === 7 && getAppointmentsForDay(day).map((appointment, index) => (
+                  <AppointmentCard
+                    key={index}
+                    date={appointment.date}
+                    patient={appointment.patientId}
+                    startTime={appointment.startTime}
+                    endTime={appointment.endTime}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAppointmentSelect(appointment);
                     }}
                   />
                 ))}
