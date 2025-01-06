@@ -1,6 +1,6 @@
-export const specialties = ['family_medicine', 'nursing', 'physiotherapy', 'gynecology', 'pediatrics', 
-  'dermatology', 'cardiology', 'neurology', 'orthopedics', 'psychiatry', 'endocrinology', 
-  'oncology', 'radiology', 'surgery', 'ophthalmology', 'urology', 
+export const specialties = ['family_medicine', 'nursing', 'physiotherapy', 'gynecology', 'pediatrics',
+  'dermatology', 'cardiology', 'neurology', 'orthopedics', 'psychiatry', 'endocrinology',
+  'oncology', 'radiology', 'surgery', 'ophthalmology', 'urology',
   'anesthesiology', 'otolaryngology', 'gastroenterology', 'other'];
 
 const specialtiesWithLabelsNoDefault = specialties.map(specialty => ({

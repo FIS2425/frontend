@@ -22,27 +22,10 @@ import {
 import { useParams } from 'react-router-dom';
 import { getDoctorData } from '@/services/staff';
 import { getClinicData } from '@/services/payments';
+import { getAvailableAppointments, bookAppointment } from '@/services/appointment';
 import { useNavigate } from 'react-router-dom';
 import { Spinner } from '@/components/ui/spinner';
-
-const generateMockData = () => {
-  const data = {};
-  const today = startOfDay(new Date());
-  for (let i = 0; i <= 30; i++) {
-    const date = addDays(today, i);
-    const dateString = format(date, 'yyyy-MM-dd');
-    data[dateString] = [
-      '09:00',
-      '10:00',
-      '11:00',
-      '14:00',
-      '15:00',
-      '16:00'
-    ].filter(() => Math.random() > 0.3); // Randomly remove some time slots
-  }
-  return data;
-};
-
+import { useAuth } from '@/hooks/use-auth';
 
 export function BookingSystem() {
   const [date, setDate] = useState(new Date());
@@ -51,16 +34,37 @@ export function BookingSystem() {
   const [doctor, setDoctor] = useState(null);
   const [clinic, setClinic] = useState(null);
   const [loading, setLoading] = useState(true);
-  const availableHours = generateMockData();
-  
+  const [availableHours, setAvailableHours] = useState([]);
+  const [error, setError] = useState(null);
+
   const doctorId = useParams().doctorId;
+  const { userData } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchDoctorData();
-    //todo fetch available hours
-    setLoading(true);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (doctor) {
+      fetchAvailableHours(date, doctorId, doctor.clinicId);
+    }
+  }, [date, doctor]);
+
+  const fetchAvailableHours = async (date, doctorId, clinicId) => {
+    try {
+      setLoading(true);
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      const response = await getAvailableAppointments(clinicId, doctorId, formattedDate);
+      const availableSlots = response.map((appt) => format(new Date(appt.appointmentDate), 'HH:mm'));
+      setAvailableHours(availableSlots);
+      setLoading(false);
+    } catch {
+      setAvailableHours([]);
+      setLoading(false);
+    }
+  };
 
   const fetchDoctorData = async () => {
     try {
@@ -79,11 +83,6 @@ export function BookingSystem() {
     } catch (error) {
       console.error('Error fetching clinic data:', error);
     }
-  };
-
-  const getAvailableHours = (date) => {
-    const dateString = format(date, 'yyyy-MM-dd');
-    return availableHours[dateString] || [];
   };
 
   const disabledDays = useMemo(() => {
@@ -113,15 +112,28 @@ export function BookingSystem() {
   };
 
   const handleTimeSelect = (time) => {
-    setSelectedTime(time);
+    const [hours, minutes] = time.split(':');
+    const selectedDate = new Date();
+    selectedDate.setHours(hours);
+    selectedDate.setMinutes(minutes);
+    selectedDate.setSeconds(0);
+    selectedDate.setHours(selectedDate.getHours() - 1);
+
+    const adjustedTime = format(selectedDate, 'HH:mm');
+    setSelectedTime(adjustedTime);
     setIsDialogOpen(true);
   };
 
-  const handleConfirmBooking = () => {
-    console.log(`Booking confirmed for ${format(date, 'MMMM d, yyyy')} at ${selectedTime}`);
-    setIsDialogOpen(false);
-    setSelectedTime(null);
-    navigate('/app/appointments');  // After booking, navigate to appointments page
+  const handleConfirmBooking = async () => {
+    try {
+      const formattedDate = format(date, 'yyyy-MM-dd');
+      const appointmentDate = `${formattedDate}T${selectedTime}:00`;
+      await bookAppointment(userData.patientid, clinic._id, doctorId, doctor.specialty, appointmentDate);
+      navigate('/app/appointments');
+    } catch (error) {
+      setError('Failed to book the appointment. Please try again later.');
+      console.error('Error booking appointment:', error);
+    }
   };
 
   return (
@@ -171,9 +183,9 @@ export function BookingSystem() {
               </div>
             ) : (
               <ScrollArea className="h-[300px] rounded-md p-4">
-                {getAvailableHours(date).length > 0 ? (
+                {availableHours.length > 0 ? (
                   <div className="grid grid-cols-2 gap-4">
-                    {getAvailableHours(date).map((hour) => (
+                    {availableHours.map((hour) => (
                       <Button key={hour} variant="outline" onClick={() => handleTimeSelect(hour)}>
                         {hour}
                       </Button>
@@ -189,6 +201,11 @@ export function BookingSystem() {
           </CardContent>
         </Card>
       </div>
+      {error && (
+        <div className="text-red-500 text-center mt-4">
+          <p>{error}</p>
+        </div>
+      )}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -199,8 +216,7 @@ export function BookingSystem() {
           </DialogHeader>
           <div className="py-4">
             <p className="text-lg font-semibold">{format(date, 'MMMM d, yyyy')} at {selectedTime}</p>
-            <p className="text-md">{doctor ? `Dr. ${doctor.name} ${doctor.surname} - ${doctor.specialty.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-` : 'Loading doctor info...'}</p>
+            <p className="text-md">{doctor ? `Dr. ${doctor.name} ${doctor.surname} - ${doctor.specialty.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}` : 'Loading doctor info...'}</p>
             <p className="text-md">{clinic ? `${clinic.name}, ${clinic.city}, ${clinic.postalCode}` : 'Loading clinic info...'}</p>
           </div>
           <DialogFooter>

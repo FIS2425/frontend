@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, ChevronRight, ChevronsUpDown, LogOut, HelpCircle, CalendarCheck, UserPen } from 'lucide-react';
+import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -56,21 +56,6 @@ const data = [
         roles: ['patient'],
       },
       {
-        title: 'Inbox',
-        url: '#',
-        icon: Inbox,
-        actions: [
-          {
-            title: 'Mark as read',
-            onClick: () => console.log('Mark as read'),
-          },
-          {
-            title: 'Send all to spam',
-            onClick: () => console.log('Send all to spam'),
-          }
-        ],
-      },
-      {
         title: 'Calendar',
         url: '#',
         icon: Calendar,
@@ -87,22 +72,6 @@ const data = [
             url: '/app/search-staff',
           },
         ],
-      },
-      {
-        title: 'Settings',
-        url: '#',
-        icon: Settings,
-      },
-    ]
-  },
-  {
-    type: 'group',
-    title: 'Support',
-    items: [
-      {
-        title: 'Help',
-        url: '/',
-        icon: HelpCircle,
       },
     ]
   },
