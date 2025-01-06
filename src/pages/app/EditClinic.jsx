@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Edit, Save, X, LoaderCircle } from 'lucide-react';
 import { getClinicById, updateClinic, getDoctorById } from '@/services/payments';
 import { getDoctorsBySpeciality } from '@/services/staff';
+import { useAuth } from '@/hooks/use-auth';
 
 function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit }) {
   return (
@@ -78,6 +79,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { userData } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,7 +90,6 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   };
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
     const fetchDoctor = async () => {
       try {
         const response = await getDoctorById(userData.doctorid);
