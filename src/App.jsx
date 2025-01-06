@@ -21,6 +21,8 @@ import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
 import { ClinicaCompletada } from '@/pages/app/SuccessPage';
+import { RegisterPatient } from '@/pages/app/RegisterPatient';
+import {PacienteRegistrado} from '@/pages/app/SuccessPagePatient';
 
 function App() {
   return (
@@ -88,6 +90,21 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="patients/register-patient" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <RegisterPatient />
+                </ProtectedRoute>
+              } 
+              />
+              <Route
+                path="patients/success"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin','doctor']}>
+                    <PacienteRegistrado />
+                  </ProtectedRoute>
+                }
+              />
+              
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
