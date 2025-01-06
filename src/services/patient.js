@@ -1,7 +1,6 @@
 import { client } from '@/api/axiosClient';
 
 export async function registerPatient({ name, surname, email, password, city, dni, birthdate,username }) {
-  console.log(name, surname, email, password, city, dni, birthdate,username);
   const patientData = {
     name,
     surname,
