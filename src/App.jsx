@@ -109,18 +109,17 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
+              <Route path="plans" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <Plans />
+                </ProtectedRoute>
+              } />
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
 
-            <Route path="/plans" element={
-              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                <Plans />
-              </ProtectedRoute>
-            } />
             <Route path="/success" element={
               <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                 <SuccessPayment />

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Edit, Save, X, LoaderCircle } from 'lucide-react';
-import { getClinicById, updateClinic, getDoctorById } from '@/services/payments';
+import { getClinicById, updateClinic, getDoctorById,getPlanById } from '@/services/payments';
 import { getDoctorsBySpeciality } from '@/services/staff';
 import { useAuth } from '@/hooks/use-auth';
 
@@ -77,8 +77,8 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
   const [errors, setErrors] = useState({});
   const clinicaInicialRef = useRef(null);
   const [doctors, setDoctors] = useState([]);
+  const [isReady, setIsReady] = useState(false); // Estado para sincronizar cargas
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
   const { userData } = useAuth();
 
   const handleChange = (e) => {
@@ -89,46 +89,42 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     }));
   };
 
+  // Sincronizar todas las llamadas
   useEffect(() => {
-    const fetchDoctor = async () => {
+    const fetchAllData = async () => {
       try {
-        const response = await getDoctorById(userData.doctorid);
-        setIdClinica(response.data.clinicId);
-      } catch (error) {
-        console.error('Error al obtener el doctor:', error);
-      }
-    };
-    fetchDoctor();
-  }, []);
+        // Obtener el ID de la clínica desde el doctor
+        const doctorResponse = await getDoctorById(userData.doctorid);
+        const clinicId = doctorResponse.data.clinicId;
+        setIdClinica(clinicId);
 
-  useEffect(() => {
-    if (ID_Clinica) {
-      const fetchClinic = async () => {
-        try {
-          const response = await getClinicById(ID_Clinica);
-          setClinica(response.data);
-          clinicaInicialRef.current = response.data;
-        } catch (error) {
-          console.error('Error al obtener la clínica:', error);
-        } finally {
-          setLoading(false);
+        // Obtener los datos de la clínica
+        const clinicResponse = await getClinicById(clinicId);
+        setClinica(clinicResponse.data);
+        clinicaInicialRef.current = clinicResponse.data;
+
+        // Obtener los doctores de la clínica
+        const doctorsResponse = await getDoctorsBySpeciality({ clinicId });
+        setDoctors(doctorsResponse.data);
+
+        // Obtener el nombre del plan
+        if (clinicResponse.data.plan) {
+          const planResponse = await getPlanById(clinicResponse.data.plan);
+          setClinica((prevClinica) => ({
+            ...prevClinica,
+            plan: planResponse.data.name,
+          }));
         }
-      };
-      fetchClinic();
-    }
-  }, [ID_Clinica]);
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await getDoctorsBySpeciality({ clinicId: ID_Clinica });
-        setDoctors(response.data);
+        // Marcar como listo
+        setIsReady(true);
       } catch (error) {
-        console.error('Error al obtener datos de los doctores:', error);
+        console.error('Error al cargar los datos:', error);
       }
     };
-    if (ID_Clinica) fetchDoctors();
-  }, [ID_Clinica]);
+
+    fetchAllData();
+  }, [userData.doctorid]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -139,13 +135,15 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      updateClinic(ID_Clinica, clinica)
-        .then(() => console.log('Clínica actualizada con éxito'))
-        .catch((error) => console.error('Error al actualizar la clínica:', error));
-      setEditando(false);
+      try {
+        await updateClinic(ID_Clinica, clinica);
+        setEditando(false);
+      } catch (error) {
+        console.error('Error al actualizar la clínica:', error);
+      }
     }
   };
 
@@ -157,7 +155,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
 
   const handleCardClick = (doctorId) => navigate(`/app/staff/${doctorId}`);
 
-  if (loading) {
+  if (!isReady) {
     return <LoaderCircle className="animate-spin" />;
   }
 
@@ -193,7 +191,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
               <Button type="button" variant="outline" onClick={() => setEditando(true)}>
                 <Edit className="mr-2 h-4 w-4" /> Editar
               </Button>
-              <Button type="button">
+              <Button type="button" onClick={() => navigate('/app/plans')}>
                 <Edit className="mr-2 h-4 w-4" /> Actualizar plan
               </Button>
             </>
