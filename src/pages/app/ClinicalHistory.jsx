@@ -14,7 +14,7 @@ import { ConditionForm, TreatmentForm, FileForm, AllergyForm } from '@/forms/his
 import { useConditionForm, handleConditionSubmit, handleDeleteCondition, 
   handleEditCondition, useTreatmentForm, handleTreatmentSubmit, handleEditTreatment, handleDeleteTreatment,
   handleUploadAnalytic, handleDeleteAnalytic, handleAddAllergy, handleDeleteAllergy, handleUploadImage,
-  handleDeleteImage
+  handleDeleteImage, handleGetReport
 } from '@/utils/historyUtils';
 import { useForm } from 'react-hook-form';
 
@@ -498,7 +498,7 @@ export function ClinicalHistory() {
     <div className="container mx-auto py-8 px-4 text-left">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Patient Clinical History</h1>
-        <Button variant="outline" className="px-4 py-2 text-base">
+        <Button variant="outline" className="px-4 py-2 text-base" onClick={() => handleGetReport(historyId, setIsLoading, setError)}>
           <DownloadIcon className="mr-2 h-5 w-5" />
           Report
         </Button>

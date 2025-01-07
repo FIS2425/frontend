@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { conditionSchema, treatmentSchema } from '@/forms/history/schemas';
 import { useForm } from 'react-hook-form';
 import { addCondition, deleteCondition, editCondition, addTreatment, editTreatment,
-  deleteTreatment, uploadAnalytic, addAllergy, deleteAllergy, deleteAnalytic, getHistoryById, uploadImage, deleteImage
+  deleteTreatment, uploadAnalytic, addAllergy, deleteAllergy, deleteAnalytic, getHistoryById, uploadImage, deleteImage, getReport
 } from '@/services/history';
 
 export const useConditionForm = () => {
@@ -214,6 +214,27 @@ export const handleDeleteAllergy = async (historyId, allergyName, updateHistoryP
   deleteAllergy(historyId, allergyName)
     .then((response) => {
       updateHistoryPart('allergies', response.data.allergies);
+    })
+    .catch((err) => {
+      setError('An error occurred. Please try again later.');
+      console.error(err);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+};
+
+export const handleGetReport = async (historyId, setIsLoading, setError) => {
+  getReport(historyId)
+    .then((response) => {
+      const blob =  new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'clinical-history-report.pdf'); // Usa el nombre de archivo de la cabecera content-disposition si es necesario
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link); 
     })
     .catch((err) => {
       setError('An error occurred. Please try again later.');

@@ -76,3 +76,12 @@ export function addAllergy(id, { allergy }) {
 export function deleteAllergy(id, allergyId) {
   return client.delete(`/histories/${id}/allergy/${allergyId}`);
 }
+
+export function getReport(id) {
+  return client.get(`/histories/${id}/report`, {
+    responseType: 'blob',
+    headers: {
+      Accept: 'application/pdf',
+    },
+  });
+};
