@@ -91,7 +91,7 @@ const data = [
       },
       {
         title: 'Calendar',
-        url: '#',
+        url: '/app/calendar',
         icon: Calendar,
         roles: ['doctor'],
       },

@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import { DoctorSchedulePage } from '@/pages/app/DoctorSchedulePage';
 import PatientEditPage from '@/pages/app/PatientEdit';
 import { Plans } from '@/pages/Plans';
 import { SuccessPayment } from '@/pages/SuccessPayment';
@@ -55,6 +56,13 @@ function App() {
                   <RegisterStaff />
                 </ProtectedRoute>
               } />
+
+              <Route path="calendar" element={
+                <ProtectedRoute allowedRoles={['clinicadmin', 'doctor']}>
+                  <DoctorSchedulePage />
+                </ProtectedRoute>
+              } />
+
               <Route path="appointments" element={
                 <ProtectedRoute allowedRoles={['patient']}>
                   <Appointments />
