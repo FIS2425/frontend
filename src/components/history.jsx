@@ -25,7 +25,7 @@ export function CardActions({ children }) {
 }
 
 export function AddIcon({ onClick }) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <CirclePlus className="min-h-7 min-w-7 hover:text-muted-foreground" />
@@ -34,7 +34,7 @@ export function AddIcon({ onClick }) {
 }
 
 export function RemoveConditionIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <CircleMinus className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />
@@ -43,7 +43,7 @@ export function RemoveConditionIcon({ onClick}) {
 }
 
 export function EditConditionIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <Pencil className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />
@@ -52,7 +52,7 @@ export function EditConditionIcon({ onClick}) {
 }
 
 export function EditIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <Pencil className="min-h-4 min-w-4 hover:text-muted-foreground" />
@@ -61,7 +61,7 @@ export function EditIcon({ onClick}) {
 }
 
 export function RemoveIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <CircleMinus className="min-h-4 min-w-4 hover:text-muted-foreground" />
@@ -70,7 +70,7 @@ export function RemoveIcon({ onClick}) {
 }
 
 export function UploadIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <Upload className="min-h-7 min-w-7 hover:text-muted-foreground" />
@@ -79,7 +79,7 @@ export function UploadIcon({ onClick}) {
 }
 
 export function RemoveAllergyIcon({ onClick}) {
-  if (!hasRole(['admin', 'clinicadmin', 'doctor'])) return null;
+  if (!hasRole(['clinicadmin', 'doctor'])) return null;
   return (
     <button onClick={() => onClick()}>
       <Minus className="min-h-4 min-w-4 bg-muted hover:text-muted-foreground" />

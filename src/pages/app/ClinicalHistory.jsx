@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { getHistoryByPatientId } from '@/services/history';
 import { useParams } from 'react-router-dom';
 import { CardDiv, CardActions, AddIcon, EditConditionIcon, RemoveConditionIcon,
-  EditIcon, RemoveIcon, UploadIcon, RemoveAllergyIcon } from '@/components/history';
+  EditIcon, RemoveIcon, UploadIcon, RemoveAllergyIcon, hasRole } from '@/components/history';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { ConditionForm, TreatmentForm, FileForm, AllergyForm } from '@/forms/history/forms';
 import { useConditionForm, handleConditionSubmit, handleDeleteCondition, 
@@ -498,10 +498,12 @@ export function ClinicalHistory() {
     <div className="container mx-auto py-8 px-4 text-left">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Patient Clinical History</h1>
-        <Button variant="outline" className="px-4 py-2 text-base" onClick={() => handleGetReport(historyId, setIsLoading, setError)}>
-          <DownloadIcon className="mr-2 h-5 w-5" />
-          Report
-        </Button>
+        {hasRole(['clinicadmin', 'doctor', 'patient']) && (
+          <Button variant="outline" className="px-4 py-2 text-base" onClick={() => handleGetReport(historyId, setIsLoading, setError)}>
+            <DownloadIcon className="mr-2 h-5 w-5" />
+            Report
+          </Button>
+        )}
       </div>
       <div className="space-y-6">
         <Conditions conditions={conditions} historyId={historyId} updateHistoryPart={updateHistoryPart}/>
