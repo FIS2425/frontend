@@ -1,35 +1,16 @@
-import { useState } from 'react';
-import reactLogo from '@/assets/react.svg';
-import viteLogo from '/vite.svg';
-import { Button } from '@/components/ui/button';
-import ModeToggle from '@/components/mode-toggle';
+import { useAuth } from '@/hooks/use-auth';
+import { DoctorSchedulePage } from '@/pages/app/DoctorSchedulePage';
+import { Appointments } from '@/pages/app/Appointments';
+import { EditClinic } from '@/pages/app/EditClinic';
 
 export function Home() {
-  const [count, setCount] = useState(0);
+  const { userData } = useAuth();
 
-  return (
-    <div className="flex flex-col items-center">
-      <div className="flex justify-around">
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card flex flex-col justify-center items-center gap-y-3">
-        <Button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </Button>
-        <ModeToggle />
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  );
+  if (userData.roles.includes('doctor') || userData.roles.includes('clinicadmin')) {
+    return <DoctorSchedulePage />;
+  } else if (userData.roles.includes('patient')) {
+    return <Appointments />;
+  } else {
+    return <EditClinic />;
+  }
 }
