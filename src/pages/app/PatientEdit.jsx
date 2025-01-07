@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
 import PatientEdit from '@/forms/patient/formsEdit';
 import PasswordChange from '@/components/forms/password-change';
 import { Enable2FA } from '@/components/enable-2fa';
@@ -9,7 +8,6 @@ import { format } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
 
 function PatientEditPage({ initialPatient = {} }) {
-  const { id } = useParams();
   const [patient, setPatient] = useState(initialPatient);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
@@ -70,7 +68,7 @@ function PatientEditPage({ initialPatient = {} }) {
     e.preventDefault();
     console.log(patient);
     if (validateForm()) {
-      updatePatient(id, patient)
+      updatePatient(userData.patientid, patient)
         .then(() => {
           console.log('Paciente actualizado con éxito');
         })
