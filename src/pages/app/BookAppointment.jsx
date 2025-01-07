@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useParams } from 'react-router-dom';
+import { alertAppointment } from '@/services/alert';
 import { getDoctorData } from '@/services/staff';
 import { getClinicData } from '@/services/payments';
 import { getAvailableAppointments, bookAppointment } from '@/services/appointment';
@@ -128,8 +129,10 @@ export function BookingSystem() {
 
       const adjustedTime = format(selectedDate, 'HH:mm');
       const appointmentDate = `${formattedDate}T${adjustedTime}:00`;
-      await bookAppointment(userData.patientid, clinic._id, doctorId, doctor.specialty, appointmentDate);
-      navigate('/app/appointments');
+      bookAppointment(userData.patientid, clinic._id, doctorId, doctor.specialty, appointmentDate).then(() => {
+        alertAppointment(userData.patientid, clinic.name, appointmentDate, doctor.name);
+        navigate('/app/appointments');
+      });
     } catch (error) {
       setError('Failed to book the appointment. Please try again later.');
       console.error('Error booking appointment:', error);
