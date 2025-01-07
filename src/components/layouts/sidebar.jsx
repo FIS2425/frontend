@@ -53,7 +53,7 @@ const data = [
         title: 'Register a new doctor',
         url: '/app/register-staff',
         icon: ClipboardPlus,
-        roles: ['clinicadmin', 'doctor'],
+        roles: ['clinicadmin'],
       },
       {
         title: 'Patient creation',
