@@ -163,8 +163,8 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
     <div className="flex flex-col items-center space-y-8">
       <Card className="w-full max-w-2xl mx-auto h-fit">
         <CardHeader>
-          <CardTitle>Información de la Clínica</CardTitle>
-          <CardDescription>Visualiza y edita los detalles de tu clínica</CardDescription>
+          <CardTitle>Clinic Information</CardTitle>
+          <CardDescription>View and edit your clinic details</CardDescription>
         </CardHeader>
         <CardContent>
           <ClinicForm
@@ -180,19 +180,19 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
           {editando ? (
             <>
               <Button type="button" variant="outline" onClick={handleCancel}>
-                <X className="mr-2 h-4 w-4" /> Cancelar
+                <X className="mr-2 h-4 w-4" /> Cancel
               </Button>
               <Button type="submit" onClick={handleSubmit}>
-                <Save className="mr-2 h-4 w-4" /> Guardar
+                <Save className="mr-2 h-4 w-4" /> Save
               </Button>
             </>
           ) : (
             <>
               <Button type="button" variant="outline" onClick={() => setEditando(true)}>
-                <Edit className="mr-2 h-4 w-4" /> Editar
+                <Edit className="mr-2 h-4 w-4" /> Edit
               </Button>
               <Button type="button" onClick={() => navigate('/app/plans')}>
-                <Edit className="mr-2 h-4 w-4" /> Actualizar plan
+                <Edit className="mr-2 h-4 w-4" /> Update plan
               </Button>
             </>
           )}

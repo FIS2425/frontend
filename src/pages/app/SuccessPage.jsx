@@ -15,16 +15,16 @@ export function ClinicaCompletada() {
       <CardHeader className="flex flex-col items-center space-y-2">
         <CheckCircle className="h-12 w-12 text-green-500" />
         <CardTitle className="text-2xl font-bold text-center">
-          Clínica Creada Correctamente
+          Clinic created correctly
         </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-center">
-          La clínica ha sido registrada con éxito en nuestro sistema.
+          The clinic has been successfully registered in our system.
         </p>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button onClick={handleAccept}>Aceptar</Button>
+        <Button onClick={handleAccept}>Next</Button>
       </CardFooter>
     </Card>
   );

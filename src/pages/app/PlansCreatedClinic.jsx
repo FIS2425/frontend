@@ -30,7 +30,7 @@ export function PlansCreatedClinic({ onSelectPlan, selectedPlan }) {
   };
 
   if (loading) {
-    return <div className="text-center">Cargando planes...</div>;
+    return <div className="text-center">Loading plans...</div>;
   }
 
   if (error) {
@@ -39,9 +39,9 @@ export function PlansCreatedClinic({ onSelectPlan, selectedPlan }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">Elige tu Plan</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Choose your Plan</h2>
       <p className="text-center mb-8 text-muted-foreground">
-        Selecciona el plan que mejor se adapte a las necesidades de tu clínica
+        Select the plan that best suits the needs of your clinic.
       </p>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
         {plans.map((plan) => (
@@ -64,8 +64,8 @@ export function PlansCreatedClinic({ onSelectPlan, selectedPlan }) {
               <Button
                 type="button"
                 className="w-full"
-                onClick={() => handleSelect(plan._id)} // Llama a handleSelect con el ID del plan
-                variant={selectedPlan === plan._id ? 'secondary' : 'default'} // Resaltar si está seleccionado
+                onClick={() => handleSelect(plan._id)}
+                variant={selectedPlan === plan._id ? 'secondary' : 'default'}
               >
                 {selectedPlan === plan._id ? 'Seleccionado' : 'Elegir Plan'}
               </Button>
