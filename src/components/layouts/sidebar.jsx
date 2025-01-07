@@ -1,4 +1,4 @@
-import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen, ClipboardPlus, Stethoscope } from 'lucide-react';
+import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen, ClipboardPlus, Stethoscope, Hospital } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -76,7 +76,7 @@ const data = [
       {
         title: 'Clinic actions',
         url: '#',
-        icon: UserPen,
+        icon: Hospital,
         roles: ['admin','clinicadmin'],
         items: [
           {
