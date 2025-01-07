@@ -86,7 +86,6 @@ export function AppointmentDetails() {
   const fetchWeather = async (appointmentId) => {
     try {
       const weatherData = await getAppointmentWeather(appointmentId);
-      console.log(weatherData);
       setWeather(weatherData);
     } catch (err){
       console.error(err);
