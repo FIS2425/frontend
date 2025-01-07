@@ -31,7 +31,7 @@ function PatientEditPage({ initialPatient = {} }) {
     };
 
     fetchPatient();
-  }, [id]);
+  }, [userData.patientid]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,12 +55,12 @@ function PatientEditPage({ initialPatient = {} }) {
 
   const validateForm = () => {
     let newErrors = {};
-    if (!patient.name) newErrors.name = 'El nombre es requerido';
-    if (!patient.surname) newErrors.surname = 'El apellido es requerido';
-    if (!patient.birthdate) newErrors.birthdate = 'La fecha de nacimiento es requerida';
-    if (!patient.dni) newErrors.dni = 'El DNI es requerido';
-    else if (!validateDNI(patient.dni)) newErrors.dni = 'El DNI no es válido';
-    if (!patient.city) newErrors.city = 'La ciudad es requerida';
+    if (!patient.name) newErrors.name = 'The name is required';
+    if (!patient.surname) newErrors.surname = 'The surname is required';
+    if (!patient.birthdate) newErrors.birthdate = 'The birthdate is required';
+    if (!patient.dni) newErrors.dni = 'The DNI is required';
+    else if (!validateDNI(patient.dni)) newErrors.dni = 'The DNI is not valid';
+    if (!patient.city) newErrors.city = 'The city is required';    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
