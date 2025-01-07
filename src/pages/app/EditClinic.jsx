@@ -9,7 +9,7 @@ import { getClinicById, updateClinic, getDoctorById,getPlanById } from '@/servic
 import { getDoctorsBySpeciality } from '@/services/staff';
 import { useAuth } from '@/hooks/use-auth';
 
-function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit }) {
+function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit, nombre }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       {['name', 'city', 'district', 'postalCode'].map((field) => (
@@ -32,7 +32,7 @@ function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit })
       ))}
       <div>
         <Label htmlFor="plan">Plan</Label>
-        <p className="mt-1">{clinica.plan}</p>
+        <p className="mt-1">{nombre}</p>
       </div>
     </form>
   );
@@ -73,6 +73,7 @@ function DoctorsList({ doctors, onCardClick }) {
 export function ClinicaEdicion({ clinicaInicial = {} }) {
   const [clinica, setClinica] = useState(clinicaInicial);
   const [ID_Clinica, setIdClinica] = useState(null);
+  const [planName, setPlanName] = useState(null);
   const [editando, setEditando] = useState(false);
   const [errors, setErrors] = useState({});
   const clinicaInicialRef = useRef(null);
@@ -106,14 +107,12 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
         // Obtener los doctores de la clínica
         const doctorsResponse = await getDoctorsBySpeciality({ clinicId });
         setDoctors(doctorsResponse.data);
-
+        console.log(clinicResponse.data);
         // Obtener el nombre del plan
         if (clinicResponse.data.plan) {
           const planResponse = await getPlanById(clinicResponse.data.plan);
-          setClinica((prevClinica) => ({
-            ...prevClinica,
-            plan: planResponse.data.name,
-          }));
+          console.log(planResponse.data.name);
+          setPlanName(planResponse.data.name);
         }
 
         // Marcar como listo
@@ -174,6 +173,7 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
             onChange={handleChange}
             onCancel={handleCancel}
             onSubmit={handleSubmit}
+            nombre={planName}
           />
         </CardContent>
         <CardFooter className="flex justify-center space-x-2">

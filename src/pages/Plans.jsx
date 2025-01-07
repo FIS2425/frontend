@@ -37,12 +37,13 @@ export function Plans() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await registerPayment({ planId: selectedPlan, clinicId: userData.clinicId });
+      var urlStripe = await registerPayment({ planId: selectedPlan, clinicId: userData.clinicId });
     } catch (error) {
       console.error('Error submitting payment:', error);
       setError('Failed to register payment. Please try again.');
     } finally {
       setIsSubmitting(false);
+      window.location.href = urlStripe;
     }
   };
 
