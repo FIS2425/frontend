@@ -16,6 +16,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  ClipboardPlus,
+  Stethoscope
 } from '@/components/ui/sidebar';
 import ModdeToggle from '@/components/mode-toggle';
 import {
@@ -46,8 +48,14 @@ const data = [
       {
         title: 'My staff profile',
         url: '/app/staff/me',
-        icon: UserPen,
+        icon: Stethoscope,
         roles: ['doctor'],
+      },
+      {
+        title: 'Register a new doctor',
+        url: '/app/register-staff',
+        icon: ClipboardPlus,
+        roles: ['clinicadmin', 'doctor'],
       },
       {
         title: 'Patient creation',
