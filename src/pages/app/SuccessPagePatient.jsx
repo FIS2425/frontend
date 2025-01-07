@@ -24,7 +24,7 @@ export function PacienteRegistrado() {
         </p>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button onClick={handleAccept}>Aceptar</Button>
+        <Button onClick={handleAccept}>Next</Button>
       </CardFooter>
     </Card>
   );

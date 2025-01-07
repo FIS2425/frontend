@@ -22,7 +22,6 @@ export function Enable2FA() {
       }
 
       const response = await enable2FA();
-      console.log(response);
       setTwoFactorData(response.data);
       setShowQR(true);
     } catch (error) {

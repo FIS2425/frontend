@@ -23,8 +23,10 @@ import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
 import { ClinicaCompletada } from '@/pages/app/SuccessPage';
+import { BookingSystem } from '@/pages/app/BookAppointment';
 import { RegisterPatient } from '@/pages/app/RegisterPatient';
 import {PacienteRegistrado} from '@/pages/app/SuccessPagePatient';
+
 
 function App() {
   return (
@@ -67,14 +69,11 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="appointments/:appointmentId" element={<AppointmentDetails />} />
-
-              <Route path="history/:id" element={<ClinicalHistory />} />  
+              <Route path="appointments/:doctorId/book" element={<BookingSystem />} />
+              <Route path="history/:id" element={<ClinicalHistory />} />
               <Route path="search-staff" element={
-                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
-                  <SearchStaff />
-                </ProtectedRoute>
+                <SearchStaff />
               } />
-
               <Route
                 path="clinics/add"
                 element={
@@ -99,7 +98,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route 
+              <Route
                 path="patients/edit" element={
                   <ProtectedRoute allowedRoles={['admin', 'clinicadmin','patient']}>
                     <PatientEditPage />
@@ -108,7 +107,7 @@ function App() {
                 <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
                   <RegisterPatient />
                 </ProtectedRoute>
-              } 
+              }
               />
               <Route
                 path="patients/success"
@@ -123,7 +122,6 @@ function App() {
                   <Plans />
                 </ProtectedRoute>
               } />
-              
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />

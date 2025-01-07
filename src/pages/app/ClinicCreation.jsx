@@ -56,7 +56,7 @@ export function ClinicCreation() {
         });
         window.location.href = urlStripe;
       } catch (error) {
-        setErrors({ submit: 'Error al registrar la clínica. Inténtelo de nuevo más tarde.', ...error });
+        setErrors({ submit: 'Error registering the clinic. Please try again later.', ...error });
       }
     }
   };
@@ -66,29 +66,29 @@ export function ClinicCreation() {
       {/* Columna 1: Campos del Formulario */}
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-center text-xl font-bold">Información de la Clínica</CardTitle>
+          <CardTitle className="text-center text-xl font-bold">Clinic Information</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Label htmlFor="name">Nombre</Label>
+            <Label htmlFor="name">Name</Label>
             <Input id="name" name="name" value={formData.name} onChange={handleChange} />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
-            <Label htmlFor="city">Ciudad</Label>
+            <Label htmlFor="city">City</Label>
             <Input id="city" name="city" value={formData.city} onChange={handleChange} />
             {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
 
-            <Label htmlFor="district">Distrito</Label>
+            <Label htmlFor="district">District</Label>
             <Input id="district" name="district" value={formData.district} onChange={handleChange} />
             {errors.district && <p className="text-red-500 text-sm">{errors.district}</p>}
 
-            <Label htmlFor="postalCode">Código Postal</Label>
+            <Label htmlFor="postalCode">Postal Code</Label>
             <Input id="postalCode" name="postalCode" value={formData.postalCode} onChange={handleChange} />
             {errors.postalCode && <p className="text-red-500 text-sm">{errors.postalCode}</p>}
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">Registrar</Button>
+          <Button type="submit" className="w-full">Registrer</Button>
         </CardFooter>
       </Card>
 

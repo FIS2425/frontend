@@ -8,6 +8,16 @@ export function getAppointmentsByDoctorId(doctorId) {
   return client.get(`/appointments/doctor/${doctorId}`);
 }
 
+export function bookAppointment(patientId, clinicId, doctorId, specialty, appointmentDate) {
+  return client.post('/appointments', {
+    patientId: patientId,
+    clinicId: clinicId,
+    doctorId: doctorId,
+    specialty: specialty,
+    appointmentDate: appointmentDate,
+  });
+}
+
 export function getAppointmentById(appointmentId) {
   return client.get(`/appointments/${appointmentId}`).then(response => response.data);
 }
@@ -26,4 +36,16 @@ export function completeAppointment(appointmentId) {
 
 export function noShowAppointment(appointmentId) {
   return client.put(`/appointments/${appointmentId}/noshow`);
+}
+
+export function getAvailableAppointments(clinicId, doctorId, date) {
+  return client
+    .get('/appointments/available', {
+      params: {
+        clinicId,
+        doctorId,
+        date,
+      },
+    })
+    .then(response => response.data);
 }

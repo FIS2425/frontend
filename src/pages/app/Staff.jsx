@@ -72,9 +72,7 @@ export function Staff({ me }) {
         console.error('Error fetching doctor data:', error);
         setNoDoctor(true);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 5000);
+        setLoading(false);
       }
     }
 
@@ -142,6 +140,13 @@ export function Staff({ me }) {
               <p className="text-lg"><strong>Specialty:</strong> {getSpecialtyLabel(specialty)}</p>
               {(me || roles.includes('clinicadmin')) && <p className="text-lg"><strong>DNI:</strong> {dni}</p>}
             </CardContent>
+            {roles.includes('patient') && (
+              <CardFooter className="flex justify-center items-center flex-wrap gap-4">
+                <Button onClick={() => navigate(`/app/appointments/${doctorId}/book`)}>
+                  Book an appointment
+                </Button>
+              </CardFooter>
+            )}
             {roles.includes('clinicadmin') && (
               <CardFooter className="flex flex-wrap gap-4">
                 {!rolesFromProfile.includes('clinicadmin') && (
@@ -168,15 +173,10 @@ export function Staff({ me }) {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                {roles.includes('patient') && (
-                  <Button variant="secondary">
-                    <span className="text-base font-large">TODO: Book an appointment</span>
-                  </Button>
-                )}
               </CardFooter>
             )}
             {error && <p className="flex justify-center items-center text-base text-red-500 pb-4">{error}</p>}
-            {me && 
+            {me &&
             <div className="flex flex-wrap gap-4 p-4 [&>*]:grow fit-content">
               <PasswordChange />
               <Enable2FA />
