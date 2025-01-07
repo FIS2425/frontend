@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
     if (user.roles && (user.roles.includes('doctor') || user.roles.includes('clinicadmin'))) {
       await getMyself().then((response) => {
         user = { ...user, ...response.data };
-        console.log(user);
       }).catch((error) => {
         console.error(error);
       });
@@ -29,7 +28,6 @@ export const AuthProvider = ({ children }) => {
         console.error(error);
       });
     }
-    console.log(user);
 
     setUserData(user);
 
