@@ -27,7 +27,7 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
 
 
   const handleSubmit = (data) => {
-    const doctorId = userData.doctorId;
+    const doctorId = userData.doctorid;
     const clinicId = userData.clinicId;
     const { date, startTime, endTime } = data;
     createWorkshift({ date, startTime, endTime, doctorId, clinicId }).then((newSchedule) => {
@@ -55,7 +55,7 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
             </DialogTitle>
           </VisuallyHidden>
         </DialogHeader>
-        <WorkshiftForm form={form} onSubmit={form.handleSubmit(handleSubmit)} selectedDate={selectedDate} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} existingSchedule={existingSchedule} setSelectedDate={setSelectedDate}/>
+        <WorkshiftForm form={form} onSubmit={form.handleSubmit(handleSubmit)} selectedDate={selectedDate} startTime={startTime} setStartTime={setStartTime} endTime={endTime} setEndTime={setEndTime} existingSchedule={existingSchedule} setSelectedDate={setSelectedDate} />
         {existingSchedule && (
           <Button onClick={onDelete} variant="destructive">Delete Schedule</Button>
         )}
