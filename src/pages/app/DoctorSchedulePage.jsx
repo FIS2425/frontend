@@ -5,7 +5,7 @@ import { ScheduleModal } from '@/components/schedule-modal';
 import { startOfWeek } from 'date-fns';
 import { DatePickerWithPresets } from '@/components/ui/date-picker-with-presets';
 import { useAuth } from '@/hooks/use-auth';
-import { workshiftsByDoctor } from '@/services/workshift';
+import { workshiftsByDoctor, deleteWorkshift } from '@/services/workshift';
 import { transformDatesToSchedule, transformDatesToAppointment } from '@/utils/utils';
 import { getAppointmentsByDoctorId } from '@/services/appointment';
 import { useNavigate } from 'react-router-dom';
@@ -49,8 +49,11 @@ export function DoctorSchedulePage() {
     navigation(`/app/appointments/${appointment.id}`);
   };
 
-  const handleDeleteSchedule = (schedule) => {
-    //todo: delete schedule
+  const handleDeleteSchedule = () => {
+    deleteWorkshift(selectedSchedule._id).then(() => {
+      setSchedules(prevSchedules => prevSchedules.filter(s => s._id !== selectedSchedule._id));
+      closeModal();
+    });
   };
 
   const addNewWorkshift = () => {
@@ -60,6 +63,12 @@ export function DoctorSchedulePage() {
     openModal();
   };
 
+  const fetchWorkshifts = async () => {
+    const workshiftsList = await workshiftsByDoctor(userData.doctorid);
+    const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
+    setSchedules(schedules);
+  };
+
   const fetchAppointments = async () => {
     const appointmentsList = await getAppointmentsByDoctorId(userData.doctorid).then((res) => res.data);
     const appointments = appointmentsList.map(({ _id, patientId, appointmentDate, appointmentEndDate }) => transformDatesToAppointment(_id, patientId, appointmentDate, appointmentEndDate));
@@ -67,27 +76,23 @@ export function DoctorSchedulePage() {
   };
 
   useEffect(() => {
-    const fetchWorkshifts = async () => {
-      const workshiftsList = await workshiftsByDoctor(userData.doctorid);
-      const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
-      setSchedules(schedules);
-    };
     fetchWorkshifts();
     fetchAppointments();
-  }, [userData.doctorid]);
+  });
 
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {
       if (selectedSchedule) {
         // Update existing schedule
-        return prevSchedules.map(schedule => 
-          (schedule.id === selectedSchedule.id) ? newSchedule : schedule
+        return prevSchedules.map(schedule =>
+          (schedule._id === selectedSchedule._id) ? newSchedule : schedule
         );
       } else {
         // Add new schedule
         return [...prevSchedules, newSchedule];
       }
     });
+    fetchWorkshifts();
     closeModal();
   };
 
@@ -101,11 +106,11 @@ export function DoctorSchedulePage() {
         <DatePickerWithPresets date={currentWeek} setDate={handleWeekChange} />
         <Button onClick={addNewWorkshift}>Add Schedule</Button>
       </div>
-      <Calendar 
-        onDateSelect={handleDateSelect} 
+      <Calendar
+        onDateSelect={handleDateSelect}
         onScheduleSelect={handleScheduleSelect}
         onAppointmentSelect={handleAppointmentSelect}
-        schedules={schedules} 
+        schedules={schedules}
         appointments={appointments}
         currentWeek={currentWeek}
         onWeekChange={setCurrentWeek}
@@ -124,4 +129,4 @@ export function DoctorSchedulePage() {
       ) : null}
     </div>
   );
-}
+};
