@@ -7,6 +7,7 @@ import { Home } from '@/pages/app/Home';
 import { Login } from '@/pages/Login';
 import { Logout } from '@/pages/Logout';
 import { Verify2FA } from '@/pages/Verify2FA';
+import PatientEditPage from '@/pages/app/PatientEdit';
 import { Plans } from '@/pages/Plans';
 import { SuccessPayment } from '@/pages/SuccessPayment';
 import { Appointments } from '@/pages/app/Appointments';
@@ -21,6 +22,8 @@ import { AuthProvider, ProtectedRoute } from '@/components/auth-provider';
 import { ClinicCreation } from '@/pages/app/ClinicCreation';
 import { ClinicaEdicion } from '@/pages/app/EditClinic';
 import { ClinicaCompletada } from '@/pages/app/SuccessPage';
+import { RegisterPatient } from '@/pages/app/RegisterPatient';
+import {PacienteRegistrado} from '@/pages/app/SuccessPagePatient';
 
 function App() {
   return (
@@ -73,7 +76,7 @@ function App() {
                 }
               />
               <Route
-                path="clinics/:id/edit"
+                path="clinics/edit"
                 element={
                   <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                     <ClinicaEdicion />
@@ -88,17 +91,37 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route 
+                path="patients/edit" element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin','patient']}>
+                    <PatientEditPage />
+                  </ProtectedRoute>} />
+              <Route path="patients/register-patient" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin', 'doctor']}>
+                  <RegisterPatient />
+                </ProtectedRoute>
+              } 
+              />
+              <Route
+                path="patients/success"
+                element={
+                  <ProtectedRoute allowedRoles={['admin', 'clinicadmin','doctor']}>
+                    <PacienteRegistrado />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="plans" element={
+                <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
+                  <Plans />
+                </ProtectedRoute>
+              } />
+              
             </Route>
             { /* Routes here have no layout ON PURPOSE */}
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/verify-2fa" element={<Verify2FA />} />
 
-            <Route path="/plans" element={
-              <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
-                <Plans />
-              </ProtectedRoute>
-            } />
             <Route path="/success" element={
               <ProtectedRoute allowedRoles={['admin', 'clinicadmin']}>
                 <SuccessPayment />
