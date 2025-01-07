@@ -21,3 +21,21 @@ export function editCondition(id, conditionId, { name, details, since, until }) 
 export function deleteCondition(id, conditionId) {
   return client.delete(`/histories/${id}/condition/${conditionId}`);
 }
+
+export function addTreatment(id, { name, instructions, startDate, endDate }) {
+  return client.post(
+    `/histories/${id}/treatment`,
+    { name, instructions, startDate, endDate }
+  );
+}
+
+export function editTreatment(id, treatmentId, { name, instructions, startDate, endDate }) {
+  return client.put(
+    `/histories/${id}/treatment/${treatmentId}`,
+    { name, instructions, startDate, endDate }
+  );
+}
+
+export function deleteTreatment(id, treatmentId) {
+  return client.delete(`/histories/${id}/treatment/${treatmentId}`);
+}

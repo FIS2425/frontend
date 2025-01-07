@@ -1,3 +1,5 @@
+import { LoaderCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -6,24 +8,21 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LoaderCircle } from 'lucide-react';
+import { PasswordInput } from '@/components/forms/password-input';
 
-export function ConditionForm({ form, onSubmit, isLoading, error }) {
+export function RegisterPatientForm({ form, onSubmit, isLoading, error }) {
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {error && <FormMessage className="flex flex-col items-start text-base">{error}</FormMessage>}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid lg:grid-cols-2 gap-x-8 gap-y-8">
         <FormField
           control={form.control}
           name="name"
-          rules={{ required: true }}
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Name *</FormLabel>
+              <FormLabel className="text-base font-large">Name</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder="John" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -31,13 +30,12 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
         />
         <FormField
           control={form.control}
-          name="details"
-          rules={{ required: true }}
+          name="surname"
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Details *</FormLabel>
+              <FormLabel className="text-base font-large">Surname</FormLabel>
               <FormControl>
-                <Input placeholder="Details" {...field} />
+                <Input placeholder="Doe" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -45,13 +43,12 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
         />
         <FormField
           control={form.control}
-          name="since"
-          rules={{ required: true }}
+          name="dni"
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Since *</FormLabel>
+              <FormLabel className="text-base font-large">DNI</FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input placeholder="12345678A" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,96 +56,83 @@ export function ConditionForm({ form, onSubmit, isLoading, error }) {
         />
         <FormField
           control={form.control}
-          name="until"
-          rules={{ required: false }}
+          name="city"
           render={({ field }) => (
             <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Until</FormLabel>
+              <FormLabel className="text-base font-large">City</FormLabel>
               <FormControl>
-                <Input type="date" {...field} />
+                <Input placeholder="Sevilla" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit" disabled={isLoading}>
+        <FormField
+          control={form.control}
+          name="birthdate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Fecha de nacimiento</FormLabel>
+              <FormControl>
+                <Input
+                  type="date"
+                  {...field} // Registra el campo con react-hook-form
+                  value={field.value || ''} // Asegura que siempre haya un valor
+                  onChange={(e) => {
+                    field.onChange(e.target.value); // Actualiza el valor del campo
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Email</FormLabel>
+              <FormControl>
+                <Input placeholder="email@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Username</FormLabel>
+              <FormControl>
+                <Input placeholder="username" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="flex flex-col items-start">
+              <FormLabel className="text-base font-large">Password</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button className="w-full lg:col-span-2" type="submit" disabled={isLoading}>
           {isLoading && (
             <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
           )}
-          <span className="text-base font-large">Save</span>
+          <span className="text-base font-large">Register</span>
         </Button>
-      </form>
-    </Form>
-  );
-}
-
-export function TreatmentForm({ form, onSubmit, isLoading, error }) {
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {error && <FormMessage className="flex flex-col items-start text-base">{error}</FormMessage>}
-        <FormField
-          control={form.control}
-          name="name"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Name *</FormLabel>
-              <FormControl>
-                <Input placeholder="Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="instructions"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Instructions *</FormLabel>
-              <FormControl>
-                <Input placeholder="Instructions" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="startDate"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">Start date *</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="endDate"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <FormItem className="flex flex-col items-start">
-              <FormLabel className="text-base font-large">End date *</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button className="w-full" type="submit" disabled={isLoading}>
-          {isLoading && (
-            <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          <span className="text-base font-large">Save</span>
-        </Button>
+        {error && <FormMessage className="flex flex-col items-start text-base lg:col-span-2">{error}</FormMessage>}
       </form>
     </Form>
   );

@@ -1,84 +1,35 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Edit, Save, X, LoaderCircle } from 'lucide-react';
-import { getClinicById, updateClinic } from '@/services/payments';
+import { getClinicById, updateClinic, getDoctorById,getPlanById } from '@/services/payments';
 import { getDoctorsBySpeciality } from '@/services/staff';
+import { useAuth } from '@/hooks/use-auth';
 
 function ClinicForm({ clinica, editando, errors, onChange, onCancel, onSubmit }) {
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="name">Nombre</Label>
-        {editando ? (
-          <Input
-            type="text"
-            id="name"
-            name="name"
-            value={clinica.name}
-            onChange={onChange}
-            className={errors.name ? 'border-red-500' : ''}
-          />
-        ) : (
-          <p className="mt-1">{clinica.name}</p>
-        )}
-        {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-      </div>
-
-      <div>
-        <Label htmlFor="city">Ciudad</Label>
-        {editando ? (
-          <Input
-            type="text"
-            id="city"
-            name="city"
-            value={clinica.city}
-            onChange={onChange}
-            className={errors.city ? 'border-red-500' : ''}
-          />
-        ) : (
-          <p className="mt-1">{clinica.city}</p>
-        )}
-        {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
-      </div>
-
-      <div>
-        <Label htmlFor="district">Distrito</Label>
-        {editando ? (
-          <Input
-            type="text"
-            id="district"
-            name="district"
-            value={clinica.district}
-            onChange={onChange}
-            className={errors.district ? 'border-red-500' : ''}
-          />
-        ) : (
-          <p className="mt-1">{clinica.district}</p>
-        )}
-        {errors.district && <p className="text-red-500 text-sm mt-1">{errors.district}</p>}
-      </div>
-
-      <div>
-        <Label htmlFor="postalCode">Código Postal</Label>
-        {editando ? (
-          <Input
-            type="text"
-            id="postalCode"
-            name="postalCode"
-            value={clinica.postalCode}
-            onChange={onChange}
-            className={errors.postalCode ? 'border-red-500' : ''}
-          />
-        ) : (
-          <p className="mt-1">{clinica.postalCode}</p>
-        )}
-        {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>}
-      </div>
-
+      {['name', 'city', 'district', 'postalCode'].map((field) => (
+        <div key={field}>
+          <Label htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
+          {editando ? (
+            <Input
+              type="text"
+              id={field}
+              name={field}
+              value={clinica[field]}
+              onChange={onChange}
+              className={errors[field] ? 'border-red-500' : ''}
+            />
+          ) : (
+            <p className="mt-1">{clinica[field]}</p>
+          )}
+          {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+        </div>
+      ))}
       <div>
         <Label htmlFor="plan">Plan</Label>
         <p className="mt-1">{clinica.plan}</p>
@@ -120,86 +71,93 @@ function DoctorsList({ doctors, onCardClick }) {
 }
 
 export function ClinicaEdicion({ clinicaInicial = {} }) {
-  const { id } = useParams();
   const [clinica, setClinica] = useState(clinicaInicial);
+  const [ID_Clinica, setIdClinica] = useState(null);
   const [editando, setEditando] = useState(false);
   const [errors, setErrors] = useState({});
   const clinicaInicialRef = useRef(null);
   const [doctors, setDoctors] = useState([]);
+  const [isReady, setIsReady] = useState(false); // Estado para sincronizar cargas
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { userData } = useAuth();
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setClinica((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: value,
     }));
   };
 
+  // Sincronizar todas las llamadas
   useEffect(() => {
-    setLoading(true);
-    const fetchClinic = async () => {
+    const fetchAllData = async () => {
       try {
-        const response = await getClinicById(id);
-        const data = response.data;
-        setClinica(data);
-        clinicaInicialRef.current = data;
-      } catch (error) {
-        console.error('Error al obtener datos de la clínica:', error);
-      }
-    };
-    fetchClinic();
+        // Obtener el ID de la clínica desde el doctor
+        const doctorResponse = await getDoctorById(userData.doctorid);
+        const clinicId = doctorResponse.data.clinicId;
+        setIdClinica(clinicId);
 
-    const fetchDoctors = async () => {
-      try {
-        const clinicId = id;
-        const doctorsFetched = await getDoctorsBySpeciality({ clinicId });
-        setDoctors(doctorsFetched.data);
+        // Obtener los datos de la clínica
+        const clinicResponse = await getClinicById(clinicId);
+        setClinica(clinicResponse.data);
+        clinicaInicialRef.current = clinicResponse.data;
+
+        // Obtener los doctores de la clínica
+        const doctorsResponse = await getDoctorsBySpeciality({ clinicId });
+        setDoctors(doctorsResponse.data);
+
+        // Obtener el nombre del plan
+        if (clinicResponse.data.plan) {
+          const planResponse = await getPlanById(clinicResponse.data.plan);
+          setClinica((prevClinica) => ({
+            ...prevClinica,
+            plan: planResponse.data.name,
+          }));
+        }
+
+        // Marcar como listo
+        setIsReady(true);
       } catch (error) {
-        setLoading(false);
-        console.error('Error al obtener datos de los doctores:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error al cargar los datos:', error);
       }
     };
-    fetchDoctors();
-  }, [id]);
+
+    fetchAllData();
+  }, [userData.doctorid]);
 
   const validateForm = () => {
     const newErrors = {};
-    if (!clinica.name.trim()) newErrors.name = 'El nombre es requerido';
-    if (!clinica.city.trim()) newErrors.city = 'La ciudad es requerida';
-    if (!clinica.district.trim()) newErrors.district = 'El distrito es requerido';
-    if (!clinica.postalCode.trim()) newErrors.postalCode = 'El código postal es requerido';
+    ['name', 'city', 'district', 'postalCode'].forEach((field) => {
+      if (!clinica[field]?.trim()) newErrors[field] = `${field} es requerido`;
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      updateClinic(id, clinica)
-        .then(() => console.log('Clínica actualizada con éxito'))
-        .catch((error) => console.error('Error al actualizar la clínica:', error));
-      setEditando(false);
+      try {
+        await updateClinic(ID_Clinica, clinica);
+        setEditando(false);
+      } catch (error) {
+        console.error('Error al actualizar la clínica:', error);
+      }
     }
   };
 
   const handleCancel = () => {
-    setClinica(clinicaInicialRef.current);
+    setClinica(clinicaInicialRef.current || clinicaInicial);
     setEditando(false);
     setErrors({});
   };
 
-  const handleUpdatePlan = () => console.log('Actualizar plan');
-
   const handleCardClick = (doctorId) => navigate(`/app/staff/${doctorId}`);
 
-  if (loading) {
+  if (!isReady) {
     return <LoaderCircle className="animate-spin" />;
   }
-
 
   return (
     <div className="flex flex-col items-center space-y-8">
@@ -230,22 +188,18 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
             </>
           ) : (
             <>
-              <div className="flex flex-col items-center space-y-4">
-                <Button type="button" variant="outline" onClick={() => setEditando(true)}>
-                  <Edit className="mr-2 h-4 w-4" /> Editar
-                </Button>
-                <Button type="button" onClick={handleUpdatePlan}>
-                  <Edit className="mr-2 h-4 w-4" /> Actualizar plan
-                </Button>
-              </div>
+              <Button type="button" variant="outline" onClick={() => setEditando(true)}>
+                <Edit className="mr-2 h-4 w-4" /> Editar
+              </Button>
+              <Button type="button" onClick={() => navigate('/app/plans')}>
+                <Edit className="mr-2 h-4 w-4" /> Actualizar plan
+              </Button>
             </>
           )}
         </CardFooter>
       </Card>
 
-      <div className="flex justify-center mt-8">
-        <DoctorsList doctors={doctors} onCardClick={handleCardClick} />
-      </div>
+      <DoctorsList doctors={doctors} onCardClick={handleCardClick} />
     </div>
   );
 }
