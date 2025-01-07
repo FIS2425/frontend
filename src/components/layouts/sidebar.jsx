@@ -1,4 +1,4 @@
-import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen } from 'lucide-react';
+import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen, ClipboardPlus, Stethoscope } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -16,8 +16,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  ClipboardPlus,
-  Stethoscope
 } from '@/components/ui/sidebar';
 import ModdeToggle from '@/components/mode-toggle';
 import {
