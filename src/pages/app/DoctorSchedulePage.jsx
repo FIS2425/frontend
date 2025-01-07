@@ -51,7 +51,7 @@ export function DoctorSchedulePage() {
 
   const handleDeleteSchedule = (schedule) => {
     //todo: delete schedule
-  }
+  };
 
   const addNewWorkshift = () => {
     setSelectedDate(new Date());
