@@ -46,7 +46,7 @@ function RegisterStaffCard() {
         if (err.response && err.response.status === 400) {
           setError('A doctor with the same DNI or Email already exists');
         } else if (err.response && err.response.status === 403) {
-          setError(err.reponse.data.message);
+          setError(err.response.data.message);
         } else {
           setError('An error occurred. Please try again later.');
           console.error(err);

@@ -1,4 +1,4 @@
-import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen } from 'lucide-react';
+import { Calendar, Home, Search, ChevronRight, ChevronsUpDown, LogOut, CalendarCheck, UserPen, ClipboardPlus, Stethoscope, Hospital } from 'lucide-react';
 import { Link } from 'react-router';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -46,8 +46,14 @@ const data = [
       {
         title: 'My staff profile',
         url: '/app/staff/me',
-        icon: UserPen,
+        icon: Stethoscope,
         roles: ['doctor'],
+      },
+      {
+        title: 'Register a new doctor',
+        url: '/app/register-staff',
+        icon: ClipboardPlus,
+        roles: ['clinicadmin'],
       },
       {
         title: 'Patient creation',
@@ -70,7 +76,7 @@ const data = [
       {
         title: 'Clinic actions',
         url: '#',
-        icon: UserPen,
+        icon: Hospital,
         roles: ['admin','clinicadmin'],
         items: [
           {
