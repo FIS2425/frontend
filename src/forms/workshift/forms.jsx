@@ -11,8 +11,12 @@ import {
 import { es } from 'date-fns/locale';
 import { DatePicker } from '@/components/ui/date-picker';
 import { CustomTimePicker as TimePicker } from '@/components/ui/time-picker';
+import { useState } from 'react';
 
 export function WorkshiftForm({ form, onSubmit, selectedDate, startTime, setStartTime, endTime, setEndTime, existingSchedule, isLoading, error, setSelectedDate }) {
+  const [dateForm, setDateForm] = useState(selectedDate);
+
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -25,11 +29,13 @@ export function WorkshiftForm({ form, onSubmit, selectedDate, startTime, setStar
               <br />
               <FormControl>
                 <DatePicker
+                  key={selectedDate}
                   id="date"
-                  selected={selectedDate}
+                  selected={dateForm}
                   onSelect={(date) => { 
                     form.setValue('date', date);
                     setSelectedDate(date);
+                    setDateForm(date);
                   }}
                   dateFormat="dd/MM/yyyy"
                   locale={es}

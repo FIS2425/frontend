@@ -5,7 +5,7 @@ import { WorkshiftForm } from '@/forms/workshift/forms';
 import { WorkshiftFormSchema } from '@/forms/workshift/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { createWorkshift } from '@/services/workshift';
+import { createWorkshift, updateWorkshift } from '@/services/workshift';
 import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 
@@ -16,7 +16,6 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
 
   useEffect(() => {
     if (existingSchedule) {
-      console.log('existingSchedule', existingSchedule);
       setStartTime(existingSchedule.startTime);
       setEndTime(existingSchedule.endTime);
     } else {
@@ -30,10 +29,17 @@ export function ScheduleModal({ isOpen, onClose, selectedDate, selectedHour, onS
     const doctorId = userData.doctorid;
     const clinicId = userData.clinicId;
     const { date, startTime, endTime } = data;
-    createWorkshift({ date, startTime, endTime, doctorId, clinicId }).then((newSchedule) => {
-      onSave(newSchedule);
-      onClose();
-    });
+    if (existingSchedule)  {
+      updateWorkshift({ id: existingSchedule.id, date, startTime, endTime, clinicId }).then((updatedSchedule) => {
+        onSave(updatedSchedule);
+        onClose();
+      });
+    } else{
+      createWorkshift({ date, startTime, endTime, doctorId, clinicId }).then((newSchedule) => {
+        onSave(newSchedule);
+        onClose();
+      });
+    }
   };
 
   const form = useForm({

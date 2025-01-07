@@ -40,18 +40,20 @@ export function DoctorSchedulePage() {
 
   const handleScheduleSelect = (schedule) => {
     setSelectedSchedule(schedule);
-    setSelectedDate(schedule.date);
+    setSelectedDate(new Date(schedule.date));
     setSelectedHour(parseInt(schedule.startTime.split(':')[0]));
     openModal();
   };
+
+  
 
   const handleAppointmentSelect = (appointment) => {
     navigation(`/app/appointments/${appointment.id}`);
   };
 
   const handleDeleteSchedule = () => {
-    deleteWorkshift(selectedSchedule._id).then(() => {
-      setSchedules(prevSchedules => prevSchedules.filter(s => s._id !== selectedSchedule._id));
+    deleteWorkshift(selectedSchedule.id).then(() => {
+      setSchedules(prevSchedules => prevSchedules.filter(s => s.id !== selectedSchedule.id));
       closeModal();
     });
   };
@@ -65,7 +67,7 @@ export function DoctorSchedulePage() {
 
   const fetchWorkshifts = async () => {
     const workshiftsList = await workshiftsByDoctor(userData.doctorid);
-    const schedules = workshiftsList.map(({ startDate, endDate }) => transformDatesToSchedule(startDate, endDate));
+    const schedules = workshiftsList.map(({_id, startDate, endDate }) => transformDatesToSchedule(_id, startDate, endDate));
     setSchedules(schedules);
   };
 
@@ -78,14 +80,18 @@ export function DoctorSchedulePage() {
   useEffect(() => {
     fetchWorkshifts();
     fetchAppointments();
-  });
+  }, [userData.doctorid]);
+
+  useEffect(() => {
+    console.log('selectedDate', selectedDate);
+  }, [selectedDate]);
 
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {
       if (selectedSchedule) {
         // Update existing schedule
         return prevSchedules.map(schedule =>
-          (schedule._id === selectedSchedule._id) ? newSchedule : schedule
+          (schedule.id === selectedSchedule.id) ? newSchedule : schedule
         );
       } else {
         // Add new schedule

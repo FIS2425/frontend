@@ -10,7 +10,7 @@ const specialtiesWithLabelsNoDefault = specialties.map(specialty => ({
 
 export const specialtiesWithLabels = [{ label: 'Select specialty', value: '' }, ...specialtiesWithLabelsNoDefault];
 
-export function transformDatesToSchedule(startDate, endDate) {
+export function transformDatesToSchedule(id, startDate, endDate) {
   const start = new Date(startDate);
   const end = new Date(endDate);
 
@@ -21,6 +21,7 @@ export function transformDatesToSchedule(startDate, endDate) {
   };
 
   return {
+    id: id,
     date: startDate,
     startTime: formatTime(start),
     endTime: formatTime(end)

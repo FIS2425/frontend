@@ -17,9 +17,8 @@ export async function createWorkshift({ date, startTime, endTime, doctorId, clin
   return client.post('/workshifts', workshift).then(res => res.data);
 }
 
-export async  function updateWorkshift({ id, date, startTime, endTime }) {
+export async function updateWorkshift({ id, date, startTime, endTime, clinicId}) {
   const { startDate, duration } = parseWorkshiftDateTime(date, startTime, endTime);
-  const clinicId = localStorage.getItem('clinicId');
   const workshift = {
     clinicId,
     startDate,

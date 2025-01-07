@@ -1,7 +1,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { DoctorSchedulePage } from '@/pages/app/DoctorSchedulePage';
 import { Appointments } from '@/pages/app/Appointments';
-import { EditClinic } from '@/pages/app/EditClinic';
+import { ClinicaEdicion } from '@/pages/app/EditClinic';
 
 export function Home() {
   const { userData } = useAuth();
@@ -11,6 +11,6 @@ export function Home() {
   } else if (userData.roles.includes('patient')) {
     return <Appointments />;
   } else {
-    return <EditClinic />;
+    return <ClinicaEdicion />;
   }
 }
