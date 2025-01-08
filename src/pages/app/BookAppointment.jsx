@@ -130,7 +130,7 @@ export function BookingSystem() {
       const adjustedTime = format(selectedDate, 'HH:mm');
       const appointmentDate = `${formattedDate}T${adjustedTime}:00`;
       bookAppointment(userData.patientid, clinic._id, doctorId, doctor.specialty, appointmentDate).then(() => {
-        alertAppointment(userData.patientid, clinic.name, appointmentDate, doctor.name);
+        alertAppointment(userData.email, clinic.name, appointmentDate, doctor.name);
         navigate('/app/appointments');
       });
     } catch (error) {
