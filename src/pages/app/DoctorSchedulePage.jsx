@@ -82,10 +82,6 @@ export function DoctorSchedulePage() {
     fetchAppointments();
   }, [userData.doctorid]);
 
-  useEffect(() => {
-    console.log('selectedDate', selectedDate);
-  }, [selectedDate]);
-
   const handleSaveSchedule = (newSchedule) => {
     setSchedules(prevSchedules => {
       if (selectedSchedule) {

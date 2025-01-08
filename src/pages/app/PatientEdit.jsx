@@ -66,7 +66,6 @@ function PatientEditPage({ initialPatient = {} }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(patient);
     if (validateForm()) {
       updatePatient(userData.patientid, patient)
         .then(() => {

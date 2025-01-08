@@ -26,16 +26,14 @@ const expandableNavItems = [
   {
     title: 'About Us',
     items: [
-      { title: 'Our Mission', href: '/about/mission' },
       { title: 'Our Team', href: 'https://github.com/orgs/FIS2425/people' },
-      { title: 'Careers', href: '/about/careers' },
     ]
   },
 ];
 
 const navItems = [
-  { title: 'Contact', href: '/contact' },
-  { title: 'Services', href: '/services' },
+  { title: 'Contact', href: 'https://github.com/orgs/FIS2425' },
+  { title: 'Terms', href: 'https://github.com/FIS2425/docs/wiki' },
 ];
 
 export function Header() {

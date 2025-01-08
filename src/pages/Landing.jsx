@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
@@ -85,11 +84,6 @@ export function Landing() {
             <strong className="text-lg">CloudMedix</strong> is a cutting-edge, cloud-native platform designed to revolutionize clinic management. Our microservices-based architecture enables healthcare providers to efficiently handle patient appointments, manage multiple medical specialties, and maintain detailed patient histories. With real-time scheduling, secure access to clinical data, and seamless communication between doctors, patients, and clinic staff, CloudMedix empowers healthcare professionals to deliver superior patient care.
           </p>
         </div>
-        <Link to="/app">
-          <Button>
-            Go to App
-          </Button>
-        </Link>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <Card>
             <CardHeader className="flex flex-col items-center">

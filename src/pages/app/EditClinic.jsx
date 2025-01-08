@@ -107,11 +107,9 @@ export function ClinicaEdicion({ clinicaInicial = {} }) {
         // Obtener los doctores de la clínica
         const doctorsResponse = await getDoctorsBySpeciality({ clinicId });
         setDoctors(doctorsResponse.data);
-        console.log(clinicResponse.data);
         // Obtener el nombre del plan
         if (clinicResponse.data.plan) {
           const planResponse = await getPlanById(clinicResponse.data.plan);
-          console.log(planResponse.data.name);
           setPlanName(planResponse.data.name);
         }
 

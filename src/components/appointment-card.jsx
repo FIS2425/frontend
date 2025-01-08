@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getPatientById } from '@/services/patient';
 
-export function AppointmentCard({ date, patient, startTime, endTime, color = 'rgba(180, 122, 234, 0.44)', onClick }) {
+export function AppointmentCard({ date, patientId, startTime, endTime, color = 'rgba(180, 122, 234, 0.44)', onClick }) {
   const [patientName, setPatientName] = useState('');
   const [startHour, startMinute] = startTime.split(':').map(Number);
   const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -10,17 +10,18 @@ export function AppointmentCard({ date, patient, startTime, endTime, color = 'rg
   const duration = (endHour - startHour) * 60 + (endMinute - startMinute);
 
   useEffect(() => {
-    fetchPatientName();
-  }, []);
+    const fetchPatientName = async (patientId) => {
+      try {
+        const response = await getPatientById(patientId);
+        const patientData = response.data;
+        setPatientName(`${patientData.name} ${patientData.surname}`);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  const fetchPatientName = async (patientId) => {
-    try {
-      const patientData = await getPatientById(patientId);
-      setPatientName(`${patientData.firstName} ${patientData.lastName}`);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    fetchPatientName(patientId);
+  }, [patientId]);
 
   const style = {
     position: 'absolute',

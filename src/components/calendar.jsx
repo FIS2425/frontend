@@ -86,7 +86,7 @@ export function Calendar({ onDateSelect, onScheduleSelect, onAppointmentSelect, 
                   <AppointmentCard
                     key={index}
                     date={appointment.date}
-                    patient={appointment.patientId}
+                    patientId={appointment.patientId}
                     startTime={appointment.startTime}
                     endTime={appointment.endTime}
                     onClick={(e) => {

@@ -16,7 +16,6 @@ export function addCondition(id, { name, details, since, until }) {
 }
 
 export function editCondition(id, conditionId, { name, details, since, until }) {
-  console.log(id, conditionId, name, details, since, until);
   return client.put(
     `/histories/${id}/condition/${conditionId}`,
     { name, details, since, until: until || null }
