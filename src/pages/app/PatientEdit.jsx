@@ -6,6 +6,9 @@ import { getPatientById, updatePatient } from '@/services/patient';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { useAuth } from '@/hooks/use-auth';
+import { Button } from '@/components/ui/button';
+import { ClipboardPlus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 function PatientEditPage({ initialPatient = {} }) {
   const [patient, setPatient] = useState(initialPatient);
@@ -13,6 +16,7 @@ function PatientEditPage({ initialPatient = {} }) {
   const [errors, setErrors] = useState({});
   const initialPatientRef = useRef(null);
   const { userData } = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchPatient = async () => {
       try {
@@ -93,9 +97,17 @@ function PatientEditPage({ initialPatient = {} }) {
 
   return (
     <Card className="w-full max-w-md lg:min-w-[600px] rounded-lg shadow-sm">
-      <CardHeader className="items-start">
-        <CardTitle>Edit Patient</CardTitle>
-        <CardDescription>Edit patient</CardDescription>
+      <CardHeader>
+        <div className="flex items-center justify-between rounded-lg shadow-sm">
+          <CardTitle>Edit Patient</CardTitle>
+          <div className='flex items-center space-x-3 ml-auto'> 
+            <Button className="px-3 py-2 gap-2 text-base ml-auto hover:text-muted-foreground" onClick={() => navigate(`/app/history/${patient._id}`)}>
+              <ClipboardPlus className="h-4 w-4" />
+              Clinical History
+            </Button>
+          </div>
+        </div>
+        <CardDescription className="text-left">Edit patient details</CardDescription>
       </CardHeader>
       <CardContent>
         <PatientEdit
